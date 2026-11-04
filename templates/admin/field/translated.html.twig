@@ -1,0 +1,12 @@
+{# @var field \EasyCorp\Bundle\EasyAdminBundle\Dto\FieldDto #}
+{% set values = field.value is iterable ? field.value|filter(v => v is not empty) : [] %}
+{% if values is empty %}
+    <span class="badge badge-secondary">–</span>
+{% elseif ea().crud.currentAction == 'index' %}
+    {% set text = values|first %}
+    {{ text|length > 80 ? text|slice(0, 80) ~ '…' : text }}
+{% else %}
+    {% for locale, text in values %}
+        <div class="mb-2"><span class="badge badge-secondary">{{ locale|upper }}</span> {{ text|nl2br }}</div>
+    {% endfor %}
+{% endif %}

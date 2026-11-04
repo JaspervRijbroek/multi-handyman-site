@@ -1,0 +1,115 @@
+{% extends 'site/base.html.twig' %}
+
+{% block head %}
+    <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@type': 'HomeAndConstructionBusiness',
+        'name': tenant.name,
+        'url': url('site_root'),
+        'description': tenant.intro|localized,
+        'telephone': tenant.phone,
+        'areaServed': tenant.serviceArea,
+    }|filter(v => v is not empty)|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}</script>
+{% endblock %}
+
+{% block body %}
+    <section class="hero">
+        <div class="container">
+            <h1>{{ tenant.tagline|localized ?: tenant.name }}</h1>
+            {% if tenant.intro|localized %}
+                <p class="lead">{{ tenant.intro|localized|nl2br }}</p>
+            {% endif %}
+            <div class="cta">
+                {% if tenant.phoneLink %}
+                    <a class="btn btn-primary" href="tel:{{ tenant.phoneLink }}">{{ 'hero.call'|trans }} {{ tenant.phone }}</a>
+                {% endif %}
+                {% if tenant.whatsappDigits %}
+                    <a class="btn btn-whatsapp" href="https://wa.me/{{ tenant.whatsappDigits }}?text={{ 'whatsapp.prefill'|trans({'%name%': tenant.name})|url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
+                {% endif %}
+                <a class="btn btn-secondary" href="#contact">{{ 'hero.quote'|trans }}</a>
+            </div>
+            {% if tenant.serviceArea %}
+                <p class="area">{{ 'hero.area'|trans }}: {{ tenant.serviceArea }}</p>
+            {% endif %}
+        </div>
+    </section>
+
+    {% if services is not empty %}
+        <section id="services" class="section">
+            <div class="container">
+                <h2>{{ 'services.title'|trans }}</h2>
+                <div class="grid services">
+                    {% for service in services %}
+                        <article class="card">
+                            <h3>{{ service.title|localized }}</h3>
+                            {% if service.description|localized %}
+                                <p>{{ service.description|localized|nl2br }}</p>
+                            {% endif %}
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if projects is not empty %}
+        <section id="projects" class="section section-alt">
+            <div class="container">
+                <h2>{{ 'projects.title'|trans }}</h2>
+                <div class="grid projects">
+                    {% for project in projects %}
+                        <figure class="project">
+                            {% if project.imageName %}
+                                <img src="{{ asset('uploads/projects/' ~ project.imageName) }}"
+                                     alt="{{ project.title|localized }}" loading="lazy" width="600" height="450">
+                            {% else %}
+                                <div class="project-placeholder" aria-hidden="true"></div>
+                            {% endif %}
+                            <figcaption>
+                                <strong>{{ project.title|localized }}</strong>
+                                {% if project.description|localized %}<span>{{ project.description|localized }}</span>{% endif %}
+                                {% if project.completedAt %}<time datetime="{{ project.completedAt|date('Y-m-d') }}">{{ project.completedAt|date('m/Y') }}</time>{% endif %}
+                            </figcaption>
+                        </figure>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if tenant.about|localized %}
+        <section id="about" class="section">
+            <div class="container narrow">
+                <h2>{{ 'about.title'|trans }}</h2>
+                <p>{{ tenant.about|localized|nl2br }}</p>
+            </div>
+        </section>
+    {% endif %}
+
+    <section id="contact" class="section section-alt">
+        <div class="container contact">
+            <div>
+                <h2>{{ 'contact.title'|trans }}</h2>
+                <p>{{ 'contact.intro'|trans }}</p>
+                <ul class="contact-details">
+                    {% if tenant.phoneLink %}<li><a href="tel:{{ tenant.phoneLink }}">{{ tenant.phone }}</a></li>{% endif %}
+                    {% if tenant.whatsappDigits %}<li><a href="https://wa.me/{{ tenant.whatsappDigits }}" target="_blank" rel="noopener">WhatsApp</a></li>{% endif %}
+                    {% if tenant.serviceArea %}<li>{{ tenant.serviceArea }}</li>{% endif %}
+                </ul>
+            </div>
+            <div>
+                {% for message in app.flashes('contact_success') %}
+                    <p class="notice" role="status">{{ message|trans }}</p>
+                {% endfor %}
+                {{ form_start(form, {attr: {class: 'contact-form', novalidate: 'novalidate'}}) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.contact) }}
+                    {{ form_row(form.message) }}
+                    {{ form_row(form.website) }}
+                    <p class="privacy-note">{{ 'contact.privacy'|trans({'%url%': path('site_legal', {_locale: app.request.locale}) ~ '#privacy'})|raw }}</p>
+                    <button type="submit" class="btn btn-primary">{{ 'contact.send'|trans }}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,42 @@
+# Example Caddy config for a Hetzner server (Ubuntu, PHP 8.4 FPM).
+# Caddy fetches a free TLS certificate for every client domain automatically,
+# but only after the app confirms the domain is in the "domain" table.
+#
+# Replace platform.example.com and the paths, then: sudo systemctl reload caddy
+
+{
+	email you@example.com
+	on_demand_tls {
+		ask http://127.0.0.1:9180/_tls/ask
+	}
+}
+
+(app) {
+	root * /var/www/multi-handyman-site/public
+	encode zstd gzip
+
+	@static path /bundles/* /css/* /uploads/* /favicon.svg
+	header @static Cache-Control "public, max-age=604800"
+
+	php_fastcgi unix//run/php/php8.4-fpm.sock
+	file_server
+}
+
+# Internal only: answers Caddy's "may I get a certificate for X?" question
+http://127.0.0.1:9180 {
+	bind 127.0.0.1
+	import app
+}
+
+# Your platform: admin, login and landing page
+platform.example.com {
+	import app
+}
+
+# Every client domain whose DNS points at this server
+https:// {
+	tls {
+		on_demand
+	}
+	import app
+}

@@ -1,0 +1,53 @@
+nav:
+    services: Services
+    projects: Our work
+    contact: Contact
+
+hero:
+    call: Call
+    quote: Ask for a quote
+    area: Working in
+
+services:
+    title: What we do
+
+projects:
+    title: Recent work
+
+about:
+    title: About us
+
+contact:
+    title: Get in touch
+    intro: Tell us what needs doing and we'll get back to you as soon as possible.
+    name: Your name
+    contact: Email or phone number
+    message: What can we help with?
+    send: Send message
+    success: Thank you! Your message has been sent. We'll get back to you soon.
+    privacy: 'We only use your details to answer your message. See our <a href="%url%">privacy policy</a>.'
+
+whatsapp:
+    prefill: 'Hello %name%, I found you through your website.'
+
+footer:
+    legal: Legal notice & privacy
+
+legal:
+    title: Legal notice & privacy
+    owner:
+        title: Who runs this website
+        text: 'In accordance with Spanish law (Ley 34/2002, LSSI), the owner of %site% is:'
+        name: Owner
+        tax_id: Tax ID (NIF/NIE/CIF)
+        address: Address
+        phone: Phone
+    privacy:
+        title: Privacy policy
+        controller: '%owner% is responsible for the personal data you send through this website.'
+        purpose: We use the data from the contact form only to answer your enquiry and, if you wish, to prepare a quote. The legal basis is your consent and taking steps at your request before entering into a contract. We do not sell or share your data, except with providers that host this website and its email on our behalf.
+        retention: We keep your enquiry as long as needed to handle it and to meet legal obligations.
+        rights: 'You can request access, correction or deletion of your data, or object to its use, by emailing %email%. You may also file a complaint with the Spanish Data Protection Agency (www.aepd.es).'
+    cookies:
+        title: Cookies
+        text: This website uses no tracking or advertising cookies. A technical session cookie is only set when you use the contact form, to protect it against abuse. Visitor statistics, if enabled, are collected anonymously without cookies.

@@ -1,0 +1,15 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    session: true
+    csrf_protection: true
+
+    # Requests arrive through a reverse proxy (DDEV router locally, Caddy in production).
+    # X-Forwarded-Host is deliberately NOT trusted: the tenant is resolved from the Host header.
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port']
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

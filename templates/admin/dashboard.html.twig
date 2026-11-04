@@ -1,0 +1,31 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Welcome{% if tenant %}, {{ tenant.name }}{% endif %}{% endblock %}
+
+{% block main %}
+    <div class="row">
+        {% for stat in stats %}
+            <div class="col-sm-6 col-lg-3 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="text-muted small">{{ stat.label }}</div>
+                        <div class="fs-2 fw-bold">{{ stat.value }}</div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if tenant %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <h2 class="h5">Keep your website alive</h2>
+                <p class="mb-3">Customers trust businesses that show recent work. Finished a job? Add a photo, it takes a minute.</p>
+                <a class="btn btn-primary" href="{{ ea_url().setController('App\\Controller\\Admin\\ProjectCrudController').setAction('new') }}">Add a finished job</a>
+                {% if site_url %}
+                    <a class="btn btn-secondary ms-2" href="{{ site_url }}" target="_blank" rel="noopener">View your website</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

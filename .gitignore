@@ -1,0 +1,16 @@
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+# Uploaded client photos (back these up, don't commit them)
+/public/uploads/projects/*
+!/public/uploads/projects/.gitkeep
+
+.DS_Store
+/.idea/

@@ -1,0 +1,21 @@
+name: multi-handyman-site
+type: symfony
+docroot: public
+php_version: "8.4"
+webserver_type: nginx-fpm
+xdebug_enabled: false
+composer_version: "2"
+
+database:
+  type: mariadb
+  version: "11.4"
+
+# The project's main URL (https://multi-handyman-site.ddev.site) is the platform:
+# admin, login and your own landing page.
+# Each extra hostname below is a demo client site, mapped to a tenant through
+# the "domain" table (see src/DataFixtures/AppFixtures.php).
+additional_hostnames:
+  - jans-klusbedrijf
+  - handyman-javea
+
+use_dns_when_possible: true

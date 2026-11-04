@@ -1,0 +1,37 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ 'legal.title'|trans }} | {{ tenant.name }}{% endblock %}
+{% block description %}{{ 'legal.title'|trans }} – {{ tenant.name }}{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, follow">
+{% endblock %}
+
+{# Template text: have it checked by a gestor or lawyer before going live. #}
+{% block body %}
+    {% set owner = tenant.legalName ?: tenant.name %}
+    <section class="section">
+        <div class="container narrow legal">
+            <h1>{{ 'legal.title'|trans }}</h1>
+
+            <h2>{{ 'legal.owner.title'|trans }}</h2>
+            <p>{{ 'legal.owner.text'|trans({'%site%': app.request.host}) }}</p>
+            <ul>
+                <li>{{ 'legal.owner.name'|trans }}: {{ owner }}</li>
+                {% if tenant.taxId %}<li>{{ 'legal.owner.tax_id'|trans }}: {{ tenant.taxId }}</li>{% endif %}
+                {% if tenant.legalAddress %}<li>{{ 'legal.owner.address'|trans }}: {{ tenant.legalAddress }}</li>{% endif %}
+                {% if tenant.email %}<li>Email: {{ tenant.email }}</li>{% endif %}
+                {% if tenant.phone %}<li>{{ 'legal.owner.phone'|trans }}: {{ tenant.phone }}</li>{% endif %}
+            </ul>
+
+            <h2 id="privacy">{{ 'legal.privacy.title'|trans }}</h2>
+            <p>{{ 'legal.privacy.controller'|trans({'%owner%': owner}) }}</p>
+            <p>{{ 'legal.privacy.purpose'|trans }}</p>
+            <p>{{ 'legal.privacy.retention'|trans }}</p>
+            <p>{{ 'legal.privacy.rights'|trans({'%email%': tenant.email ?: '–'}) }}</p>
+
+            <h2>{{ 'legal.cookies.title'|trans }}</h2>
+            <p>{{ 'legal.cookies.text'|trans }}</p>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,53 @@
+nav:
+    services: Servicios
+    projects: Trabajos
+    contact: Contacto
+
+hero:
+    call: Llamar al
+    quote: Pedir presupuesto
+    area: Trabajamos en
+
+services:
+    title: Qué hacemos
+
+projects:
+    title: Trabajos recientes
+
+about:
+    title: Sobre nosotros
+
+contact:
+    title: Contacto
+    intro: Cuéntenos qué necesita y le responderemos lo antes posible.
+    name: Su nombre
+    contact: Email o teléfono
+    message: ¿En qué podemos ayudarle?
+    send: Enviar mensaje
+    success: ¡Gracias! Su mensaje ha sido enviado. Le responderemos pronto.
+    privacy: 'Solo usamos sus datos para responder a su mensaje. Consulte nuestra <a href="%url%">política de privacidad</a>.'
+
+whatsapp:
+    prefill: 'Hola %name%, le encontré a través de su página web.'
+
+footer:
+    legal: Aviso legal y privacidad
+
+legal:
+    title: Aviso legal y privacidad
+    owner:
+        title: Titular del sitio web
+        text: 'En cumplimiento de la Ley 34/2002 (LSSI), el titular de %site% es:'
+        name: Titular
+        tax_id: NIF/NIE/CIF
+        address: Domicilio
+        phone: Teléfono
+    privacy:
+        title: Política de privacidad
+        controller: '%owner% es responsable de los datos personales que envíe a través de este sitio web.'
+        purpose: Utilizamos los datos del formulario de contacto únicamente para responder a su consulta y, si lo desea, preparar un presupuesto. La base legal es su consentimiento y la aplicación de medidas precontractuales a petición suya. No vendemos ni cedemos sus datos, salvo a los proveedores que alojan este sitio web y su correo en nuestro nombre.
+        retention: Conservamos su consulta el tiempo necesario para atenderla y cumplir con las obligaciones legales.
+        rights: 'Puede solicitar el acceso, la rectificación o la supresión de sus datos, u oponerse a su tratamiento, escribiendo a %email%. También puede presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).'
+    cookies:
+        title: Cookies
+        text: Este sitio web no utiliza cookies de seguimiento ni de publicidad. Solo se establece una cookie técnica de sesión al usar el formulario de contacto, para protegerlo contra abusos. Las estadísticas de visitas, si están activadas, se recogen de forma anónima y sin cookies.
