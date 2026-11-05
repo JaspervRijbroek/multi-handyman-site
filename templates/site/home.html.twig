@@ -9,6 +9,7 @@
         'description': tenant.intro|localized,
         'telephone': tenant.phone,
         'areaServed': tenant.serviceArea,
+        'logo': tenant.logoName ? absolute_url(asset('uploads/logos/' ~ tenant.logoName)) : null,
     }|filter(v => v is not empty)|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE'))|raw }}</script>
 {% endblock %}
 

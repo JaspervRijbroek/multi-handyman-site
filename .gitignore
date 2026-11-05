@@ -8,9 +8,11 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-# Uploaded client photos (back these up, don't commit them)
+# Uploaded client photos and logos (back these up, don't commit them)
 /public/uploads/projects/*
 !/public/uploads/projects/.gitkeep
+/public/uploads/logos/*
+!/public/uploads/logos/.gitkeep
 
 .DS_Store
 /.idea/

@@ -45,8 +45,23 @@ class DashboardController extends AbstractDashboardController
         $tenant = $this->tenantContext->get();
         $primaryDomain = $tenant?->getPrimaryDomain();
 
+        // Nudge clients to fill in the details that help them get found
+        $missing = [];
+        if ($tenant) {
+            if (!$tenant->getLogoName()) {
+                $missing[] = 'your logo';
+            }
+            if (!$tenant->getServiceArea()) {
+                $missing[] = 'the towns you work in';
+            }
+            if (!$tenant->getPhone() && !$tenant->getWhatsapp()) {
+                $missing[] = 'a phone or WhatsApp number';
+            }
+        }
+
         return $this->render('admin/dashboard.html.twig', [
             'tenant' => $tenant,
+            'missing_settings' => $missing,
             'stats' => $stats,
             'site_url' => $primaryDomain ? 'https://'.$primaryDomain->getHostname() : null,
         ]);
@@ -54,8 +69,20 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
+        $tenant = $this->tenantContext->get();
+        $title = htmlspecialchars($tenant?->getName() ?? 'Platform admin', \ENT_QUOTES);
+
+        // Clients see their own logo in the admin, so it feels like their own site
+        if ($tenant?->getLogoName()) {
+            $title = \sprintf(
+                '<img src="/uploads/logos/%s" alt="" style="max-height: 32px; max-width: 120px; margin-right: 8px; vertical-align: middle"> %s',
+                rawurlencode($tenant->getLogoName()),
+                $title,
+            );
+        }
+
         return Dashboard::new()
-            ->setTitle($this->tenantContext->get()?->getName() ?? 'Platform admin')
+            ->setTitle($title)
             ->setFaviconPath('favicon.svg');
     }
 
@@ -63,11 +90,7 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
-        if ($tenant = $this->tenantContext->get()) {
-            yield MenuItem::linkTo(TenantCrudController::class, 'Business details', 'fa fa-store')
-                ->setAction(Action::EDIT)
-                ->setEntityId($tenant->getId());
-        }
+        $tenant = $this->tenantContext->get();
 
         yield MenuItem::linkTo(ProjectCrudController::class, 'Finished jobs', 'fa fa-images');
         yield MenuItem::linkTo(ServiceCrudController::class, 'Services', 'fa fa-wrench');
@@ -76,6 +99,13 @@ class DashboardController extends AbstractDashboardController
         if ($tenant && $domain = $tenant->getPrimaryDomain()) {
             yield MenuItem::linkToUrl('View website', 'fa fa-external-link-alt', 'https://'.$domain->getHostname())
                 ->setLinkTarget('_blank');
+        }
+
+        if ($tenant) {
+            yield MenuItem::section('Your business');
+            yield MenuItem::linkTo(TenantCrudController::class, 'Settings', 'fa fa-gear')
+                ->setAction(Action::EDIT)
+                ->setEntityId($tenant->getId());
         }
 
         if ($this->isGranted(User::ROLE_SUPER_ADMIN)) {

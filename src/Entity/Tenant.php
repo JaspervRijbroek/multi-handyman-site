@@ -67,6 +67,10 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $serviceArea = null;
 
+    /** File name of the uploaded logo in public/uploads/logos */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logoName = null;
+
     /** @var array<string, string> */
     #[ORM\Column(type: Types::JSON)]
     private array $tagline = [];
@@ -266,6 +270,18 @@ class Tenant
     public function setServiceArea(?string $serviceArea): static
     {
         $this->serviceArea = $serviceArea;
+
+        return $this;
+    }
+
+    public function getLogoName(): ?string
+    {
+        return $this->logoName;
+    }
+
+    public function setLogoName(?string $logoName): static
+    {
+        $this->logoName = $logoName;
 
         return $this;
     }
