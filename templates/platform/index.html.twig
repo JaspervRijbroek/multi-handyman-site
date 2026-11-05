@@ -1,24 +1,409 @@
+{#
+    Marketing landing page, served on PLATFORM_HOST.
+    Change the brand, price and contact details here; everything else is copy.
+#}
+{% set brand = 'Handy Sites' %}
+{% set price = 59 %}
+{% set currency = 'EUR' %}
+{% set contact_email = 'hello@example.com' %}
+{% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
+{% set languages = ['English', 'Español', 'Nederlands', 'Deutsch', 'Français'] %}
+
+{% set faqs = [
+    {
+        q: 'What does “findable by AI assistants” actually mean?',
+        a: 'More and more people ask ChatGPT, Gemini, Claude or Perplexity things like “find me an English-speaking plumber near Jávea”. Those assistants read websites to answer. Your site gives them clean, structured facts — what you do, where you work, how to reach you — so they can recommend you with confidence instead of guessing.',
+    },
+    {
+        q: 'Is there a setup fee or a long contract?',
+        a: 'No setup fee. You pay one monthly price that covers the website, hosting, the Google setup and ongoing SEO.',
+    },
+    {
+        q: 'Do I need to know anything about websites?',
+        a: 'No. We build the site, connect your domain and set up Google for you. Afterwards you can update your services and add photos of recent work from a simple admin — or just send them to us.',
+    },
+    {
+        q: 'Can I use my own domain name?',
+        a: 'Yes. Bring the domain you already have or we help you register one. HTTPS is included and works from the first visit.',
+    },
+    {
+        q: 'Which languages are supported?',
+        a: 'English, Spanish, Dutch, German and French. Pick the languages your customers speak; each one gets its own pages so Google and AI assistants show the right version to the right person.',
+    },
+    {
+        q: 'Is it legal for a business in Spain?',
+        a: 'Every site comes with a legal notice and privacy page (LSSI and GDPR) generated from your business details, and no tracking cookie banner is needed. We still recommend having your gestor check the texts.',
+    },
+] %}
+
+{% set json_flags = constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Websites for international trades in Spain</title>
+    <title>{{ brand }} | Websites for trades in Spain that Google and AI assistants can find</title>
+    <meta name="description" content="Multilingual websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT. Google setup and SEO included, one monthly price.">
+    <link rel="canonical" href="{{ url('site_root') }}">
+
+    <meta property="og:title" content="{{ brand }}: get found on Google and by AI assistants">
+    <meta property="og:description" content="Multilingual websites for trades in Spain. Google Maps, Search Console, Analytics and SEO included.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('site_root') }}">
+
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
+
+    {# We practise what we sell: this page is described in structured data too #}
+    <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'Organization',
+                'name': brand,
+                'url': url('site_root'),
+                'email': contact_email,
+                'areaServed': 'ES',
+            },
+            {
+                '@type': 'Service',
+                'name': brand ~ ' website package',
+                'serviceType': 'Website, local SEO and Google setup for trades',
+                'provider': { '@type': 'Organization', 'name': brand },
+                'areaServed': 'ES',
+                'availableLanguage': ['en', 'es', 'nl', 'de', 'fr'],
+                'offers': {
+                    '@type': 'Offer',
+                    'priceCurrency': currency,
+                    'price': price,
+                    'priceSpecification': {
+                        '@type': 'UnitPriceSpecification',
+                        'price': price,
+                        'priceCurrency': currency,
+                        'unitCode': 'MON',
+                        'referenceQuantity': { '@type': 'QuantitativeValue', 'value': 1, 'unitCode': 'MON' },
+                    },
+                },
+            },
+            {
+                '@type': 'FAQPage',
+                'mainEntity': faqs|map(f => {
+                    '@type': 'Question',
+                    'name': f.q,
+                    'acceptedAnswer': { '@type': 'Answer', 'text': f.a },
+                }),
+            },
+        ],
+    }|json_encode(json_flags)|raw }}</script>
 </head>
 <body>
-    {# Your own landing page, served on PLATFORM_HOST. Replace with your sales page. #}
+    <header class="p-header">
+        <div class="p-container p-header-inner">
+            <a class="p-brand" href="{{ path('site_root') }}">
+                <img src="{{ asset('favicon.svg') }}" alt="" width="28" height="28">
+                {{ brand }}
+            </a>
+            <nav class="p-nav" aria-label="Main">
+                <a href="#ai">AI search</a>
+                <a href="#included">What’s included</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <a class="p-login" href="{{ path('app_login') }}">Client login</a>
+        </div>
+    </header>
+
     <main>
-        <section class="hero">
-            <div class="container">
-                <h1>Get found by customers, in their language</h1>
-                <p class="lead">Professional, multilingual websites for international handymen and builders in Spain. No upfront cost, one monthly fee.</p>
-                <div class="cta">
-                    <a class="btn btn-primary" href="{{ path('app_login') }}">Client login</a>
+        {# ── Hero ─────────────────────────────────────────────── #}
+        <section class="p-hero">
+            <div class="p-container p-hero-grid">
+                <div>
+                    <p class="p-eyebrow">Websites for trades in Spain</p>
+                    <h1>Found on Google.<br><span>Recommended by AI.</span></h1>
+                    <p class="p-lead">
+                        A fast, multilingual website for your handyman or building business, built so that
+                        Google Maps, Google Search <em>and</em> AI assistants like ChatGPT know exactly what you
+                        do, where you work and how to reach you.
+                    </p>
+                    <div class="p-cta">
+                        <a class="p-btn p-btn-primary" href="#pricing">See the package · €{{ price }}/month</a>
+                        <a class="p-btn p-btn-ghost" href="#ai">How AI finds you</a>
+                    </div>
+                    <ul class="p-ticks">
+                        <li>No setup fee</li>
+                        <li>Google setup &amp; SEO included</li>
+                        <li>{{ languages|length }} languages</li>
+                    </ul>
+                </div>
+
+                {# Illustration: an assistant answering a customer, built from HTML so it stays crisp #}
+                <div class="p-demo" aria-hidden="true">
+                    <div class="p-chat">
+                        <div class="p-chat-bar"><span></span><span></span><span></span></div>
+                        <div class="p-bubble p-bubble-user">Can you recommend an English-speaking handyman near Jávea? I need a leaking tap fixed this week.</div>
+                        <div class="p-bubble p-bubble-ai">
+                            <strong>Here’s a good match nearby:</strong>
+                            <div class="p-result">
+                                <div class="p-result-icon">J</div>
+                                <div>
+                                    <b>Jan’s Klusbedrijf</b>
+                                    <small>Handyman · Jávea, Dénia, Moraira</small>
+                                    <small>Plumbing · Painting · Small repairs</small>
+                                    <small class="p-langs">EN · NL · ES</small>
+                                </div>
+                            </div>
+                            <div class="p-result-actions"><span>Call</span><span>WhatsApp</span><span>Website</span></div>
+                        </div>
+                    </div>
+                    <div class="p-maps">
+                        <div class="p-maps-pin"></div>
+                        <div>
+                            <b>Jan’s Klusbedrijf</b>
+                            <small><span class="p-stars">★★★★★</span> Google Maps</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        {# ── Where customers look ─────────────────────────────── #}
+        <section class="p-strip" aria-label="Where your customers find you">
+            <div class="p-container">
+                <p>Be the answer wherever your customers search</p>
+                <ul>
+                    <li>Google Search</li>
+                    <li>Google Maps</li>
+                    <li>ChatGPT</li>
+                    <li>Gemini</li>
+                    <li>Claude</li>
+                    <li>Perplexity</li>
+                </ul>
+            </div>
+        </section>
+
+        {# ── USP: findable by AI ──────────────────────────────── #}
+        <section id="ai" class="p-section">
+            <div class="p-container p-split">
+                <div>
+                    <p class="p-eyebrow">Our biggest difference</p>
+                    <h2>Built to be read by AI assistants, not just people</h2>
+                    <p class="p-text">
+                        Customers no longer only type “handyman Jávea” into Google. They ask an assistant, and it
+                        reads the web to answer. Most small business sites are a pretty picture with the important
+                        facts buried in images or scripts. AI can’t use them, so it recommends someone else.
+                    </p>
+                    <p class="p-text">Every {{ brand }} site is built so a machine can understand it at a glance:</p>
+
+                    <ul class="p-points">
+                        <li>
+                            <h3>Structured business data</h3>
+                            <p>Your business name, trade, description, service area and phone are published in the schema.org format that search engines and AI models are trained to read.</p>
+                        </li>
+                        <li>
+                            <h3>Clean, fast HTML</h3>
+                            <p>Content is in the page itself, not hidden behind JavaScript. Crawlers and assistants get every word, instantly.</p>
+                        </li>
+                        <li>
+                            <h3>One page per language</h3>
+                            <p>Proper language tags, canonical URLs and a sitemap, so a German customer gets your German page, in Google and in ChatGPT.</p>
+                        </li>
+                        <li>
+                            <h3>Open to the right crawlers</h3>
+                            <p>Search engines and AI assistants are welcome to read your public pages. Your admin stays private.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <figure class="p-code">
+                    <figcaption>What an AI assistant reads on your site</figcaption>
+<pre><code><span class="c">// Structured data, generated automatically</span>
+{
+  <span class="k">"@type"</span>: <span class="s">"HomeAndConstructionBusiness"</span>,
+  <span class="k">"name"</span>: <span class="s">"Jan’s Klusbedrijf"</span>,
+  <span class="k">"description"</span>: <span class="s">"Handyman for plumbing,
+     painting and small repairs"</span>,
+  <span class="k">"areaServed"</span>: <span class="s">"Jávea, Dénia, Moraira"</span>,
+  <span class="k">"telephone"</span>: <span class="s">"+34 600 000 000"</span>,
+  <span class="k">"url"</span>: <span class="s">"https://jansklusbedrijf.es"</span>
+}</code></pre>
+                    <p class="p-code-note">Plus: <code>hreflang</code> for {{ languages|length }} languages · <code>sitemap.xml</code> · canonical URLs</p>
+                </figure>
+            </div>
+        </section>
+
+        {# ── Features ─────────────────────────────────────────── #}
+        <section class="p-section p-section-alt">
+            <div class="p-container">
+                <div class="p-head">
+                    <p class="p-eyebrow">The website</p>
+                    <h2>Everything a trade business needs, nothing it doesn’t</h2>
+                </div>
+                <div class="p-features">
+                    <article>
+                        <div class="p-icon">🌍</div>
+                        <h3>Speaks your customers’ language</h3>
+                        <p>{{ languages|join(', ', ' and ') }}. Visitors land on their own language automatically.</p>
+                    </article>
+                    <article>
+                        <div class="p-icon">📞</div>
+                        <h3>Calls, WhatsApp and enquiries</h3>
+                        <p>Click-to-call, a WhatsApp button and a contact form. Enquiries go straight to your inbox and are kept in your admin.</p>
+                    </article>
+                    <article>
+                        <div class="p-icon">🛠️</div>
+                        <h3>Show off your work</h3>
+                        <p>List your services and add photos of finished projects yourself, from your phone, in minutes.</p>
+                    </article>
+                    <article>
+                        <div class="p-icon">⚖️</div>
+                        <h3>Legal pages for Spain</h3>
+                        <p>Legal notice and privacy policy (LSSI and GDPR) generated from your business details.</p>
+                    </article>
+                    <article>
+                        <div class="p-icon">⚡</div>
+                        <h3>Fast and secure</h3>
+                        <p>Lightweight pages that load quickly on a mobile signal, with HTTPS on your own domain.</p>
+                    </article>
+                    <article>
+                        <div class="p-icon">🍪</div>
+                        <h3>No cookie banner</h3>
+                        <p>No tracking cookies, so no annoying pop-up between your customer and your phone number.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        {# ── Included Google setup + SEO ──────────────────────── #}
+        <section id="included" class="p-section">
+            <div class="p-container">
+                <div class="p-head">
+                    <p class="p-eyebrow">Done for you</p>
+                    <h2>We set up Google for you, and keep you visible</h2>
+                    <p class="p-text">The website is only half of being found. The package includes the setup most tradespeople never get round to.</p>
+                </div>
+                <div class="p-included">
+                    <article>
+                        <span class="p-step">01</span>
+                        <h3>Google Maps</h3>
+                        <p>We create or claim your Google Business Profile: categories, service area, opening hours, photos and a link to your site. So you show up when people search “near me”.</p>
+                    </article>
+                    <article>
+                        <span class="p-step">02</span>
+                        <h3>Google Search Console</h3>
+                        <p>We verify your domain and submit your sitemap, so Google indexes every page and language, and we can see which searches you appear for.</p>
+                    </article>
+                    <article>
+                        <span class="p-step">03</span>
+                        <h3>Google Analytics</h3>
+                        <p>See how many people visit, where they come from and how many call or send an enquiry. Set up and connected for you.</p>
+                    </article>
+                    <article>
+                        <span class="p-step">04</span>
+                        <h3>SEO optimisation</h3>
+                        <p>Page titles, descriptions and texts written around what your customers search for, in every language, for every town you work in. Reviewed and improved as we go.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        {# ── Pricing ──────────────────────────────────────────── #}
+        <section id="pricing" class="p-section p-section-dark">
+            <div class="p-container p-pricing">
+                <div class="p-pricing-copy">
+                    <p class="p-eyebrow">Pricing</p>
+                    <h2>One package. One monthly price.</h2>
+                    <p class="p-text">
+                        No setup fee, no surprise invoices. Hosting, updates, the Google setup and ongoing SEO are
+                        all included. One new job from the site usually pays for the year.
+                    </p>
+                </div>
+
+                <div class="p-plan">
+                    <div class="p-plan-head">
+                        <h3>Complete package</h3>
+                        <p class="p-price"><span class="p-cur">€</span>{{ price }}<span class="p-per">/month</span></p>
+                        <p class="p-plan-sub">excl. VAT · no setup fee</p>
+                    </div>
+                    <ul class="p-plan-list">
+                        <li><strong>Multilingual website</strong> on your own domain</li>
+                        <li><strong>AI assistant ready</strong>: structured data, sitemap, hreflang</li>
+                        <li><strong>Google Maps</strong>: Business Profile setup</li>
+                        <li><strong>Google Search Console</strong>: setup &amp; sitemap</li>
+                        <li><strong>Google Analytics</strong>: setup &amp; connection</li>
+                        <li><strong>SEO optimisation</strong> in every language</li>
+                        <li>Contact form, WhatsApp &amp; click-to-call</li>
+                        <li>Legal pages for Spain</li>
+                        <li>Hosting, HTTPS, backups &amp; updates</li>
+                        <li>Simple admin to edit your content</li>
+                    </ul>
+                    <a class="p-btn p-btn-primary p-btn-block" href="mailto:{{ contact_email }}?subject={{ ('I want a ' ~ brand ~ ' website')|url_encode }}">Get started</a>
+                    {% if contact_whatsapp %}
+                        <a class="p-btn p-btn-ghost-light p-btn-block" href="https://wa.me/{{ contact_whatsapp }}" target="_blank" rel="noopener">Ask a question on WhatsApp</a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        {# ── How it works ─────────────────────────────────────── #}
+        <section class="p-section">
+            <div class="p-container">
+                <div class="p-head">
+                    <p class="p-eyebrow">How it works</p>
+                    <h2>Live in about a week</h2>
+                </div>
+                <ol class="p-steps">
+                    <li>
+                        <h3>Tell us about your business</h3>
+                        <p>A short call or a WhatsApp chat: what you do, where you work, which languages you need. Send a few photos.</p>
+                    </li>
+                    <li>
+                        <h3>We build and connect everything</h3>
+                        <p>Website, texts in every language, your domain, Google Maps, Search Console and Analytics.</p>
+                    </li>
+                    <li>
+                        <h3>Customers find you</h3>
+                        <p>On Google, on Maps and through AI assistants. You get the calls; we keep it all running.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        {# ── FAQ ──────────────────────────────────────────────── #}
+        <section id="faq" class="p-section p-section-alt">
+            <div class="p-container p-narrow">
+                <div class="p-head">
+                    <p class="p-eyebrow">FAQ</p>
+                    <h2>Questions we often get</h2>
+                </div>
+                <div class="p-faq">
+                    {% for faq in faqs %}
+                        <details{% if loop.first %} open{% endif %}>
+                            <summary>{{ faq.q }}</summary>
+                            <p>{{ faq.a }}</p>
+                        </details>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        {# ── Final CTA ────────────────────────────────────────── #}
+        <section class="p-final">
+            <div class="p-container">
+                <h2>Ready to be the handyman AI recommends?</h2>
+                <p>€{{ price }} per month, everything included.</p>
+                <a class="p-btn p-btn-primary" href="mailto:{{ contact_email }}?subject={{ ('I want a ' ~ brand ~ ' website')|url_encode }}">Get started</a>
+            </div>
+        </section>
     </main>
+
+    <footer class="p-footer">
+        <div class="p-container p-footer-inner">
+            <p>&copy; {{ 'now'|date('Y') }} {{ brand }} · Websites for trades in Spain</p>
+            <p>
+                <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+                · <a href="{{ path('app_login') }}">Client login</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
