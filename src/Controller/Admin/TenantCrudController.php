@@ -94,8 +94,8 @@ class TenantCrudController extends AbstractCrudController
             ->setBasePath('uploads/logos')
             ->setUploadDir('public/uploads/logos')
             ->setUploadedFileNamePattern('[randomhash].[extension]')
-            ->setFileConstraints(new Image(maxSize: '2M', mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']))
-            ->setHelp('Shown at the top of your website and in Google. PNG, JPG, WebP or SVG, max 2 MB. A transparent background works best.');
+            ->setFileConstraints(new Image(maxSize: '2M', mimeTypes: ['image/png', 'image/jpeg', 'image/webp']))
+            ->setHelp('Shown at the top of your website and in Google. PNG, JPG or WebP, max 2 MB. A transparent background works best.');
         if ($isSuperAdmin) {
             yield SlugField::new('slug')->setTargetFieldName('name')->hideOnIndex();
             yield BooleanField::new('active')->renderAsSwitch(false);
