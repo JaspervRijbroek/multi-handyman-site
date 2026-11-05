@@ -105,6 +105,7 @@
             </a>
             <nav class="p-nav" aria-label="Main">
                 <a href="#ai">AI search</a>
+                <a href="#showcase">Your projects</a>
                 <a href="#included">What’s included</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#faq">FAQ</a>
@@ -132,6 +133,7 @@
                     <ul class="p-ticks">
                         <li>No setup fee</li>
                         <li>Google setup &amp; SEO included</li>
+                        <li>Update it yourself</li>
                         <li>{{ languages|length }} languages</li>
                     </ul>
                 </div>
@@ -231,8 +233,64 @@
             </div>
         </section>
 
+        {# ── USP: projects + work area, managed by the client ── #}
+        <section id="showcase" class="p-section p-section-alt">
+            <div class="p-container">
+                <div class="p-head">
+                    <p class="p-eyebrow">You stay in control</p>
+                    <h2>Show your best work. Change where you work. In minutes.</h2>
+                    <p class="p-text">Your site grows with your business. No waiting for a web designer: open the admin on your phone and it’s live straight away, in every language.</p>
+                </div>
+
+                <div class="p-showcase">
+                    <article class="p-show-card">
+                        <div class="p-show-visual" aria-hidden="true">
+                            <div class="p-gallery">
+                                <div class="p-shot p-shot-1"><span>Bathroom renovation</span></div>
+                                <div class="p-shot p-shot-2"><span>Garden wall</span></div>
+                                <div class="p-shot p-shot-3"><span>Kitchen tiling</span></div>
+                                <div class="p-shot p-shot-add">+ Add job</div>
+                            </div>
+                        </div>
+                        <h3>Showcase your finished projects</h3>
+                        <p>Customers hire the tradesperson whose work they can see. Snap a photo when a job is done, add a line about what you did, and it appears on your site under “Recent work”.</p>
+                        <ul class="p-mini">
+                            <li>Upload straight from your phone</li>
+                            <li>Title and description in each language</li>
+                            <li>Newest work shown first, with the date</li>
+                            <li>Hide a job at any time with one switch</li>
+                        </ul>
+                    </article>
+
+                    <article class="p-show-card">
+                        <div class="p-show-visual" aria-hidden="true">
+                            <div class="p-area">
+                                <span class="p-area-label">Service area</span>
+                                <div class="p-area-input">Jávea, Dénia, Moraira<span class="p-caret"></span></div>
+                                <div class="p-area-tags">
+                                    <span>Jávea</span><span>Dénia</span><span>Moraira</span><span class="p-area-new">+ Benitachell</span>
+                                </div>
+                                <div class="p-area-out">
+                                    <small>Updated on your site</small>
+                                    <span>Hero</span><span>Contact</span><span>Footer</span><span>AI data</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h3>Manage your work area with ease</h3>
+                        <p>Started working in a new town? Update your service area in one field and your whole site follows: the homepage, the contact details and the structured data Google and AI assistants read.</p>
+                        <ul class="p-mini">
+                            <li>One field, updated everywhere</li>
+                            <li>Show up for searches in the towns you serve</li>
+                            <li>AI assistants know exactly where you work</li>
+                            <li>Services, phone and WhatsApp editable too</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
         {# ── Features ─────────────────────────────────────────── #}
-        <section class="p-section p-section-alt">
+        <section class="p-section">
             <div class="p-container">
                 <div class="p-head">
                     <p class="p-eyebrow">The website</p>
@@ -250,9 +308,9 @@
                         <p>Click-to-call, a WhatsApp button and a contact form. Enquiries go straight to your inbox and are kept in your admin.</p>
                     </article>
                     <article>
-                        <div class="p-icon">🛠️</div>
-                        <h3>Show off your work</h3>
-                        <p>List your services and add photos of finished projects yourself, from your phone, in minutes.</p>
+                        <div class="p-icon">🔒</div>
+                        <h3>We keep it running</h3>
+                        <p>Hosting, security updates and daily backups are handled for you. You never have to think about it.</p>
                     </article>
                     <article>
                         <div class="p-icon">⚖️</div>
@@ -274,7 +332,7 @@
         </section>
 
         {# ── Included Google setup + SEO ──────────────────────── #}
-        <section id="included" class="p-section">
+        <section id="included" class="p-section p-section-alt">
             <div class="p-container">
                 <div class="p-head">
                     <p class="p-eyebrow">Done for you</p>
@@ -334,7 +392,8 @@
                         <li>Contact form, WhatsApp &amp; click-to-call</li>
                         <li>Legal pages for Spain</li>
                         <li>Hosting, HTTPS, backups &amp; updates</li>
-                        <li>Simple admin to edit your content</li>
+                        <li><strong>Project showcase</strong> you update yourself</li>
+                        <li><strong>Work area</strong> you manage in one place</li>
                     </ul>
                     <a class="p-btn p-btn-primary p-btn-block" href="mailto:{{ contact_email }}?subject={{ ('I want a ' ~ brand ~ ' website')|url_encode }}">Get started</a>
                     {% if contact_whatsapp %}
