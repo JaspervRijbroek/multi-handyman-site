@@ -51,3 +51,6 @@ legal:
     cookies:
         title: Cookies
         text: Deze website gebruikt geen tracking- of advertentiecookies. Alleen bij gebruik van het contactformulier wordt een technische sessiecookie geplaatst, ter bescherming tegen misbruik. Bezoekersstatistieken worden, als ze aanstaan, anoniem en zonder cookies verzameld.
+
+offline:
+    message: 'Deze website is tijdelijk niet beschikbaar. U kunt ons nog steeds direct bereiken:'

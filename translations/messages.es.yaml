@@ -51,3 +51,6 @@ legal:
     cookies:
         title: Cookies
         text: Este sitio web no utiliza cookies de seguimiento ni de publicidad. Solo se establece una cookie técnica de sesión al usar el formulario de contacto, para protegerlo contra abusos. Las estadísticas de visitas, si están activadas, se recogen de forma anónima y sin cookies.
+
+offline:
+    message: 'Este sitio web no está disponible temporalmente. Puede contactarnos directamente:'

@@ -1,0 +1,4 @@
+framework:
+    router:
+        # Absolute URLs generated outside a request (the daily billing command, emails)
+        default_uri: 'https://%env(PLATFORM_HOST)%'

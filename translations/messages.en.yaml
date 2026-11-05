@@ -51,3 +51,6 @@ legal:
     cookies:
         title: Cookies
         text: This website uses no tracking or advertising cookies. A technical session cookie is only set when you use the contact form, to protect it against abuse. Visitor statistics, if enabled, are collected anonymously without cookies.
+
+offline:
+    message: 'This website is temporarily unavailable. You can still reach us directly:'

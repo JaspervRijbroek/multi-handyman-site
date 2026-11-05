@@ -11,15 +11,17 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Twig\Environment;
 
 /**
  * Decides, per request, which tenant is active.
  *
  * PLATFORM_HOST          → admin, login and the platform landing page (no tenant from the URL)
- * any known client host  → that client's website
+ * any known client host  → that client's website ("temporarily offline" if suspended for non-payment)
  * anything else          → 404
  */
 final readonly class TenantRequestListener
@@ -30,6 +32,7 @@ final readonly class TenantRequestListener
         private TenantContext $tenantContext,
         private DomainRepository $domains,
         private Security $security,
+        private Environment $twig,
         #[Autowire(env: 'PLATFORM_HOST')]
         string $platformHost,
     ) {
@@ -60,9 +63,21 @@ final readonly class TenantRequestListener
             throw new NotFoundHttpException(\sprintf('No site is configured for "%s".', $host));
         }
 
-        // The admin only lives on the platform host
-        if (preg_match('#^/(admin|login|logout)(/|$)#', $path)) {
+        // The admin and payment pages only live on the platform host
+        if (preg_match('#^/(admin|login|logout|billing)(/|$)#', $path)) {
             throw new NotFoundHttpException();
+        }
+
+        // Taken offline for non-payment. 503 tells search engines to come back later
+        // instead of dropping the site from their index.
+        if ($tenant->isSuspended()) {
+            $event->setResponse(new Response(
+                $this->twig->render('site/offline.html.twig', ['tenant' => $tenant]),
+                Response::HTTP_SERVICE_UNAVAILABLE,
+                ['Retry-After' => '86400', 'Cache-Control' => 'no-store'],
+            ));
+
+            return;
         }
 
         // One canonical hostname per site (e.g. www.example.com → example.com)

@@ -1,0 +1,15 @@
+{# Choose how to authorise automatic payments. Needs: tenant #}
+<div class="b-methods">
+    <form method="post" action="{{ path('billing_setup', {token: tenant.billingToken}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('billing-' ~ tenant.id) }}">
+        <input type="hidden" name="method" value="card">
+        <button class="b-btn" type="submit">Use a card</button>
+        <small>We only verify the card, €0.00 is charged.</small>
+    </form>
+    <form method="post" action="{{ path('billing_setup', {token: tenant.billingToken}) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('billing-' ~ tenant.id) }}">
+        <input type="hidden" name="method" value="bank">
+        <button class="b-btn b-btn-ghost" type="submit">Use my bank account</button>
+        <small>A €0.01 payment links your account for direct debit.</small>
+    </form>
+</div>

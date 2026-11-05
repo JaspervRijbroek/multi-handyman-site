@@ -1,0 +1,87 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Billing{% endblock %}
+
+{% block main %}
+    {% if outstanding is not empty %}
+        <div class="alert alert-danger">
+            {% if tenant.suspended %}
+                <strong>Your website is offline</strong> because of an open payment. It comes back as soon as you pay.
+            {% else %}
+                <strong>Open payment.</strong> The automatic payment did not come through. Please pay to keep your website online.
+            {% endif %}
+        </div>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Open payment</h2>
+                <table class="table">
+                    {% for charge in outstanding %}
+                        <tr>
+                            <td>{{ charge.periodLabel }}{% if charge.failureReason %} <span class="text-muted small">· {{ charge.failureReason }}</span>{% endif %}</td>
+                            <td class="text-end">{{ charge.totalAmount|money(charge.currency) }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr class="fw-bold"><td>Total</td><td class="text-end">{{ total|money(outstanding[0].currency) }}</td></tr>
+                </table>
+                <form method="post" action="{{ path('billing_pay_outstanding', {token: tenant.billingToken}) }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('billing-' ~ tenant.id) }}">
+                    <button class="btn btn-primary" type="submit">Pay {{ total|money(outstanding[0].currency) }} now</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5">Payment method</h2>
+            {% if tenant.billingExempt %}
+                <p class="mb-0">Your website is free of charge.</p>
+            {% else %}
+                {% if tenant.hasMandate %}
+                    <p>Paid automatically with <strong>{{ tenant.mandateDescription }}</strong> on the first workday of every month.</p>
+                {% else %}
+                    <p>
+                        {% if tenant.billingStartsOn > date() %}
+                            Your website is free until <strong>{{ tenant.billingStartsOn|date('l j F Y') }}</strong>.
+                        {% endif %}
+                        Set up a payment method so your website is paid automatically on the first workday of every month.
+                    </p>
+                {% endif %}
+                <div class="d-flex flex-wrap gap-2">
+                    {% for method, label in {card: 'Use a card', bank: 'Use my bank account'} %}
+                        <form method="post" action="{{ path('billing_setup', {token: tenant.billingToken}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('billing-' ~ tenant.id) }}">
+                            <input type="hidden" name="method" value="{{ method }}">
+                            <button class="btn {{ tenant.hasMandate or loop.index > 1 ? 'btn-secondary' : 'btn-primary' }}" type="submit">
+                                {{ tenant.hasMandate ? 'Switch to ' ~ (method == 'card' ? 'another card' : 'a bank account') : label }}
+                            </button>
+                        </form>
+                    {% endfor %}
+                </div>
+                <p class="text-muted small mt-2 mb-0">A card is only verified (€0.00). A bank account is linked with a €0.01 payment. Payments are handled by Mollie.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if history is not empty %}
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5">Payments</h2>
+                <table class="table mb-0">
+                    <thead><tr><th>Month</th><th class="text-end">Amount</th><th>Status</th></tr></thead>
+                    {% for charge in history %}
+                        <tr>
+                            <td>{{ charge.periodLabel }}</td>
+                            <td class="text-end">{{ charge.totalAmount|money(charge.currency) }}</td>
+                            <td>
+                                {% if charge.paid %}<span class="badge badge-success">Paid {{ charge.paidAt ? charge.paidAt|date('j M Y') }}</span>
+                                {% elseif charge.failed %}<span class="badge badge-danger">Open</span>
+                                {% else %}<span class="badge badge-secondary">Processing</span>{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

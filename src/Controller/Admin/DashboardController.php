@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Repository\ChargeRepository;
 use App\Repository\EnquiryRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ServiceRepository;
@@ -26,6 +27,7 @@ class DashboardController extends AbstractDashboardController
         private readonly ProjectRepository $projects,
         private readonly ServiceRepository $services,
         private readonly TenantRepository $tenants,
+        private readonly ChargeRepository $charges,
     ) {
     }
 
@@ -40,6 +42,7 @@ class DashboardController extends AbstractDashboardController
 
         if (!$this->tenantContext->has()) {
             $stats[] = ['label' => 'Active clients', 'value' => $this->tenants->count(['active' => true])];
+            $stats[] = ['label' => 'Open payments', 'value' => \count($this->charges->findAllOutstanding())];
         }
 
         $tenant = $this->tenantContext->get();
@@ -61,6 +64,7 @@ class DashboardController extends AbstractDashboardController
 
         return $this->render('admin/dashboard.html.twig', [
             'tenant' => $tenant,
+            'outstanding' => $tenant ? $this->charges->findOutstanding($tenant) : [],
             'missing_settings' => $missing,
             'stats' => $stats,
             'site_url' => $primaryDomain ? 'https://'.$primaryDomain->getHostname() : null,
@@ -106,11 +110,15 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkTo(TenantCrudController::class, 'Settings', 'fa fa-gear')
                 ->setAction(Action::EDIT)
                 ->setEntityId($tenant->getId());
+            if (!$tenant->isBillingExempt()) {
+                yield MenuItem::linkToRoute('Billing', 'fa fa-credit-card', 'admin_billing_index');
+            }
         }
 
         if ($this->isGranted(User::ROLE_SUPER_ADMIN)) {
             yield MenuItem::section('Platform');
             yield MenuItem::linkTo(TenantCrudController::class, 'Clients', 'fa fa-building');
+            yield MenuItem::linkTo(ChargeCrudController::class, 'Payments', 'fa fa-credit-card');
             yield MenuItem::linkTo(DomainCrudController::class, 'Domains', 'fa fa-globe');
             yield MenuItem::linkTo(UserCrudController::class, 'Logins', 'fa fa-users');
         }

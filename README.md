@@ -9,6 +9,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
 - Spanish legal notice / privacy page generated from the client's details
 - Cookieless analytics (Plausible) and Search Console verification per client
+- Monthly billing through Mollie with automatic reminders, see [Billing](#billing)
 
 ## Getting started
 
@@ -62,6 +63,42 @@ Adding a new kind of client content? Implement `TenantOwnedInterface` (use
 Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 `TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig.
 
+## Billing
+
+Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
+charged automatically on the **first workday of each month** (Mon–Fri, skipping
+1 Jan, 1 May and 1 Nov).
+
+```
+Client added ─► free until the first workday of next month (Tenant::billingStartsOn)
+             └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
+
+First workday ─► automatic payment with the mandate
+                  ├─ paid    → done
+                  └─ failed  → reminder 1 with payment link (right away)
+                               + 2 weeks  → reminder 2
+                               + 1 month  → final reminder: pay within a week
+                               + 1 week   → site offline (503 page, admin stays available)
+                               paid via link → site back online, new mandate if needed
+```
+
+- `app:billing:run` does all the scheduled work. Run it **daily** from cron; it is
+  safe to run more than once a day.
+  `0 9 * * * cd /var/www/multi-handyman-site && php bin/console app:billing:run --no-interaction`
+- Mollie reports payment changes to `POST /billing/webhook` (production only, set
+  `BILLING_WEBHOOKS=1`). The return page and the daily run also check open
+  payments, so a missed webhook is never a problem.
+- The payment link (`/billing/{token}`) works without logging in. Clients also
+  get a **Billing** page in their admin; super admins get **Payments** (with *Mark as
+  paid* for bank transfers), a **Billing** tab per client and a *Send payment
+  setup email* action. The setup email also goes out when you create a client.
+- Free accounts: tick *Free account* in the client's Billing tab. Per-client prices
+  override `BILLING_MONTHLY_PRICE`.
+- Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
+  then try a later date with `ddev console app:billing:run --date=2026-12-01`.
+
+Mollie does not issue invoices (facturas). Send those from your accounting tool.
+
 ## Useful commands
 
 ```bash
@@ -69,6 +106,7 @@ ddev console doctrine:migrations:diff     # after changing entities
 ddev console doctrine:migrations:migrate
 ddev console app:user:create you@yourdomain.com --super-admin
 ddev console app:user:create client@example.com --tenant=jans-klusbedrijf
+ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ```
 
 ## Production (Hetzner)
@@ -79,7 +117,9 @@ Rough outline for a small Ubuntu VPS:
 2. Deploy from Git, then `composer install --no-dev --optimize-autoloader`,
    `php bin/console doctrine:migrations:migrate`, `php bin/console cache:clear`.
 3. Create `.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
-   `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`.
+   `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
+   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`. Set the server timezone to
+   `Europe/Madrid` and add the daily `app:billing:run` cron job (see [Billing](#billing)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
 5. Back up the database and `public/uploads/` daily to somewhere off the server
