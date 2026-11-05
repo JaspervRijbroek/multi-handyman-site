@@ -9,8 +9,9 @@ use App\Entity\SearchConsoleStatus;
 use App\Entity\Signup;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Google\Geocoder;
 use App\Google\GoogleApiException;
+use App\Map\Geocoder;
+use App\Map\GeocodingException;
 use App\Google\SearchConsole;
 use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  *  - domain(s): their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE
  *  - client login (with the password they chose, or a "set your password" link)
  *  - welcome email
- *  - Google: map position of the address and the Search Console property
+ *  - map position of the address (OpenStreetMap) and the Google Search Console property
  *
  * Used by the admin (Sign-ups → Approve, Clients → Connect Google) and the
  * console (app:client:onboard, app:client:approve, app:google:connect).
@@ -150,20 +151,19 @@ final readonly class ClientOnboarding
 
             return;
         }
-        if (!$this->geocoder->isConfigured()) {
-            $result->add(OnboardingResult::SKIPPED, 'Map', 'GOOGLE_MAPS_API_KEY not set: the map is placed by address text.');
+        try {
+            $found = $this->geocoder->geocode($tenant);
+        } catch (GeocodingException $e) {
+            $result->add(OnboardingResult::ERROR, 'Map', $e->getMessage().' Retried by app:google:connect --all.');
 
             return;
         }
 
-        try {
-            $found = $this->geocoder->geocode($tenant);
-            $found
-                ? $result->add(OnboardingResult::OK, 'Map', 'Located at '.$found)
-                : $result->add(OnboardingResult::WARNING, 'Map', 'Google could not find "'.$tenant->getAddressLine().'": check the address.');
-        } catch (GoogleApiException $e) {
-            $result->add(OnboardingResult::ERROR, 'Map', $e->getMessage());
-        }
+        match (true) {
+            null === $found => $result->add(OnboardingResult::WARNING, 'Map', 'OpenStreetMap could not find "'.$tenant->getAddressLine().'": check the address. The website shows no map until then.'),
+            $found->exact || !$tenant->isShowStreetAddress() => $result->add(OnboardingResult::OK, 'Map', 'Located on OpenStreetMap: '.$found->placeName),
+            default => $result->add(OnboardingResult::WARNING, 'Map', 'Street not found on OpenStreetMap, the map shows the town: '.$found->placeName),
+        };
     }
 
     private function connectSearchConsole(Tenant $tenant, OnboardingResult $result): void

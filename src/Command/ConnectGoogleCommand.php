@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:google:connect',
-    description: 'Connect client sites to Google Maps and Search Console (retries what is not done yet)',
+    description: 'Look up map positions (OpenStreetMap) and connect Google Search Console (retries what is not done yet)',
 )]
 final class ConnectGoogleCommand extends Command
 {

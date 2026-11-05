@@ -200,9 +200,10 @@ class TenantCrudController extends AbstractCrudController
                 ->setHelp('Only needed to verify the site for another Google account by hand: the content value of its google-site-verification meta tag.')
                 ->hideOnIndex();
 
-            yield FormField::addFieldset('Google Maps');
+            yield FormField::addFieldset('Map & Google Business Profile')
+                ->setHelp('The map on the website uses OpenStreetMap; its position is looked up from the address automatically.');
             yield UrlField::new('googleBusinessUrl', 'Google Business Profile link')
-                ->setHelp('Share link of the Maps listing (business.google.com). Used for the "Google Maps" button and for Google to connect the site to the listing.')
+                ->setHelp('Share link of the Maps listing (business.google.com). Shown as a "See us on Google Maps" link, and tells Google the site and listing belong together.')
                 ->hideOnIndex();
             yield NumberField::new('latitude')->setNumDecimals(6)->onlyOnDetail();
             yield NumberField::new('longitude')->setNumDecimals(6)->onlyOnDetail();

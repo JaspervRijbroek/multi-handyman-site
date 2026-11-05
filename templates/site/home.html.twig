@@ -18,7 +18,7 @@
         'email': tenant.email,
         'address': address,
         'geo': tenant.hasCoordinates and tenant.showStreetAddress ? {'@type': 'GeoCoordinates', 'latitude': tenant.latitude, 'longitude': tenant.longitude} : null,
-        'hasMap': tenant.googleMapsUrl,
+        'hasMap': tenant.mapUrl,
         'sameAs': tenant.googleBusinessUrl ? [tenant.googleBusinessUrl] : null,
         'areaServed': tenant.serviceArea,
         'logo': tenant.logoName ? absolute_url(asset('uploads/logos/' ~ tenant.logoName)) : null,
@@ -109,24 +109,28 @@
                     {% if tenant.whatsappDigits %}<li><a href="https://wa.me/{{ tenant.whatsappDigits }}" target="_blank" rel="noopener">WhatsApp</a></li>{% endif %}
                     {% if tenant.publicAddressLine %}<li>{{ tenant.publicAddressLine }}</li>{% endif %}
                     {% if tenant.serviceArea %}<li>{{ tenant.serviceArea }}</li>{% endif %}
-                    {% if tenant.googleMapsUrl %}<li><a href="{{ tenant.googleMapsUrl }}" target="_blank" rel="noopener">{{ 'map.open'|trans }}</a></li>{% endif %}
+                    {% if tenant.googleBusinessUrl %}<li><a href="{{ tenant.googleBusinessUrl }}" target="_blank" rel="noopener">{{ 'map.google'|trans }}</a></li>{% endif %}
                 </ul>
 
-                {% if tenant.hasAddress and tenant.googleMapsEmbedUrl %}
-                    {# Google Maps sets cookies: only load it after a click, so no consent banner is needed #}
+                {% if tenant.mapEmbedUrl %}
+                    {# OpenStreetMap is only loaded after a click: until then no visitor data goes to a third party #}
                     <div class="map">
                         <button type="button" class="btn btn-secondary map-load"
-                                data-src="{{ tenant.googleMapsEmbedUrl }}"
+                                data-src="{{ tenant.mapEmbedUrl }}"
                                 data-title="{{ 'map.iframe'|trans({'%name%': tenant.name}) }}">{{ 'map.show'|trans }}</button>
                         <p class="map-note">{{ 'map.notice'|trans }}</p>
                     </div>
+                    <p class="map-credit">
+                        <a href="{{ tenant.mapUrl }}" target="_blank" rel="noopener">{{ 'map.open'|trans }}</a>
+                        · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>
+                    </p>
                     <script>
                         document.querySelector('.map-load').addEventListener('click', function () {
                             var frame = document.createElement('iframe');
                             frame.src = this.dataset.src;
                             frame.title = this.dataset.title;
                             frame.loading = 'lazy';
-                            frame.referrerPolicy = 'no-referrer-when-downgrade';
+                            frame.referrerPolicy = 'strict-origin-when-cross-origin';
                             frame.allowFullscreen = true;
                             this.parentNode.replaceChildren(frame);
                         });

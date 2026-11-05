@@ -92,7 +92,7 @@ class Tenant
     #[ORM\Column]
     private bool $showStreetAddress = true;
 
-    /** Filled automatically from the address (Google Geocoding) */
+    /** Filled automatically from the address (OpenStreetMap Nominatim) */
     #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
@@ -387,7 +387,11 @@ class Tenant
 
     public function setShowStreetAddress(bool $showStreetAddress): static
     {
-        $this->showStreetAddress = $showStreetAddress;
+        if ($showStreetAddress !== $this->showStreetAddress) {
+            $this->showStreetAddress = $showStreetAddress;
+            // Hidden street: the map position is looked up again at town level, so it never points at a home
+            $this->clearCoordinates();
+        }
 
         return $this;
     }
@@ -441,41 +445,46 @@ class Tenant
         return $this;
     }
 
-    /** What to search for on Google Maps: the business listing if known, else the (public) address. */
-    public function getMapQuery(): string
+    /** Zoom level for the map: the street, or the whole town when the street is hidden */
+    public function getMapZoom(): int
     {
-        if ($this->showStreetAddress && $this->streetAddress) {
-            return $this->name.', '.$this->getAddressLine();
-        }
-
-        return $this->getPublicAddressLine() ?: (string) $this->serviceArea;
+        return $this->showStreetAddress && $this->streetAddress ? 17 : 13;
     }
 
-    /** Opens Google Maps (app or website), see https://developers.google.com/maps/documentation/urls */
-    public function getGoogleMapsUrl(): ?string
+    /** The location on openstreetmap.org (also opens in map apps on phones) */
+    public function getMapUrl(): ?string
     {
-        if ($this->googleBusinessUrl) {
-            return $this->googleBusinessUrl;
+        if (!$this->hasCoordinates()) {
+            return null;
         }
 
-        $query = $this->getMapQuery();
-
-        return '' === $query ? null : 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($query);
+        return \sprintf(
+            'https://www.openstreetmap.org/?mlat=%2$.6F&mlon=%3$.6F#map=%1$d/%2$.6F/%3$.6F',
+            $this->getMapZoom(),
+            $this->latitude,
+            $this->longitude,
+        );
     }
 
-    /** Embeddable map, loaded only after the visitor clicks (Google sets cookies) */
-    public function getGoogleMapsEmbedUrl(): ?string
+    /** Embeddable OpenStreetMap with a marker, see https://wiki.openstreetmap.org/wiki/Export */
+    public function getMapEmbedUrl(): ?string
     {
-        if ($this->hasCoordinates() && $this->showStreetAddress) {
-            $query = \sprintf('%F,%F', $this->latitude, $this->longitude);
-        } else {
-            $query = $this->getPublicAddressLine() ?: (string) $this->serviceArea;
+        if (!$this->hasCoordinates()) {
+            return null;
         }
 
-        // A town-only map is zoomed out, so it shows the area rather than a house
-        $zoom = $this->showStreetAddress && $this->streetAddress ? 15 : 12;
+        // Half the visible area in degrees: a few streets, or the whole town
+        [$dLat, $dLon] = 17 === $this->getMapZoom() ? [0.0025, 0.004] : [0.03, 0.05];
 
-        return '' === $query ? null : \sprintf('https://maps.google.com/maps?q=%s&z=%d&output=embed', rawurlencode($query), $zoom);
+        return \sprintf(
+            'https://www.openstreetmap.org/export/embed.html?bbox=%.6F%%2C%.6F%%2C%.6F%%2C%.6F&layer=mapnik&marker=%.6F%%2C%.6F',
+            $this->longitude - $dLon,
+            $this->latitude - $dLat,
+            $this->longitude + $dLon,
+            $this->latitude + $dLat,
+            $this->latitude,
+            $this->longitude,
+        );
     }
 
     private function changeAddress(?string &$field, ?string $value): void

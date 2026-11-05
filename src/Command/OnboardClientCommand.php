@@ -62,7 +62,8 @@ final class OnboardClientCommand extends Command
         $this->setHelp(<<<'HELP'
             Asks for anything you did not pass as an option, then creates the client
             right away (no approval step), emails the client a link to choose a
-            password, and connects Google Maps and Search Console.
+            password, puts the address on the map (OpenStreetMap) and connects Google
+            Search Console.
 
             Interactive:
               <info>php bin/console app:client:onboard</info>

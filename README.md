@@ -75,7 +75,7 @@ You add a client yourself ──────────────────
   ✔ Domain: their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE if they have none
   ✔ Client login: the password they chose on /register, or a 7-day "set your password" link
   ✔ Welcome email with the website and login links
-  ✔ Google Maps: address → map position (Geocoding API), click-to-load map on the site
+  ✔ Map: address → coordinates with OpenStreetMap (Nominatim, no key), map on the site
   ✔ Google Search Console: verification tag, verification, property and sitemap
 ```
 
@@ -86,7 +86,7 @@ badge) and on the dashboard, and every super admin gets an email.
 | Where | How |
 | --- | --- |
 | Admin | **Sign-ups** → *Approve* (or *Reject*). **Clients** → *Add client* for clients you sign up yourself: saving the form approves it straight away. |
-| Admin | **Clients** → *Connect Google* re-runs the Google steps for one client. |
+| Admin | **Clients** → *Connect Google* re-runs the map lookup and Search Console steps for one client. |
 | Console | `app:client:approve` lists pending sign-ups and lets you pick one; `app:client:approve 12` / `--reject` |
 | Console | `app:client:onboard` asks for the details and onboards right away; pass them as options for scripts (`--help`) |
 | Console | `app:google:connect <slug>` or `--all` retries everything that is not connected yet |
@@ -110,27 +110,30 @@ video with the owner. Create or claim it at <https://business.google.com/create>
 client, then paste its share link under **Clients → Look & Google**. The website links to it
 and tells Google the site and listing belong together (`sameAs` in the structured data).
 
-**Privacy.** Google Maps sets cookies, so the map is only loaded after the visitor clicks
-*Show map*; the sites still need no cookie banner. Clients who work from home can switch
-off *Show the street on the website*: the site, map and structured data then only show
-their town.
+**Map.** The address is turned into coordinates with [Nominatim](https://nominatim.org/),
+OpenStreetMap's free geocoder (no API key; their [usage policy](https://operations.osmfoundation.org/policies/nominatim/)
+allows this volume, and requests are limited to one per second). The site shows an
+OpenStreetMap map with a marker, loaded only after the visitor clicks *Show map*, so no
+visitor data goes to a third party before that and no cookie banner is needed. If the
+street is not on OpenStreetMap, the marker goes on the town and the admin gets a warning.
+Clients who work from home can switch off *Show the street on the website*: the address,
+map and structured data then only show their town, and the map position is looked up at
+town level, so it never points at their home.
 
 ### Google setup (once)
 
-Everything works without this; the Google steps are then skipped.
+Everything works without this; the Search Console step is then skipped. (The map needs
+no setup: it uses OpenStreetMap.)
 
 1. In the [Google Cloud console](https://console.cloud.google.com/), create a project and
-   enable the **Google Site Verification API**, the **Google Search Console API** and the
-   **Geocoding API**.
+   enable the **Google Site Verification API** and the **Google Search Console API**.
 2. **Search Console:** *IAM & Admin → Service accounts* → create a service account →
    *Keys* → *Add key* → JSON. Store the file on the server outside Git (e.g.
    `var/google-service-account.json`) and set
    `GOOGLE_SERVICE_ACCOUNT_KEY=var/google-service-account.json`. The service account
    becomes owner of every client property; set `GOOGLE_OWNER_EMAILS` to your own Google
    account(s) so the sites also appear in *your* Search Console.
-3. **Maps:** *APIs & Services → Credentials* → create an API key, restrict it to the
-   Geocoding API (and to the server's IP address), set `GOOGLE_MAPS_API_KEY`.
-4. Optional: `CLIENT_SUBDOMAIN_BASE=sites.yourplatform.com` plus a wildcard DNS record
+3. Optional: `CLIENT_SUBDOMAIN_BASE=sites.yourplatform.com` plus a wildcard DNS record
    `*.sites.yourplatform.com → server`, so clients without a domain are online immediately.
 
 ## Useful commands

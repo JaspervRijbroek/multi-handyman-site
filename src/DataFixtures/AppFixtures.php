@@ -40,6 +40,7 @@ final class AppFixtures extends Fixture
             ->setStreetAddress('Calle Ejemplo 1')
             ->setPostalCode('46900')
             ->setCity('Torrent')
+            ->setCoordinates(39.4371, -0.4655)
             ->setTagline([
                 'en' => 'Reliable Dutch handyman in Valencia',
                 'es' => 'Manitas holandés de confianza en Valencia',
@@ -84,6 +85,8 @@ final class AppFixtures extends Fixture
             ->setPostalCode('03730')
             ->setCity('Jávea')
             ->setShowStreetAddress(false)
+            // Town centre: the street is hidden, so the map only shows the town
+            ->setCoordinates(38.7893, 0.1664)
             ->setTagline([
                 'en' => 'Your handyman on the Costa Blanca',
                 'es' => 'Su manitas en la Costa Blanca',

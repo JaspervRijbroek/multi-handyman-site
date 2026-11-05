@@ -32,7 +32,7 @@
 
             <h2>{{ 'legal.cookies.title'|trans }}</h2>
             <p>{{ 'legal.cookies.text'|trans }}</p>
-            {% if tenant.hasAddress %}<p>{{ 'legal.cookies.map'|trans }}</p>{% endif %}
+            {% if tenant.hasCoordinates %}<p>{{ 'legal.cookies.map'|trans }}</p>{% endif %}
         </div>
     </section>
 {% endblock %}
