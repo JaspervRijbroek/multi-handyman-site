@@ -16,6 +16,16 @@
         {% endfor %}
     </div>
 
+    {% if tenant and missing_settings is not empty %}
+        <div class="alert alert-warning d-flex flex-wrap align-items-center gap-3 mt-3">
+            <div class="flex-grow-1">
+                <strong>Complete your settings.</strong>
+                Add {{ missing_settings|join(', ', ' and ') }} so customers, Google and AI assistants can find you.
+            </div>
+            <a class="btn btn-sm btn-warning" href="{{ ea_url().setController('App\\Controller\\Admin\\TenantCrudController').setAction('edit').setEntityId(tenant.id) }}">Open settings</a>
+        </div>
+    {% endif %}
+
     {% if tenant %}
         <div class="card mt-3">
             <div class="card-body">

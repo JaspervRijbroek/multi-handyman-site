@@ -21,6 +21,9 @@
     <meta property="og:title" content="{{ tenant.name }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url(route, route_params) }}">
+    {% if tenant.logoName %}
+        <meta property="og:image" content="{{ absolute_url(asset('uploads/logos/' ~ tenant.logoName)) }}">
+    {% endif %}
 
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
@@ -34,7 +37,12 @@
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="{{ path('site_home', {_locale: locale}) }}">{{ tenant.name }}</a>
+            <a class="brand" href="{{ path('site_home', {_locale: locale}) }}">
+                {%- if tenant.logoName -%}
+                    <img src="{{ asset('uploads/logos/' ~ tenant.logoName) }}" alt="" height="40">
+                {%- endif -%}
+                <span>{{ tenant.name }}</span>
+            </a>
             <nav class="nav" aria-label="Main">
                 <a href="{{ path('site_home', {_locale: locale}) }}#services">{{ 'nav.services'|trans }}</a>
                 <a href="{{ path('site_home', {_locale: locale}) }}#projects">{{ 'nav.projects'|trans }}</a>
