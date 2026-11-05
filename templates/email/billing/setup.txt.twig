@@ -1,0 +1,13 @@
+Hello {{ tenant.name }},
+
+Welcome to {{ brand }}! Your website is free until {{ tenant.billingStartsOn|date('l j F Y') }}.
+From then on it is charged automatically on the first workday of every month.
+
+To make that work, please set up a payment method once. It takes a minute:
+
+{{ pay_url }}
+
+You can choose a card (we only verify it, nothing is charged) or your bank
+account (a one-cent payment links it for direct debit).
+
+{% include 'email/billing/_footer.txt.twig' %}

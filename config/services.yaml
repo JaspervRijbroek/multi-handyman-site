@@ -1,4 +1,11 @@
 parameters:
+    # Defaults, so an existing .env without the billing variables keeps working
+    env(MOLLIE_API_KEY): ''
+    env(BILLING_MONTHLY_PRICE): '5900'
+    env(BILLING_VAT_RATE): '21'
+    env(BILLING_CURRENCY): 'EUR'
+    env(BILLING_BRAND): 'Handy Sites'
+    env(BILLING_WEBHOOKS): '0'
 
 services:
     _defaults:

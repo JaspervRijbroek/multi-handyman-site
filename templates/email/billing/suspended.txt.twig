@@ -1,0 +1,15 @@
+Hello {{ tenant.name }},
+
+Because we did not receive payment for your website, it has been taken offline.
+Visitors now see a "temporarily unavailable" page. Your content is safe.
+
+Outstanding:
+{% for charge in charges %}
+  {{ charge.periodLabel }}: {{ charge.totalAmount|money(charge.currency) }}
+{% endfor %}
+
+As soon as you pay, your website is back online automatically:
+
+{{ pay_url }}
+
+{% include 'email/billing/_footer.txt.twig' %}

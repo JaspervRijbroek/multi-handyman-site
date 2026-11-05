@@ -21,6 +21,7 @@ final class SiteExtension extends AbstractExtension
     {
         return [
             new TwigFilter('localized', $this->localized(...)),
+            new TwigFilter('money', self::money(...)),
         ];
     }
 
@@ -42,5 +43,15 @@ final class SiteExtension extends AbstractExtension
         $fallback = $this->tenantContext->get()?->getDefaultLocale();
 
         return (string) ($values[$locale] ?? ($fallback ? $values[$fallback] ?? null : null) ?? reset($values));
+    }
+
+    /**
+     * Formats an amount in cents. Usage: {{ charge.totalAmount|money(charge.currency) }} → €71.39
+     */
+    public static function money(int $cents, string $currency = 'EUR'): string
+    {
+        $amount = number_format($cents / 100, 2, '.', ',');
+
+        return 'EUR' === $currency ? '€'.$amount : $currency.' '.$amount;
     }
 }
