@@ -60,8 +60,8 @@ final readonly class TenantRequestListener
             throw new NotFoundHttpException(\sprintf('No site is configured for "%s".', $host));
         }
 
-        // The admin only lives on the platform host
-        if (preg_match('#^/(admin|login|logout)(/|$)#', $path)) {
+        // The admin, sign-up and password pages only live on the platform host
+        if (preg_match('#^/(admin|login|logout|register|set-password)(/|$)#', $path)) {
             throw new NotFoundHttpException();
         }
 

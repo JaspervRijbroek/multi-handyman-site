@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\EnquiryRepository;
 use App\Repository\ProjectRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\SignupRepository;
 use App\Repository\TenantRepository;
 use App\Tenant\TenantContext;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -26,6 +27,7 @@ class DashboardController extends AbstractDashboardController
         private readonly ProjectRepository $projects,
         private readonly ServiceRepository $services,
         private readonly TenantRepository $tenants,
+        private readonly SignupRepository $signups,
     ) {
     }
 
@@ -51,6 +53,9 @@ class DashboardController extends AbstractDashboardController
             if (!$tenant->getLogoName()) {
                 $missing[] = 'your logo';
             }
+            if (!$tenant->hasAddress()) {
+                $missing[] = 'your address (for the map)';
+            }
             if (!$tenant->getServiceArea()) {
                 $missing[] = 'the towns you work in';
             }
@@ -61,6 +66,7 @@ class DashboardController extends AbstractDashboardController
 
         return $this->render('admin/dashboard.html.twig', [
             'tenant' => $tenant,
+            'pending_signups' => $this->isGranted(User::ROLE_SUPER_ADMIN) ? $this->signups->countPending() : 0,
             'missing_settings' => $missing,
             'stats' => $stats,
             'site_url' => $primaryDomain ? 'https://'.$primaryDomain->getHostname() : null,
@@ -110,6 +116,9 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted(User::ROLE_SUPER_ADMIN)) {
             yield MenuItem::section('Platform');
+            $pending = $this->signups->countPending();
+            yield MenuItem::linkTo(SignupCrudController::class, 'Sign-ups', 'fa fa-user-plus')
+                ->setBadge($pending ?: null, 'warning');
             yield MenuItem::linkTo(TenantCrudController::class, 'Clients', 'fa fa-building');
             yield MenuItem::linkTo(DomainCrudController::class, 'Domains', 'fa fa-globe');
             yield MenuItem::linkTo(UserCrudController::class, 'Logins', 'fa fa-users');

@@ -8,7 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{{ tenant.name }}{% if tenant.tagline|localized %} | {{ tenant.tagline|localized }}{% endif %}{% endblock %}</title>
     <meta name="description" content="{% block description %}{{ tenant.intro|localized|slice(0, 155) }}{% endblock %}">
-    {% if tenant.googleSiteVerification %}
+    {# Search Console: the automatic token (onboarding) and an optional manual one #}
+    {% if tenant.searchConsoleToken %}
+        <meta name="google-site-verification" content="{{ tenant.searchConsoleToken }}">
+    {% endif %}
+    {% if tenant.googleSiteVerification and tenant.googleSiteVerification != tenant.searchConsoleToken %}
         <meta name="google-site-verification" content="{{ tenant.googleSiteVerification }}">
     {% endif %}
 
@@ -66,7 +70,7 @@
 
     <footer class="site-footer">
         <div class="container footer-inner">
-            <p>&copy; {{ 'now'|date('Y') }} {{ tenant.name }}{% if tenant.serviceArea %} · {{ tenant.serviceArea }}{% endif %}</p>
+            <p>&copy; {{ 'now'|date('Y') }} {{ tenant.name }}{% if tenant.publicAddressLine %} · {{ tenant.publicAddressLine }}{% endif %}{% if tenant.serviceArea %} · {{ tenant.serviceArea }}{% endif %}</p>
             <p><a href="{{ path('site_legal', {_locale: locale}) }}">{{ 'footer.legal'|trans }}</a></p>
         </div>
     </footer>

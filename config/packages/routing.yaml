@@ -1,0 +1,5 @@
+framework:
+    router:
+        # Used to build absolute URLs outside of a request, e.g. the links in
+        # the welcome email sent by the console onboarding commands
+        default_uri: 'https://%env(PLATFORM_HOST)%'

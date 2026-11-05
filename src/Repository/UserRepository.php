@@ -31,4 +31,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->flush();
     }
+
+    public function findOneByPasswordSetupToken(string $token): ?User
+    {
+        return $this->findOneBy(['passwordSetupTokenHash' => User::hashToken($token)]);
+    }
+
+    /** @return list<User> */
+    public function findSuperAdmins(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.roles LIKE :role')
+            ->setParameter('role', '%"'.User::ROLE_SUPER_ADMIN.'"%')
+            ->getQuery()
+            ->getResult();
+    }
 }

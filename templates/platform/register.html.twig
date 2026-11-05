@@ -1,0 +1,60 @@
+{% extends 'platform/layout.html.twig' %}
+
+{% block title %}Get your website{% endblock %}
+{% block robots %}index, follow{% endblock %}
+
+{% block body %}
+    <p class="p-eyebrow">Sign up</p>
+    <h1>Get your website</h1>
+    <p class="p-text">
+        Tell us about your business. We check your details, build your site and connect it to
+        Google Search and Google Maps. You get an email as soon as it is live, usually within two working days.
+    </p>
+
+    {{ form_start(form, {attr: {class: 'p-form', novalidate: 'novalidate'}}) }}
+        {{ form_errors(form) }}
+
+        <fieldset>
+            <legend>Your business</legend>
+            {{ form_row(form.businessName) }}
+            {{ form_row(form.contactName) }}
+            <div class="p-form-2">
+                {{ form_row(form.phone) }}
+                {{ form_row(form.whatsapp) }}
+            </div>
+            {{ form_row(form.message) }}
+        </fieldset>
+
+        <fieldset>
+            <legend>Address</legend>
+            <p class="p-form-note">Shown on your website and Google Maps. Working from home? You can hide the street later and show only your town.</p>
+            {{ form_row(form.streetAddress) }}
+            <div class="p-form-2">
+                {{ form_row(form.postalCode) }}
+                {{ form_row(form.city) }}
+            </div>
+            {{ form_row(form.country) }}
+            {{ form_row(form.serviceArea) }}
+            {{ form_row(form.taxId) }}
+        </fieldset>
+
+        <fieldset>
+            <legend>Website</legend>
+            {{ form_row(form.domain) }}
+            {{ form_row(form.locales) }}
+            {{ form_row(form.defaultLocale) }}
+        </fieldset>
+
+        <fieldset>
+            <legend>Your login</legend>
+            {{ form_row(form.email) }}
+            {{ form_row(form.plainPassword.first) }}
+            {{ form_row(form.plainPassword.second) }}
+        </fieldset>
+
+        {{ form_row(form.consent) }}
+        {{ form_row(form.website) }}
+
+        <button type="submit" class="p-btn p-btn-primary">Send sign-up</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -9,6 +9,8 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
 - Spanish legal notice / privacy page generated from the client's details
 - Cookieless analytics (Plausible) and Search Console verification per client
+- **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
+  client, domain, login, welcome email, Google Search Console and map are set up automatically
 
 ## Getting started
 
@@ -30,6 +32,7 @@ On the first run, `ddev bootstrap` creates `.env` (from `.env.example`) and
 | Admin (client) | same | `jan@example.com` / `jan` |
 | Client site 1 | https://jans-klusbedrijf.ddev.site | |
 | Client site 2 | https://handyman-javea.ddev.site | |
+| Sign-up form | https://multi-handyman-site.ddev.site/register | |
 | Sent emails | `ddev mailpit` | |
 
 To try another client site locally, add its hostname to `additional_hostnames`
@@ -62,6 +65,74 @@ Adding a new kind of client content? Implement `TenantOwnedInterface` (use
 Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 `TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig.
 
+## Onboarding a new client
+
+```
+Client fills in /register ──► Sign-up (pending) ──► you approve ──► everything below, in one go
+You add a client yourself ──────────────────────────────────────┘   (admin "Add client" or console)
+
+  ✔ Client (Tenant) with name, phone, WhatsApp, address, work area, languages, legal defaults
+  ✔ Domain: their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE if they have none
+  ✔ Client login: the password they chose on /register, or a 7-day "set your password" link
+  ✔ Welcome email with the website and login links
+  ✔ Google Maps: address → map position (Geocoding API), click-to-load map on the site
+  ✔ Google Search Console: verification tag, verification, property and sitemap
+```
+
+Only super admins can create clients. The public form only stores a **sign-up**; nothing
+is created until you approve it. Sign-ups show up under **Platform → Sign-ups** (with a
+badge) and on the dashboard, and every super admin gets an email.
+
+| Where | How |
+| --- | --- |
+| Admin | **Sign-ups** → *Approve* (or *Reject*). **Clients** → *Add client* for clients you sign up yourself: saving the form approves it straight away. |
+| Admin | **Clients** → *Connect Google* re-runs the Google steps for one client. |
+| Console | `app:client:approve` lists pending sign-ups and lets you pick one; `app:client:approve 12` / `--reject` |
+| Console | `app:client:onboard` asks for the details and onboards right away; pass them as options for scripts (`--help`) |
+| Console | `app:google:connect <slug>` or `--all` retries everything that is not connected yet |
+
+Each step reports *done / warning / skipped*, so it is clear what still needs doing. If
+the sign-up cannot be approved as is (domain already used, email already has a login…),
+nothing is saved and you get the reasons; fix the sign-up and approve again.
+
+**Search Console needs the site to be online.** Google checks the verification tag on the
+client's real domain, which only works once their DNS points to the server. Until then
+the status is *Waiting for the site to be online*. Add this to cron and it connects by
+itself as soon as the DNS is in place:
+
+```cron
+17 * * * * cd /var/www/multi-handyman-site && php bin/console app:google:connect --all -q
+```
+
+**Google Business Profile (the listing on Google Maps) cannot be created automatically.**
+Google has no API for creating and verifying new listings: they verify by post, phone or
+video with the owner. Create or claim it at <https://business.google.com/create> with the
+client, then paste its share link under **Clients → Look & Google**. The website links to it
+and tells Google the site and listing belong together (`sameAs` in the structured data).
+
+**Privacy.** Google Maps sets cookies, so the map is only loaded after the visitor clicks
+*Show map*; the sites still need no cookie banner. Clients who work from home can switch
+off *Show the street on the website*: the site, map and structured data then only show
+their town.
+
+### Google setup (once)
+
+Everything works without this; the Google steps are then skipped.
+
+1. In the [Google Cloud console](https://console.cloud.google.com/), create a project and
+   enable the **Google Site Verification API**, the **Google Search Console API** and the
+   **Geocoding API**.
+2. **Search Console:** *IAM & Admin → Service accounts* → create a service account →
+   *Keys* → *Add key* → JSON. Store the file on the server outside Git (e.g.
+   `var/google-service-account.json`) and set
+   `GOOGLE_SERVICE_ACCOUNT_KEY=var/google-service-account.json`. The service account
+   becomes owner of every client property; set `GOOGLE_OWNER_EMAILS` to your own Google
+   account(s) so the sites also appear in *your* Search Console.
+3. **Maps:** *APIs & Services → Credentials* → create an API key, restrict it to the
+   Geocoding API (and to the server's IP address), set `GOOGLE_MAPS_API_KEY`.
+4. Optional: `CLIENT_SUBDOMAIN_BASE=sites.yourplatform.com` plus a wildcard DNS record
+   `*.sites.yourplatform.com → server`, so clients without a domain are online immediately.
+
 ## Useful commands
 
 ```bash
@@ -69,6 +140,9 @@ ddev console doctrine:migrations:diff     # after changing entities
 ddev console doctrine:migrations:migrate
 ddev console app:user:create you@yourdomain.com --super-admin
 ddev console app:user:create client@example.com --tenant=jans-klusbedrijf
+ddev console app:client:approve                # pending sign-ups (two demo ones in the fixtures)
+ddev console app:client:onboard                # add a client without a sign-up
+ddev console app:google:connect --all          # retry Google setup
 ```
 
 ## Production (Hetzner)
@@ -85,8 +159,11 @@ Rough outline for a small Ubuntu VPS:
 5. Back up the database and `public/uploads/` daily to somewhere off the server
    (e.g. a Hetzner Storage Box), and enable `unattended-upgrades`.
 
-For a new client: point their domain's A record at the server, then add the
-domain in the admin. HTTPS works on the first visit.
+For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
+point their domain's A record at the server. HTTPS works on the first visit, and the
+Search Console setup completes by itself through the cron job.
+
+Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 
 ## Before going live
 

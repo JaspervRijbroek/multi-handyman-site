@@ -395,7 +395,7 @@
                         <li><strong>Project showcase</strong> you update yourself</li>
                         <li><strong>Work area</strong> you manage in one place</li>
                     </ul>
-                    <a class="p-btn p-btn-primary p-btn-block" href="mailto:{{ contact_email }}?subject={{ ('I want a ' ~ brand ~ ' website')|url_encode }}">Get started</a>
+                    <a class="p-btn p-btn-primary p-btn-block" href="{{ path('app_register') }}">Get started</a>
                     {% if contact_whatsapp %}
                         <a class="p-btn p-btn-ghost-light p-btn-block" href="https://wa.me/{{ contact_whatsapp }}" target="_blank" rel="noopener">Ask a question on WhatsApp</a>
                     {% endif %}
@@ -450,7 +450,7 @@
             <div class="p-container">
                 <h2>Ready to be the handyman AI recommends?</h2>
                 <p>€{{ price }} per month, everything included.</p>
-                <a class="p-btn p-btn-primary" href="mailto:{{ contact_email }}?subject={{ ('I want a ' ~ brand ~ ' website')|url_encode }}">Get started</a>
+                <a class="p-btn p-btn-primary" href="{{ path('app_register') }}">Get started</a>
             </div>
         </section>
     </main>
@@ -460,6 +460,7 @@
             <p>&copy; {{ 'now'|date('Y') }} {{ brand }} · Websites for trades in Spain</p>
             <p>
                 <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+                · <a href="{{ path('app_register') }}">Sign up</a>
                 · <a href="{{ path('app_login') }}">Client login</a>
             </p>
         </div>

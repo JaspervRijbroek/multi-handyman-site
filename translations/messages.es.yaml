@@ -30,6 +30,13 @@ contact:
 whatsapp:
     prefill: 'Hola %name%, le encontré a través de su página web.'
 
+map:
+    title: Dónde estamos
+    show: Mostrar mapa
+    notice: El mapa se carga desde Google Maps solo cuando hace clic, porque Google establece sus propias cookies.
+    open: Abrir en Google Maps
+    iframe: Mapa de %name%
+
 footer:
     legal: Aviso legal y privacidad
 
@@ -51,3 +58,4 @@ legal:
     cookies:
         title: Cookies
         text: Este sitio web no utiliza cookies de seguimiento ni de publicidad. Solo se establece una cookie técnica de sesión al usar el formulario de contacto, para protegerlo contra abusos. Las estadísticas de visitas, si están activadas, se recogen de forma anónima y sin cookies.
+        map: El mapa de la sección de contacto solo se carga desde Google Maps cuando hace clic en «Mostrar mapa»; Google establece entonces sus propias cookies (consulte la política de privacidad de Google).

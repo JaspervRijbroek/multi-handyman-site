@@ -1,0 +1,26 @@
+Hello {{ tenant.legalName ?: tenant.name }},
+
+Good news: your website for {{ tenant.name }} has been set up.
+{% if site_url %}
+
+Your website: {{ site_url }}
+{% endif %}
+
+You can update your services, add photos of finished jobs and read enquiries
+in your admin:
+
+  {{ login_url }}
+  Login: {{ login_email }}
+{% if setup_url %}
+
+First choose your password with this link (valid for 7 days):
+
+  {{ setup_url }}
+{% else %}
+  Password: the one you chose when you signed up
+{% endif %}
+
+We are also connecting your website to Google (Search Console and Maps).
+That happens automatically as soon as your domain points to our server.
+
+Questions? Just reply to this email.

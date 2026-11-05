@@ -41,6 +41,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private string $password = '';
 
+    /** sha256 of the one-time "set your password" link token (welcome email) */
+    #[ORM\Column(length: 64, nullable: true, unique: true)]
+    private ?string $passwordSetupTokenHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $passwordSetupExpiresAt = null;
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Tenant $tenant = null;
@@ -123,6 +130,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tenant = $tenant;
 
         return $this;
+    }
+
+    /**
+     * Creates a one-time token for a "set your password" link and returns it.
+     * Only its hash is stored, so a database leak does not leak working links.
+     */
+    public function createPasswordSetupToken(string $validFor = '+7 days'): string
+    {
+        $token = bin2hex(random_bytes(32));
+        $this->passwordSetupTokenHash = self::hashToken($token);
+        $this->passwordSetupExpiresAt = new \DateTimeImmutable($validFor);
+
+        return $token;
+    }
+
+    public function isPasswordSetupTokenExpired(): bool
+    {
+        return null === $this->passwordSetupExpiresAt || $this->passwordSetupExpiresAt < new \DateTimeImmutable();
+    }
+
+    public function clearPasswordSetupToken(): static
+    {
+        $this->passwordSetupTokenHash = null;
+        $this->passwordSetupExpiresAt = null;
+
+        return $this;
+    }
+
+    public static function hashToken(string $token): string
+    {
+        return hash('sha256', $token);
     }
 
     #[\Deprecated]

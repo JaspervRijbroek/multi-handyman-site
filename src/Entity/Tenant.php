@@ -67,6 +67,38 @@ class Tenant
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $serviceArea = null;
 
+    // Business address: shown on the website and its map, and used for local SEO
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $streetAddress = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    private ?string $postalCode = null;
+
+    #[ORM\Column(length: 120, nullable: true)]
+    #[Assert\Length(max: 120)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 2)]
+    #[Assert\Country]
+    private string $country = 'ES';
+
+    /**
+     * Show the street address on the website. Off for people working from home:
+     * the map and Google then only show the town.
+     */
+    #[ORM\Column]
+    private bool $showStreetAddress = true;
+
+    /** Filled automatically from the address (Google Geocoding) */
+    #[ORM\Column(nullable: true)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $longitude = null;
+
     /** File name of the uploaded logo in public/uploads/logos */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoName = null;
@@ -96,13 +128,35 @@ class Tenant
 
     // SEO & analytics
 
-    /** Content of the google-site-verification meta tag (Search Console) */
+    /** Content of a google-site-verification meta tag you add by hand (optional) */
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $googleSiteVerification = null;
 
     /** Cookieless analytics (Plausible), no consent banner needed */
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $plausibleDomain = null;
+
+    // Google, set up automatically by App\Onboarding\ClientOnboarding
+
+    /** google-site-verification token of the platform's own Google account */
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $searchConsoleToken = null;
+
+    #[ORM\Column(length: 20, enumType: SearchConsoleStatus::class)]
+    private SearchConsoleStatus $searchConsoleStatus = SearchConsoleStatus::NotConnected;
+
+    /** Last result of the Search Console setup, shown in the admin */
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $searchConsoleMessage = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $googleCheckedAt = null;
+
+    /** Link to the client's Google Business Profile (Maps listing), once it exists */
+    #[ORM\Column(length: 500, nullable: true)]
+    #[Assert\Url(requireTld: true)]
+    #[Assert\Regex('#^https://(www\.)?(google\.[a-z.]+|maps\.app\.goo\.gl|g\.page|goo\.gl)/#', message: 'Use the share link of the Google Maps listing.')]
+    private ?string $googleBusinessUrl = null;
 
     /** @var Collection<int, Domain> */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'tenant', cascade: ['persist'], orphanRemoval: true)]
@@ -274,6 +328,172 @@ class Tenant
         return $this;
     }
 
+    public function getStreetAddress(): ?string
+    {
+        return $this->streetAddress;
+    }
+
+    public function setStreetAddress(?string $streetAddress): static
+    {
+        $this->changeAddress($this->streetAddress, $streetAddress);
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): static
+    {
+        $this->changeAddress($this->postalCode, $postalCode);
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->changeAddress($this->city, $city);
+
+        return $this;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): static
+    {
+        $country = strtoupper(trim((string) $country)) ?: 'ES';
+        if ($country !== $this->country) {
+            $this->country = $country;
+            $this->clearCoordinates();
+        }
+
+        return $this;
+    }
+
+    public function isShowStreetAddress(): bool
+    {
+        return $this->showStreetAddress;
+    }
+
+    public function setShowStreetAddress(bool $showStreetAddress): static
+    {
+        $this->showStreetAddress = $showStreetAddress;
+
+        return $this;
+    }
+
+    public function hasAddress(): bool
+    {
+        return null !== $this->city || null !== $this->streetAddress;
+    }
+
+    /** Full address on one line, e.g. "Calle Mayor 1, 03730 Jávea" */
+    public function getAddressLine(): string
+    {
+        return self::formatAddress($this->streetAddress, $this->postalCode, $this->city);
+    }
+
+    /** What the website may show: the full address, or only the town. */
+    public function getPublicAddressLine(): string
+    {
+        return $this->showStreetAddress
+            ? $this->getAddressLine()
+            : self::formatAddress(null, $this->postalCode, $this->city);
+    }
+
+    public static function formatAddress(?string $street, ?string $postalCode, ?string $city): string
+    {
+        $town = trim(($postalCode ?? '').' '.($city ?? ''));
+
+        return implode(', ', array_filter([trim((string) $street), $town]));
+    }
+
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return null !== $this->latitude && null !== $this->longitude;
+    }
+
+    public function setCoordinates(?float $latitude, ?float $longitude): static
+    {
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /** What to search for on Google Maps: the business listing if known, else the (public) address. */
+    public function getMapQuery(): string
+    {
+        if ($this->showStreetAddress && $this->streetAddress) {
+            return $this->name.', '.$this->getAddressLine();
+        }
+
+        return $this->getPublicAddressLine() ?: (string) $this->serviceArea;
+    }
+
+    /** Opens Google Maps (app or website), see https://developers.google.com/maps/documentation/urls */
+    public function getGoogleMapsUrl(): ?string
+    {
+        if ($this->googleBusinessUrl) {
+            return $this->googleBusinessUrl;
+        }
+
+        $query = $this->getMapQuery();
+
+        return '' === $query ? null : 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($query);
+    }
+
+    /** Embeddable map, loaded only after the visitor clicks (Google sets cookies) */
+    public function getGoogleMapsEmbedUrl(): ?string
+    {
+        if ($this->hasCoordinates() && $this->showStreetAddress) {
+            $query = \sprintf('%F,%F', $this->latitude, $this->longitude);
+        } else {
+            $query = $this->getPublicAddressLine() ?: (string) $this->serviceArea;
+        }
+
+        // A town-only map is zoomed out, so it shows the area rather than a house
+        $zoom = $this->showStreetAddress && $this->streetAddress ? 15 : 12;
+
+        return '' === $query ? null : \sprintf('https://maps.google.com/maps?q=%s&z=%d&output=embed', rawurlencode($query), $zoom);
+    }
+
+    private function changeAddress(?string &$field, ?string $value): void
+    {
+        $value = trim((string) $value) ?: null;
+        if ($value !== $field) {
+            $field = $value;
+            // Coordinates belong to the old address; they are looked up again
+            $this->clearCoordinates();
+        }
+    }
+
+    private function clearCoordinates(): void
+    {
+        $this->latitude = null;
+        $this->longitude = null;
+    }
+
     public function getLogoName(): ?string
     {
         return $this->logoName;
@@ -381,6 +601,54 @@ class Tenant
     public function setPlausibleDomain(?string $plausibleDomain): static
     {
         $this->plausibleDomain = $plausibleDomain;
+
+        return $this;
+    }
+
+    public function getSearchConsoleToken(): ?string
+    {
+        return $this->searchConsoleToken;
+    }
+
+    public function setSearchConsoleToken(?string $searchConsoleToken): static
+    {
+        $this->searchConsoleToken = $searchConsoleToken;
+
+        return $this;
+    }
+
+    public function getSearchConsoleStatus(): SearchConsoleStatus
+    {
+        return $this->searchConsoleStatus;
+    }
+
+    public function getSearchConsoleMessage(): ?string
+    {
+        return $this->searchConsoleMessage;
+    }
+
+    public function setSearchConsoleStatus(SearchConsoleStatus $status, ?string $message = null): static
+    {
+        $this->searchConsoleStatus = $status;
+        $this->searchConsoleMessage = null === $message ? null : mb_substr($message, 0, 500);
+        $this->googleCheckedAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getGoogleCheckedAt(): ?\DateTimeImmutable
+    {
+        return $this->googleCheckedAt;
+    }
+
+    public function getGoogleBusinessUrl(): ?string
+    {
+        return $this->googleBusinessUrl;
+    }
+
+    public function setGoogleBusinessUrl(?string $googleBusinessUrl): static
+    {
+        $this->googleBusinessUrl = trim((string) $googleBusinessUrl) ?: null;
 
         return $this;
     }
