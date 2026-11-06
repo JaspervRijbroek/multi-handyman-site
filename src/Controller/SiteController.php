@@ -10,10 +10,12 @@ use App\Form\ContactType;
 use App\Repository\ProjectRepository;
 use App\Repository\ServiceRepository;
 use App\Tenant\TenantContext;
+use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -23,6 +25,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * The public client websites. Which client is shown depends on the hostname,
@@ -58,6 +61,8 @@ final class SiteController extends AbstractController
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
         LoggerInterface $logger,
+        Turnstile $turnstile,
+        TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
     ): Response {
         $tenant = $this->siteTenant($request);
@@ -70,15 +75,22 @@ final class SiteController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Bots fill in the hidden field: pretend everything went fine
-            if (!$form->get(ContactType::HONEYPOT)->getData()) {
-                $entityManager->persist($enquiry);
-                $entityManager->flush();
-                $this->notifyTenant($tenant, $enquiry, $mailer, $logger, $mailerFrom, $request->getHost());
+            $isBot = (bool) $form->get(ContactType::HONEYPOT)->getData();
+
+            if (!$isBot && !$turnstile->verify($request, 'contact')) {
+                // Shown above the form, which keeps what the visitor typed
+                $form->addError(new FormError($translator->trans('contact.turnstile_failed')));
+            } else {
+                if (!$isBot) {
+                    $entityManager->persist($enquiry);
+                    $entityManager->flush();
+                    $this->notifyTenant($tenant, $enquiry, $mailer, $logger, $mailerFrom, $request->getHost());
+                }
+
+                $this->addFlash('contact_success', 'contact.success');
+
+                return $this->redirect($this->generateUrl('site_home', ['_locale' => $request->getLocale()]).'#contact');
             }
-
-            $this->addFlash('contact_success', 'contact.success');
-
-            return $this->redirect($this->generateUrl('site_home', ['_locale' => $request->getLocale()]).'#contact');
         }
 
         return $this->render('site/home.html.twig', [
