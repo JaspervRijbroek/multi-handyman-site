@@ -59,3 +59,6 @@ legal:
         title: Cookies
         text: This website uses no tracking or advertising cookies. A technical session cookie is only set when you use the contact form, to protect it against abuse. Visitor statistics, if enabled, are collected anonymously without cookies.
         map: The map in the contact section is only loaded from OpenStreetMap (OpenStreetMap Foundation, United Kingdom) when you click “Show map”; your IP address is then sent to their servers to load the map. OpenStreetMap sets no advertising or tracking cookies.
+
+offline:
+    message: 'This website is temporarily unavailable. You can still reach us directly:'

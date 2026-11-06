@@ -59,3 +59,6 @@ legal:
         title: Cookies
         text: Deze website gebruikt geen tracking- of advertentiecookies. Alleen bij gebruik van het contactformulier wordt een technische sessiecookie geplaatst, ter bescherming tegen misbruik. Bezoekersstatistieken worden, als ze aanstaan, anoniem en zonder cookies verzameld.
         map: De kaart bij contact wordt pas van OpenStreetMap (OpenStreetMap Foundation, Verenigd Koninkrijk) geladen als je op “Kaart tonen” klikt; je IP-adres gaat dan naar hun servers om de kaart te laden. OpenStreetMap gebruikt geen advertentie- of trackingcookies.
+
+offline:
+    message: 'Deze website is tijdelijk niet beschikbaar. U kunt ons nog steeds direct bereiken:'

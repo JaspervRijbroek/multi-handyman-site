@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Onboarding;
 
+use App\Billing\BillingService;
 use App\Entity\Domain;
 use App\Entity\SearchConsoleStatus;
 use App\Entity\Signup;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  *  - client (Tenant) with the details from the sign-up
  *  - domain(s): their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE
  *  - client login (with the password they chose, or a "set your password" link)
- *  - welcome email
+ *  - welcome email, and the email to set up automatic monthly payment (Mollie)
  *  - map position of the address (OpenStreetMap) and the Google Search Console property
  *
  * Used by the admin (Sign-ups → Approve, Clients → Connect Google) and the
@@ -41,6 +42,7 @@ final readonly class ClientOnboarding
         private SluggerInterface $slugger,
         private UserPasswordHasherInterface $passwordHasher,
         private OnboardingMailer $mailer,
+        private BillingService $billing,
         private Geocoder $geocoder,
         private SearchConsole $searchConsole,
         #[Autowire(env: 'default::CLIENT_SUBDOMAIN_BASE')]
@@ -99,9 +101,24 @@ final readonly class ClientOnboarding
         }
 
         $this->mailer->sendWelcome($user, $tenant, $setupToken, $result);
+        $this->sendPaymentSetup($tenant, $result);
         $this->connectGoogle($tenant, $result);
 
         return $result;
+    }
+
+    /** Asks the client to set up automatic monthly payment (Mollie); the first charge is next month. */
+    private function sendPaymentSetup(Tenant $tenant, OnboardingResult $result): void
+    {
+        if ($tenant->isBillingExempt()) {
+            $result->add(OnboardingResult::SKIPPED, 'Payment setup email', 'Free account.');
+
+            return;
+        }
+
+        $this->billing->sendSetupEmail($tenant)
+            ? $result->add(OnboardingResult::OK, 'Payment setup email', \sprintf('Sent to %s; free until %s.', $tenant->getBillingRecipient(), $tenant->getBillingStartsOn()->format('d-m-Y')))
+            : $result->add(OnboardingResult::WARNING, 'Payment setup email', 'Could not be sent. Send the client this link yourself: '.$this->billing->payUrl($tenant));
     }
 
     /**

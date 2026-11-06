@@ -1,0 +1,31 @@
+Hello {{ tenant.name }},
+
+{% if stage == 1 -%}
+We could not collect the monthly payment for your website automatically.
+{%- elseif stage == 2 -%}
+This is a reminder: the payment for your website is still open.
+{%- else -%}
+This is your final reminder: the payment for your website is still open.
+Please pay before {{ offline_date|date('l j F Y') }}. If we have not received it
+by then, your website will be taken offline automatically.
+{%- endif %}
+
+
+{% for charge in charges -%}
+  {{ charge.periodLabel }}: {{ charge.totalAmount|money(charge.currency) }} (incl. {{ charge.vatRate|number_format(0) }}% VAT){% if charge.failureReason %} – {{ charge.failureReason }}{% endif %}
+
+{% endfor %}
+{%- if charges|length > 1 %}
+Total: {{ charges|reduce((sum, c) => sum + c.totalAmount, 0)|money(charges[0].currency) }}
+{% endif %}
+
+Pay securely online here:
+
+{{ pay_url }}
+
+Paying with a card or your bank also sets this up for automatic payment next month.
+{% if stage == 1 %}
+Already sorted this out? Then you can ignore this email.
+{% endif %}
+
+{% include 'email/billing/_footer.txt.twig' %}

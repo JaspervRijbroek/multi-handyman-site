@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Billing\WorkdayCalendar;
 use App\Repository\TenantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -158,6 +159,49 @@ class Tenant
     #[Assert\Regex('#^https://(www\.)?(google\.[a-z.]+|maps\.app\.goo\.gl|g\.page|goo\.gl)/#', message: 'Use the share link of the Google Maps listing.')]
     private ?string $googleBusinessUrl = null;
 
+    // Billing (Mollie), see App\Billing\BillingService
+
+    /** Where invoices and payment reminders go; falls back to the enquiry address */
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Email]
+    private ?string $billingEmail = null;
+
+    /** Free account (demo, friends): never charged, never taken offline for billing */
+    #[ORM\Column]
+    private bool $billingExempt = false;
+
+    /** Monthly price in cents excluding VAT; null uses BILLING_MONTHLY_PRICE */
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    private ?int $monthlyPrice = null;
+
+    /** First day the client is charged; everything before is free. Null: derived from createdAt */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $billingStartsOn = null;
+
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $mollieCustomerId = null;
+
+    /** Authorisation to charge the client automatically (card or SEPA direct debit) */
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $mollieMandateId = null;
+
+    /** e.g. "Visa •••• 4242" or "SEPA direct debit NL55 •••• 0123" */
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $mandateDescription = null;
+
+    /** Latest checkout started by the client, checked when they come back from Mollie */
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $lastCheckoutPaymentId = null;
+
+    /** Secret part of the payment link in reminder emails (works without logging in) */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    private ?string $billingToken = null;
+
+    /** Set when the site is taken offline for non-payment */
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $suspendedAt = null;
+
     /** @var Collection<int, Domain> */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'tenant', cascade: ['persist'], orphanRemoval: true)]
     private Collection $domains;
@@ -169,6 +213,8 @@ class Tenant
     {
         $this->domains = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        $this->billingStartsOn = WorkdayCalendar::firstBillingDay($this->createdAt);
+        $this->billingToken = self::newBillingToken();
     }
 
     public function __toString(): string
@@ -660,6 +706,142 @@ class Tenant
         $this->googleBusinessUrl = trim((string) $googleBusinessUrl) ?: null;
 
         return $this;
+    }
+
+    public function getBillingEmail(): ?string
+    {
+        return $this->billingEmail;
+    }
+
+    public function setBillingEmail(?string $billingEmail): static
+    {
+        $this->billingEmail = $billingEmail;
+
+        return $this;
+    }
+
+    /** Address for invoices and reminders */
+    public function getBillingRecipient(): ?string
+    {
+        return $this->billingEmail ?: $this->email;
+    }
+
+    public function isBillingExempt(): bool
+    {
+        return $this->billingExempt;
+    }
+
+    public function setBillingExempt(bool $billingExempt): static
+    {
+        $this->billingExempt = $billingExempt;
+
+        return $this;
+    }
+
+    public function getMonthlyPrice(): ?int
+    {
+        return $this->monthlyPrice;
+    }
+
+    public function setMonthlyPrice(?int $monthlyPrice): static
+    {
+        $this->monthlyPrice = $monthlyPrice;
+
+        return $this;
+    }
+
+    public function getBillingStartsOn(): \DateTimeImmutable
+    {
+        return $this->billingStartsOn ?? WorkdayCalendar::firstBillingDay($this->createdAt);
+    }
+
+    public function setBillingStartsOn(?\DateTimeImmutable $billingStartsOn): static
+    {
+        $this->billingStartsOn = $billingStartsOn;
+
+        return $this;
+    }
+
+    public function getMollieCustomerId(): ?string
+    {
+        return $this->mollieCustomerId;
+    }
+
+    public function setMollieCustomerId(?string $mollieCustomerId): static
+    {
+        $this->mollieCustomerId = $mollieCustomerId;
+
+        return $this;
+    }
+
+    public function getMollieMandateId(): ?string
+    {
+        return $this->mollieMandateId;
+    }
+
+    public function hasMandate(): bool
+    {
+        return null !== $this->mollieMandateId;
+    }
+
+    public function setMandate(?string $mandateId, ?string $description): static
+    {
+        $this->mollieMandateId = $mandateId;
+        $this->mandateDescription = $mandateId ? $description : null;
+
+        return $this;
+    }
+
+    public function getMandateDescription(): ?string
+    {
+        return $this->mandateDescription;
+    }
+
+    public function getLastCheckoutPaymentId(): ?string
+    {
+        return $this->lastCheckoutPaymentId;
+    }
+
+    public function setLastCheckoutPaymentId(?string $lastCheckoutPaymentId): static
+    {
+        $this->lastCheckoutPaymentId = $lastCheckoutPaymentId;
+
+        return $this;
+    }
+
+    /** Clients created before billing existed get a token on first use (flush afterwards) */
+    public function getBillingToken(): string
+    {
+        return $this->billingToken ??= self::newBillingToken();
+    }
+
+    public function getSuspendedAt(): ?\DateTimeImmutable
+    {
+        return $this->suspendedAt;
+    }
+
+    public function isSuspended(): bool
+    {
+        return null !== $this->suspendedAt;
+    }
+
+    public function suspend(\DateTimeImmutable $now): static
+    {
+        $this->suspendedAt ??= $now;
+
+        return $this;
+    }
+
+    public function unsuspend(): static
+    {
+        $this->suspendedAt = null;
+
+        return $this;
+    }
+
+    private static function newBillingToken(): string
+    {
+        return bin2hex(random_bytes(24));
     }
 
     /** @return Collection<int, Domain> */

@@ -26,6 +26,30 @@
         {% endfor %}
     </div>
 
+    {% if tenant and not tenant.billingExempt %}
+        {% if outstanding is not empty %}
+            <div class="alert alert-danger d-flex flex-wrap align-items-center gap-3 mt-3">
+                <div class="flex-grow-1">
+                    {% if tenant.suspended %}
+                        <strong>Your website is offline.</strong> We did not receive payment. Pay now and it is back online straight away.
+                    {% else %}
+                        <strong>Open payment.</strong> The automatic payment for {{ outstanding|map(c => c.periodLabel)|join(', ') }} did not come through.
+                    {% endif %}
+                </div>
+                <a class="btn btn-sm btn-danger" href="{{ path('admin_billing_index') }}">Pay now</a>
+            </div>
+        {% elseif not tenant.hasMandate %}
+            <div class="alert alert-info d-flex flex-wrap align-items-center gap-3 mt-3">
+                <div class="flex-grow-1">
+                    <strong>Set up payment.</strong>
+                    {% if tenant.billingStartsOn > date() %}Your website is free until {{ tenant.billingStartsOn|date('j F Y') }}. {% endif %}
+                    Add a card or bank account so it is paid automatically after that.
+                </div>
+                <a class="btn btn-sm btn-primary" href="{{ path('admin_billing_index') }}">Set up payment</a>
+            </div>
+        {% endif %}
+    {% endif %}
+
     {% if tenant and missing_settings is not empty %}
         <div class="alert alert-warning d-flex flex-wrap align-items-center gap-3 mt-3">
             <div class="flex-grow-1">

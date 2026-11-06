@@ -59,3 +59,6 @@ legal:
         title: Cookies
         text: Este sitio web no utiliza cookies de seguimiento ni de publicidad. Solo se establece una cookie técnica de sesión al usar el formulario de contacto, para protegerlo contra abusos. Las estadísticas de visitas, si están activadas, se recogen de forma anónima y sin cookies.
         map: El mapa de la sección de contacto solo se carga desde OpenStreetMap (OpenStreetMap Foundation, Reino Unido) cuando hace clic en «Mostrar mapa»; entonces su dirección IP se envía a sus servidores para cargar el mapa. OpenStreetMap no utiliza cookies de publicidad ni de seguimiento.
+
+offline:
+    message: 'Este sitio web no está disponible temporalmente. Puede contactarnos directamente:'
