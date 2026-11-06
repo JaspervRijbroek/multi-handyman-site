@@ -209,11 +209,7 @@ final readonly class BillingService
         }
 
         $this->entityManager->flush();
-
-        if ($tenant->isSuspended() && !$this->charges->findOutstanding($tenant)) {
-            $tenant->unsuspend();
-            $this->mailer->sendRestored($tenant);
-        }
+        $this->restoreIfPaidUp($tenant);
     }
 
     /** For payments received outside Mollie, e.g. a bank transfer. */
@@ -221,8 +217,12 @@ final readonly class BillingService
     {
         $charge->markPaid('manual', new \DateTimeImmutable());
         $this->entityManager->flush();
+        $this->restoreIfPaidUp($charge->getTenant());
+    }
 
-        $tenant = $charge->getTenant();
+    /** Brings a suspended site back online once nothing is outstanding any more. */
+    private function restoreIfPaidUp(Tenant $tenant): void
+    {
         if ($tenant->isSuspended() && !$this->charges->findOutstanding($tenant)) {
             $tenant->unsuspend();
             $this->entityManager->flush();

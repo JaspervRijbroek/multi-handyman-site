@@ -32,17 +32,10 @@ class TurnstileWidget
     #[ORM\Column(type: Types::JSON)]
     private array $hostnames = [];
 
-    #[ORM\Column]
-    private \DateTimeImmutable $createdAt;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $syncedAt = null;
-
     public function __construct(string $siteKey, string $secretKey)
     {
         $this->siteKey = $siteKey;
         $this->secretKey = $secretKey;
-        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -87,22 +80,5 @@ class TurnstileWidget
     public function covers(string $hostname): bool
     {
         return \App\Turnstile\Hostnames::isCovered($hostname, $this->hostnames);
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getSyncedAt(): ?\DateTimeImmutable
-    {
-        return $this->syncedAt;
-    }
-
-    public function markSynced(): static
-    {
-        $this->syncedAt = new \DateTimeImmutable();
-
-        return $this;
     }
 }
