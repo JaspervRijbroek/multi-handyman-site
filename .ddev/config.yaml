@@ -17,5 +17,6 @@ database:
 additional_hostnames:
   - jans-klusbedrijf
   - handyman-javea
+  - pieters-tegelwerk
 
 use_dns_when_possible: true

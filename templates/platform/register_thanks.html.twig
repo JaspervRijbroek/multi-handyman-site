@@ -1,0 +1,13 @@
+{% extends 'platform/layout.html.twig' %}
+
+{% block title %}Thank you{% endblock %}
+
+{% block body %}
+    <p class="p-eyebrow">Sign-up received</p>
+    <h1>Thank you!</h1>
+    <p class="p-text">
+        We received your details and will check them shortly. As soon as your website is set up,
+        you get an email with your login. Questions in the meantime? Just reply to that email.
+    </p>
+    <p><a class="p-btn p-btn-ghost" href="{{ path('site_root') }}">Back to the homepage</a></p>
+{% endblock %}

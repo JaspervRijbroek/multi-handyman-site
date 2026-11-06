@@ -3,6 +3,16 @@
 {% block content_title %}Welcome{% if tenant %}, {{ tenant.name }}{% endif %}{% endblock %}
 
 {% block main %}
+    {% if pending_signups > 0 %}
+        <div class="alert alert-info d-flex flex-wrap align-items-center gap-3 mb-3">
+            <div class="flex-grow-1">
+                <strong>{{ pending_signups }} {{ pending_signups == 1 ? 'sign-up is' : 'sign-ups are' }} waiting for approval.</strong>
+                Approving creates the client, domain, login and Google setup in one go.
+            </div>
+            <a class="btn btn-sm btn-primary" href="{{ ea_url().setController('App\\Controller\\Admin\\SignupCrudController').setAction('index') }}">Review sign-ups</a>
+        </div>
+    {% endif %}
+
     <div class="row">
         {% for stat in stats %}
             <div class="col-sm-6 col-lg-3 mb-3">

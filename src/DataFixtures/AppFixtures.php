@@ -7,6 +7,7 @@ namespace App\DataFixtures;
 use App\Entity\Domain;
 use App\Entity\Project;
 use App\Entity\Service;
+use App\Entity\Signup;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -14,7 +15,7 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Demo data for local development: two client sites and three logins.
+ * Demo data for local development: two client sites, three logins and two sign-ups.
  * Load with: ddev console doctrine:fixtures:load
  */
 final class AppFixtures extends Fixture
@@ -36,6 +37,10 @@ final class AppFixtures extends Fixture
             ->setWhatsapp('+34 600 111 222')
             ->setEmail('jan@example.com')
             ->setServiceArea('Torrent, Valencia and surroundings')
+            ->setStreetAddress('Calle Ejemplo 1')
+            ->setPostalCode('46900')
+            ->setCity('Torrent')
+            ->setCoordinates(39.4371, -0.4655)
             ->setTagline([
                 'en' => 'Reliable Dutch handyman in Valencia',
                 'es' => 'Manitas holandés de confianza en Valencia',
@@ -77,6 +82,11 @@ final class AppFixtures extends Fixture
             ->setWhatsapp('+34 600 333 444')
             ->setEmail('javea@example.com')
             ->setServiceArea('Jávea, Dénia, Moraira')
+            ->setPostalCode('03730')
+            ->setCity('Jávea')
+            ->setShowStreetAddress(false)
+            // Town centre: the street is hidden, so the map only shows the town
+            ->setCoordinates(38.7893, 0.1664)
             ->setTagline([
                 'en' => 'Your handyman on the Costa Blanca',
                 'es' => 'Su manitas en la Costa Blanca',
@@ -95,6 +105,32 @@ final class AppFixtures extends Fixture
             ['en' => 'Key holding', 'es' => 'Custodia de llaves'],
             ['en' => 'Small electrical jobs', 'es' => 'Pequeños trabajos eléctricos'],
         ]);
+
+        // Sign-ups waiting for approval (admin → Sign-ups, or: ddev console app:client:approve)
+        $manager->persist((new Signup())
+            ->setBusinessName('Pieters Tegelwerk')
+            ->setContactName('Piet Pieters')
+            ->setEmail('piet@example.com')
+            ->setPhone('+34 600 555 666')
+            ->setStreetAddress('Avenida del Mar 12')
+            ->setPostalCode('03590')
+            ->setCity('Altea')
+            ->setServiceArea('Altea, Albir, Benidorm')
+            ->setDomain('pieters-tegelwerk.ddev.site')
+            ->setLocales(['nl', 'en', 'es'])
+            ->setDefaultLocale('nl')
+            ->setMessage('Tiling and bathroom renovations, 15 years of experience.')
+            ->setPasswordHash($this->passwordHasher->hashPassword(new User(), 'piet')));
+        $manager->persist((new Signup())
+            ->setBusinessName('Costa Pool Care')
+            ->setContactName('Emma Smith')
+            ->setEmail('emma@example.com')
+            ->setPhone('+34 600 777 888')
+            ->setStreetAddress('Calle Sol 4')
+            ->setPostalCode('03724')
+            ->setCity('Moraira')
+            ->setLocales(['en', 'es'])
+            ->setPasswordHash($this->passwordHasher->hashPassword(new User(), 'emma')));
 
         $this->addUser($manager, 'admin@example.com', 'admin', null, [User::ROLE_SUPER_ADMIN]);
         $this->addUser($manager, 'jan@example.com', 'jan', $jan);

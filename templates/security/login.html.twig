@@ -1,4 +1,4 @@
-{# EasyAdmin's login page with Cloudflare Turnstile, see App\EventListener\TurnstileLoginListener #}
+{# EasyAdmin's login page with Cloudflare Turnstile (see App\EventListener\TurnstileLoginListener) and a sign-up link #}
 {% extends '@EasyAdmin/page/login.html.twig' %}
 
 {% block login_form_credentials_wrapper %}
@@ -10,4 +10,10 @@
         </div>
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     {% endif %}
+{% endblock %}
+
+{% block login_form_footer %}
+    <p class="text-center mt-3 mb-0">
+        No website yet? <a href="{{ path('app_register') }}">Sign up</a>
+    </p>
 {% endblock %}

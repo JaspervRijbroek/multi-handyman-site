@@ -7,9 +7,11 @@ which client's site is shown; clients edit their own content in a simple admin.
 - **EasyAdmin 5** for the client admin
 - Multilingual content per client (EN, ES, NL, DE, FR), with hreflang, sitemap and canonical URLs
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
-- Cloudflare Turnstile on the contact and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
+- Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
 - Spanish legal notice / privacy page generated from the client's details
 - Cookieless analytics (Plausible) and Search Console verification per client
+- **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
+  client, domain, login, welcome email, Google Search Console and map are set up automatically
 - Monthly billing through Mollie with automatic reminders, see [Billing](#billing)
 
 ## Getting started
@@ -32,6 +34,7 @@ On the first run, `ddev bootstrap` creates `.env` (from `.env.example`) and
 | Admin (client) | same | `jan@example.com` / `jan` |
 | Client site 1 | https://jans-klusbedrijf.ddev.site | |
 | Client site 2 | https://handyman-javea.ddev.site | |
+| Sign-up form | https://multi-handyman-site.ddev.site/register | |
 | Sent emails | `ddev mailpit` | |
 
 To try another client site locally, add its hostname to `additional_hostnames`
@@ -64,6 +67,78 @@ Adding a new kind of client content? Implement `TenantOwnedInterface` (use
 Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 `TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig.
 
+## Onboarding a new client
+
+```
+Client fills in /register ──► Sign-up (pending) ──► you approve ──► everything below, in one go
+You add a client yourself ──────────────────────────────────────┘   (admin "Add client" or console)
+
+  ✔ Client (Tenant) with name, phone, WhatsApp, address, work area, languages, legal defaults
+  ✔ Domain: their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE if they have none
+  ✔ Client login: the password they chose on /register, or a 7-day "set your password" link
+  ✔ Welcome email with the website and login links
+  ✔ Payment setup email (Mollie), see Billing; skipped for free accounts
+  ✔ Map: address → coordinates with OpenStreetMap (Nominatim, no key), map on the site
+  ✔ Google Search Console: verification tag, verification, property and sitemap
+```
+
+Only super admins can create clients. The public form only stores a **sign-up**; nothing
+is created until you approve it. Sign-ups show up under **Platform → Sign-ups** (with a
+badge) and on the dashboard, and every super admin gets an email.
+
+| Where | How |
+| --- | --- |
+| Admin | **Sign-ups** → *Approve* (or *Reject*). **Clients** → *Add client* for clients you sign up yourself: saving the form approves it straight away. |
+| Admin | **Clients** → *Connect Google* re-runs the map lookup and Search Console steps for one client. |
+| Console | `app:client:approve` lists pending sign-ups and lets you pick one; `app:client:approve 12` / `--reject` |
+| Console | `app:client:onboard` asks for the details and onboards right away; pass them as options for scripts (`--help`) |
+| Console | `app:google:connect <slug>` or `--all` retries everything that is not connected yet |
+
+Each step reports *done / warning / skipped*, so it is clear what still needs doing. If
+the sign-up cannot be approved as is (domain already used, email already has a login…),
+nothing is saved and you get the reasons; fix the sign-up and approve again.
+
+**Search Console needs the site to be online.** Google checks the verification tag on the
+client's real domain, which only works once their DNS points to the server. Until then
+the status is *Waiting for the site to be online*. Add this to cron and it connects by
+itself as soon as the DNS is in place:
+
+```cron
+17 * * * * cd /var/www/multi-handyman-site && php bin/console app:google:connect --all -q
+```
+
+**Google Business Profile (the listing on Google Maps) cannot be created automatically.**
+Google has no API for creating and verifying new listings: they verify by post, phone or
+video with the owner. Create or claim it at <https://business.google.com/create> with the
+client, then paste its share link under **Clients → Look & Google**. The website links to it
+and tells Google the site and listing belong together (`sameAs` in the structured data).
+
+**Map.** The address is turned into coordinates with [Nominatim](https://nominatim.org/),
+OpenStreetMap's free geocoder (no API key; their [usage policy](https://operations.osmfoundation.org/policies/nominatim/)
+allows this volume, and requests are limited to one per second). The site shows an
+OpenStreetMap map with a marker, loaded only after the visitor clicks *Show map*, so no
+visitor data goes to a third party before that and no cookie banner is needed. If the
+street is not on OpenStreetMap, the marker goes on the town and the admin gets a warning.
+Clients who work from home can switch off *Show the street on the website*: the address,
+map and structured data then only show their town, and the map position is looked up at
+town level, so it never points at their home.
+
+### Google setup (once)
+
+Everything works without this; the Search Console step is then skipped. (The map needs
+no setup: it uses OpenStreetMap.)
+
+1. In the [Google Cloud console](https://console.cloud.google.com/), create a project and
+   enable the **Google Site Verification API** and the **Google Search Console API**.
+2. **Search Console:** *IAM & Admin → Service accounts* → create a service account →
+   *Keys* → *Add key* → JSON. Store the file on the server outside Git (e.g.
+   `var/google-service-account.json`) and set
+   `GOOGLE_SERVICE_ACCOUNT_KEY=var/google-service-account.json`. The service account
+   becomes owner of every client property; set `GOOGLE_OWNER_EMAILS` to your own Google
+   account(s) so the sites also appear in *your* Search Console.
+3. Optional: `CLIENT_SUBDOMAIN_BASE=sites.yourplatform.com` plus a wildcard DNS record
+   `*.sites.yourplatform.com → server`, so clients without a domain are online immediately.
+
 ## Billing
 
 Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
@@ -92,7 +167,7 @@ First workday ─► automatic payment with the mandate
 - The payment link (`/billing/{token}`) works without logging in. Clients also
   get a **Billing** page in their admin; super admins get **Payments** (with *Mark as
   paid* for bank transfers), a **Billing** tab per client and a *Send payment
-  setup email* action. The setup email also goes out when you create a client.
+  setup email* action. The setup email also goes out when a client is onboarded.
 - Free accounts: tick *Free account* in the client's Billing tab. Per-client prices
   override `BILLING_MONTHLY_PRICE`.
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
@@ -102,14 +177,14 @@ Mollie does not issue invoices (facturas). Send those from your accounting tool.
 
 ## Spam protection (Cloudflare Turnstile)
 
-The contact form on every client site and the admin login use
-[Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/). The client
+The contact form on every client site, the sign-up form (`/register`) and the admin
+login use [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/). The client
 domains don't need to be on Cloudflare. A Turnstile widget only works on the hostnames
 it lists, so the app manages its widgets through the Cloudflare API:
 
 ```
 Domain saved / deleted in the admin ─► app:turnstile:sync (straight away, result shown as a flash)
-Client deleted, fixtures, …          ─► same, at the end of the request/command
+Client onboarded or deleted, fixtures ─► same, at the end of the request/command
 Daily cron                           ─► same, catches up if Cloudflare was unreachable
 ```
 
@@ -137,6 +212,9 @@ ddev console doctrine:migrations:diff     # after changing entities
 ddev console doctrine:migrations:migrate
 ddev console app:user:create you@yourdomain.com --super-admin
 ddev console app:user:create client@example.com --tenant=jans-klusbedrijf
+ddev console app:client:approve                # pending sign-ups (two demo ones in the fixtures)
+ddev console app:client:onboard                # add a client without a sign-up
+ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
 ```
@@ -159,9 +237,12 @@ Rough outline for a small Ubuntu VPS:
 5. Back up the database and `public/uploads/` daily to somewhere off the server
    (e.g. a Hetzner Storage Box), and enable `unattended-upgrades`.
 
-For a new client: point their domain's A record at the server, then add the
-domain in the admin. HTTPS works on the first visit, and the domain is added to
-Cloudflare Turnstile when you save it.
+For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
+point their domain's A record at the server. HTTPS works on the first visit, the domain is
+added to Cloudflare Turnstile automatically, and the Search Console setup completes by
+itself through the cron job.
+
+Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 
 ## Before going live
 

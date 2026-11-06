@@ -19,7 +19,7 @@
             <ul>
                 <li>{{ 'legal.owner.name'|trans }}: {{ owner }}</li>
                 {% if tenant.taxId %}<li>{{ 'legal.owner.tax_id'|trans }}: {{ tenant.taxId }}</li>{% endif %}
-                {% if tenant.legalAddress %}<li>{{ 'legal.owner.address'|trans }}: {{ tenant.legalAddress }}</li>{% endif %}
+                {% if tenant.legalAddress ?: tenant.addressLine %}<li>{{ 'legal.owner.address'|trans }}: {{ tenant.legalAddress ?: tenant.addressLine }}</li>{% endif %}
                 {% if tenant.email %}<li>Email: {{ tenant.email }}</li>{% endif %}
                 {% if tenant.phone %}<li>{{ 'legal.owner.phone'|trans }}: {{ tenant.phone }}</li>{% endif %}
             </ul>
@@ -32,6 +32,7 @@
 
             <h2>{{ 'legal.cookies.title'|trans }}</h2>
             <p>{{ 'legal.cookies.text'|trans }}</p>
+            {% if tenant.hasCoordinates %}<p>{{ 'legal.cookies.map'|trans }}</p>{% endif %}
         </div>
     </section>
 {% endblock %}

@@ -1,4 +1,4 @@
 framework:
     router:
-        # Absolute URLs generated outside a request (the daily billing command, emails)
+        # Absolute URLs generated outside a request (billing and onboarding commands, emails)
         default_uri: 'https://%env(PLATFORM_HOST)%'

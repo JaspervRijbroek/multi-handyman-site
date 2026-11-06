@@ -1,0 +1,19 @@
+A new client signed up and is waiting for approval.
+
+Business:  {{ signup.businessName }}
+Contact:   {{ signup.contactName }}
+Email:     {{ signup.email }}
+Phone:     {{ signup.phone }}{% if signup.whatsapp %} (WhatsApp {{ signup.whatsapp }}){% endif %}
+
+Address:   {{ signup.addressLine }}, {{ signup.country }}
+Work area: {{ signup.serviceArea ?: '–' }}
+Domain:    {{ signup.domain ?: '– (none yet)' }}
+Languages: {{ signup.locales|map(l => l|upper)|join(', ') }} (main: {{ signup.defaultLocale|upper }})
+{% if signup.message %}
+
+{{ signup.message }}
+{% endif %}
+
+Approve it in the admin ({{ admin_url }}, Sign-ups) or from the console:
+
+  php bin/console app:client:approve {{ signup.id }}

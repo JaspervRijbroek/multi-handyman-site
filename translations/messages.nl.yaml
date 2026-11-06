@@ -31,6 +31,13 @@ contact:
 whatsapp:
     prefill: 'Hallo %name%, ik heb je gevonden via je website.'
 
+map:
+    show: Kaart tonen
+    notice: De kaart wordt pas van OpenStreetMap geladen als je klikt, dus daarvoor wordt niets met derden gedeeld.
+    open: Grotere kaart bekijken
+    google: Bekijk ons op Google Maps
+    iframe: Kaart van %name%
+
 footer:
     legal: Juridische informatie & privacy
 
@@ -52,6 +59,7 @@ legal:
     cookies:
         title: Cookies
         text: Deze website gebruikt geen tracking- of advertentiecookies. Alleen bij gebruik van het contactformulier wordt een technische sessiecookie geplaatst, ter bescherming tegen misbruik. Bezoekersstatistieken worden, als ze aanstaan, anoniem en zonder cookies verzameld.
+        map: De kaart bij contact wordt pas van OpenStreetMap (OpenStreetMap Foundation, Verenigd Koninkrijk) geladen als je op “Kaart tonen” klikt; je IP-adres gaat dan naar hun servers om de kaart te laden. OpenStreetMap gebruikt geen advertentie- of trackingcookies.
 
 offline:
     message: 'Deze website is tijdelijk niet beschikbaar. U kunt ons nog steeds direct bereiken:'
