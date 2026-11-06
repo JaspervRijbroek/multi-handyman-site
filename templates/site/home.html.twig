@@ -1,6 +1,9 @@
 {% extends 'site/base.html.twig' %}
 
 {% block head %}
+    {% if turnstile_site_key() %}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
     <script type="application/ld+json">{{ {
         '@context': 'https://schema.org',
         '@type': 'HomeAndConstructionBusiness',
@@ -103,10 +106,14 @@
                     <p class="notice" role="status">{{ message|trans }}</p>
                 {% endfor %}
                 {{ form_start(form, {attr: {class: 'contact-form', novalidate: 'novalidate'}}) }}
+                    {{ form_errors(form) }}
                     {{ form_row(form.name) }}
                     {{ form_row(form.contact) }}
                     {{ form_row(form.message) }}
                     {{ form_row(form.website) }}
+                    {% if turnstile_site_key() %}
+                        <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="contact" data-language="{{ app.request.locale }}"></div>
+                    {% endif %}
                     <p class="privacy-note">{{ 'contact.privacy'|trans({'%url%': path('site_legal', {_locale: app.request.locale}) ~ '#privacy'})|raw }}</p>
                     <button type="submit" class="btn btn-primary">{{ 'contact.send'|trans }}</button>
                 {{ form_end(form) }}

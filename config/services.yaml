@@ -6,6 +6,12 @@ parameters:
     env(BILLING_CURRENCY): 'EUR'
     env(BILLING_BRAND): 'Handy Sites'
     env(BILLING_WEBHOOKS): '0'
+    env(CLOUDFLARE_ACCOUNT_ID): ''
+    env(CLOUDFLARE_API_TOKEN): ''
+    env(TURNSTILE_HOSTNAMES_PER_WIDGET): '10'
+    env(TURNSTILE_WIDGET_MODE): 'managed'
+    env(TURNSTILE_SITE_KEY): ''
+    env(TURNSTILE_SECRET_KEY): ''
 
 services:
     _defaults:
