@@ -28,4 +28,10 @@ class DomainRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /** @return list<string> every hostname that serves a client site */
+    public function findAllHostnames(): array
+    {
+        return array_column($this->createQueryBuilder('d')->select('d.hostname')->getQuery()->getArrayResult(), 'hostname');
+    }
 }

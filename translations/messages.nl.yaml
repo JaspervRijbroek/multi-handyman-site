@@ -25,6 +25,7 @@ contact:
     message: Waarmee kunnen we helpen?
     send: Verstuur bericht
     success: Bedankt! Je bericht is verstuurd. We nemen snel contact met je op.
+    turnstile_failed: Bevestig dat je geen robot bent en verstuur je bericht opnieuw.
     privacy: 'We gebruiken je gegevens alleen om je bericht te beantwoorden. Zie ons <a href="%url%">privacybeleid</a>.'
 
 whatsapp:
@@ -52,7 +53,7 @@ legal:
     privacy:
         title: Privacybeleid
         controller: '%owner% is verantwoordelijk voor de persoonsgegevens die je via deze website verstuurt.'
-        purpose: We gebruiken de gegevens uit het contactformulier alleen om je vraag te beantwoorden en, als je dat wilt, een offerte te maken. De grondslag is je toestemming en het nemen van stappen op jouw verzoek voordat een overeenkomst wordt gesloten. We verkopen of delen je gegevens niet, behalve met partijen die deze website en de e-mail namens ons hosten.
+        purpose: We gebruiken de gegevens uit het contactformulier alleen om je vraag te beantwoorden en, als je dat wilt, een offerte te maken. De grondslag is je toestemming en het nemen van stappen op jouw verzoek voordat een overeenkomst wordt gesloten. We verkopen of delen je gegevens niet, behalve met partijen die deze website en de e-mail namens ons hosten. Om spam tegen te houden is het contactformulier beveiligd met Cloudflare Turnstile, dat je browser controleert zonder trackingcookies.
         retention: We bewaren je bericht zolang nodig is om het af te handelen en om aan wettelijke verplichtingen te voldoen.
         rights: 'Je kunt inzage, correctie of verwijdering van je gegevens vragen, of bezwaar maken tegen het gebruik ervan, door te mailen naar %email%. Je kunt ook een klacht indienen bij de Spaanse privacytoezichthouder (www.aepd.es).'
     cookies:

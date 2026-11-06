@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use App\Tenant\TenantContext;
+use App\Turnstile\Turnstile;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 final class SiteExtension extends AbstractExtension
 {
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly TenantContext $tenantContext,
+        private readonly Turnstile $turnstile,
     ) {
     }
 
@@ -23,6 +26,25 @@ final class SiteExtension extends AbstractExtension
             new TwigFilter('localized', $this->localized(...)),
             new TwigFilter('money', self::money(...)),
         ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('turnstile_site_key', $this->turnstileSiteKey(...)),
+        ];
+    }
+
+    /**
+     * Site key of the Turnstile widget for this hostname, or null when Turnstile is off.
+     *
+     * Usage: {% if turnstile_site_key() %}<div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}"></div>{% endif %}
+     */
+    public function turnstileSiteKey(): ?string
+    {
+        $host = $this->requestStack->getMainRequest()?->getHost();
+
+        return $host ? $this->turnstile->keysFor($host)?->siteKey : null;
     }
 
     /**

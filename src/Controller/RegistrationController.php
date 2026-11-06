@@ -8,6 +8,7 @@ use App\Entity\Signup;
 use App\Entity\User;
 use App\Form\SignupType;
 use App\Onboarding\OnboardingMailer;
+use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -32,33 +33,42 @@ final class RegistrationController extends AbstractController
         PasswordHasherFactoryInterface $hasherFactory,
         OnboardingMailer $mailer,
         #[Autowire(service: 'limiter.signup')] RateLimiterFactoryInterface $signupLimiter,
+        Turnstile $turnstile,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('admin');
         }
 
-        $form = $this->createForm(SignupType::class);
+        // A new Signup, so its defaults (English and Spanish) are ticked
+        $form = $this->createForm(SignupType::class, new Signup());
         $form->handleRequest($request);
 
-        // Counted for every submission, so the form cannot be used to probe which emails have an account
-        if ($form->isSubmitted() && !$signupLimiter->create($request->getClientIp())->consume()->isAccepted()) {
-            $form->addError(new FormError('Too many attempts from your connection. Please try again later, or email us.'));
-        } elseif ($form->isSubmitted() && $form->isValid()) {
-            // Bots fill in the hidden field: pretend everything went fine
-            if ($form->get(SignupType::HONEYPOT)->getData()) {
-                return $this->redirectToRoute('app_register_thanks');
+        if ($form->isSubmitted()) {
+            // Counted for every submission, so the form cannot be used to probe which emails have an account
+            if (!$signupLimiter->create($request->getClientIp())->consume()->isAccepted()) {
+                $form->addError(new FormError('Too many attempts from your connection. Please try again later, or email us.'));
+            } elseif ($form->isValid()) {
+                // Bots fill in the hidden field: pretend everything went fine
+                if ($form->get(SignupType::HONEYPOT)->getData()) {
+                    return $this->redirectToRoute('app_register_thanks');
+                }
+
+                if (!$turnstile->verify($request, 'signup')) {
+                    // Shown above the form, which keeps what was typed (passwords excepted)
+                    $form->addError(new FormError('Please confirm you are not a robot and send the form again.'));
+                } else {
+                    /** @var Signup $signup */
+                    $signup = $form->getData();
+                    // Hashed the same way as logins, so the hash can be used as-is on approval
+                    $signup->setPasswordHash($hasherFactory->getPasswordHasher(User::class)->hash($form->get('plainPassword')->getData()));
+
+                    $entityManager->persist($signup);
+                    $entityManager->flush();
+                    $mailer->notifyAdmins($signup);
+
+                    return $this->redirectToRoute('app_register_thanks');
+                }
             }
-
-            /** @var Signup $signup */
-            $signup = $form->getData();
-            // Hashed the same way as logins, so the hash can be used as-is on approval
-            $signup->setPasswordHash($hasherFactory->getPasswordHasher(User::class)->hash($form->get('plainPassword')->getData()));
-
-            $entityManager->persist($signup);
-            $entityManager->flush();
-            $mailer->notifyAdmins($signup);
-
-            return $this->redirectToRoute('app_register_thanks');
         }
 
         return $this->render('platform/register.html.twig', [

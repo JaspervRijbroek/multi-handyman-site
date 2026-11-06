@@ -25,6 +25,7 @@ contact:
     message: ¿En qué podemos ayudarle?
     send: Enviar mensaje
     success: ¡Gracias! Su mensaje ha sido enviado. Le responderemos pronto.
+    turnstile_failed: Confirme que no es un robot y vuelva a enviar su mensaje.
     privacy: 'Solo usamos sus datos para responder a su mensaje. Consulte nuestra <a href="%url%">política de privacidad</a>.'
 
 whatsapp:
@@ -52,7 +53,7 @@ legal:
     privacy:
         title: Política de privacidad
         controller: '%owner% es responsable de los datos personales que envíe a través de este sitio web.'
-        purpose: Utilizamos los datos del formulario de contacto únicamente para responder a su consulta y, si lo desea, preparar un presupuesto. La base legal es su consentimiento y la aplicación de medidas precontractuales a petición suya. No vendemos ni cedemos sus datos, salvo a los proveedores que alojan este sitio web y su correo en nuestro nombre.
+        purpose: Utilizamos los datos del formulario de contacto únicamente para responder a su consulta y, si lo desea, preparar un presupuesto. La base legal es su consentimiento y la aplicación de medidas precontractuales a petición suya. No vendemos ni cedemos sus datos, salvo a los proveedores que alojan este sitio web y su correo en nuestro nombre. Para evitar el spam, el formulario de contacto está protegido por Cloudflare Turnstile, que comprueba su navegador sin cookies de seguimiento.
         retention: Conservamos su consulta el tiempo necesario para atenderla y cumplir con las obligaciones legales.
         rights: 'Puede solicitar el acceso, la rectificación o la supresión de sus datos, u oponerse a su tratamiento, escribiendo a %email%. También puede presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).'
     cookies:

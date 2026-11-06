@@ -1,4 +1,16 @@
+{# EasyAdmin's login page with Cloudflare Turnstile (see App\EventListener\TurnstileLoginListener) and a sign-up link #}
 {% extends '@EasyAdmin/page/login.html.twig' %}
+
+{% block login_form_credentials_wrapper %}
+    {{ parent() }}
+
+    {% if turnstile_site_key() %}
+        <div class="form-group">
+            <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="login"></div>
+        </div>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+{% endblock %}
 
 {% block login_form_footer %}
     <p class="text-center mt-3 mb-0">

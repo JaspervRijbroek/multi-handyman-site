@@ -25,6 +25,7 @@ contact:
     message: What can we help with?
     send: Send message
     success: Thank you! Your message has been sent. We'll get back to you soon.
+    turnstile_failed: Please confirm you are not a robot and send your message again.
     privacy: 'We only use your details to answer your message. See our <a href="%url%">privacy policy</a>.'
 
 whatsapp:
@@ -52,7 +53,7 @@ legal:
     privacy:
         title: Privacy policy
         controller: '%owner% is responsible for the personal data you send through this website.'
-        purpose: We use the data from the contact form only to answer your enquiry and, if you wish, to prepare a quote. The legal basis is your consent and taking steps at your request before entering into a contract. We do not sell or share your data, except with providers that host this website and its email on our behalf.
+        purpose: We use the data from the contact form only to answer your enquiry and, if you wish, to prepare a quote. The legal basis is your consent and taking steps at your request before entering into a contract. We do not sell or share your data, except with providers that host this website and its email on our behalf. To block spam, the contact form is protected by Cloudflare Turnstile, which checks your browser without tracking cookies.
         retention: We keep your enquiry as long as needed to handle it and to meet legal obligations.
         rights: 'You can request access, correction or deletion of your data, or object to its use, by emailing %email%. You may also file a complaint with the Spanish Data Protection Agency (www.aepd.es).'
     cookies:

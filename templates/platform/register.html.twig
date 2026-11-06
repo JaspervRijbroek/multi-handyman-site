@@ -55,6 +55,11 @@
         {{ form_row(form.consent) }}
         {{ form_row(form.website) }}
 
+        {% if turnstile_site_key() %}
+            <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="signup"></div>
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+        {% endif %}
+
         <button type="submit" class="p-btn p-btn-primary">Send sign-up</button>
     {{ form_end(form) }}
 {% endblock %}

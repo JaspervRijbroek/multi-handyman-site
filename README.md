@@ -7,6 +7,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 - **EasyAdmin 5** for the client admin
 - Multilingual content per client (EN, ES, NL, DE, FR), with hreflang, sitemap and canonical URLs
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
+- Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
 - Spanish legal notice / privacy page generated from the client's details
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
@@ -174,6 +175,36 @@ First workday ─► automatic payment with the mandate
 
 Mollie does not issue invoices (facturas). Send those from your accounting tool.
 
+## Spam protection (Cloudflare Turnstile)
+
+The contact form on every client site, the sign-up form (`/register`) and the admin
+login use [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/). The client
+domains don't need to be on Cloudflare. A Turnstile widget only works on the hostnames
+it lists, so the app manages its widgets through the Cloudflare API:
+
+```
+Domain saved / deleted in the admin ─► app:turnstile:sync (straight away, result shown as a flash)
+Client onboarded or deleted, fixtures ─► same, at the end of the request/command
+Daily cron                           ─► same, catches up if Cloudflare was unreachable
+```
+
+- Every sync rebuilds the full list from the `domain` table plus `PLATFORM_HOST`, so it is
+  safe to repeat. `www.example.com` is left out when `example.com` is listed, because
+  Cloudflare also allows a widget on the subdomains of its hostnames.
+- A widget holds up to `TURNSTILE_HOSTNAMES_PER_WIDGET` hostnames (10 on Cloudflare's free
+  plan). When the widgets are full the app creates another one; empty ones are deleted.
+  Hostnames stay on their widget, so open pages keep working. The keys are stored in the
+  `turnstile_widget` table.
+- If a domain is not on a widget yet, or Cloudflare can't be reached, its forms still work,
+  protected by the honeypot field only. The Domains screen shows *Protected* or *Not on Cloudflare yet*.
+- Setup: create an API token with **Account > Turnstile > Edit** and put
+  `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` in `.env.local`, then run
+  `php bin/console app:turnstile:sync`. Add it to cron after the billing run:
+  `15 9 * * * cd /var/www/multi-handyman-site && php bin/console app:turnstile:sync --no-interaction`
+- Locally, without an API token: set `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` to
+  Cloudflare's test keys (see `.env.example`), which always pass on any hostname.
+  With none of these set, Turnstile is off.
+
 ## Useful commands
 
 ```bash
@@ -185,6 +216,7 @@ ddev console app:client:approve                # pending sign-ups (two demo ones
 ddev console app:client:onboard                # add a client without a sign-up
 ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
+ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
 ```
 
 ## Production (Hetzner)
@@ -196,16 +228,19 @@ Rough outline for a small Ubuntu VPS:
    `php bin/console doctrine:migrations:migrate`, `php bin/console cache:clear`.
 3. Create `.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
-   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`. Set the server timezone to
-   `Europe/Madrid` and add the daily `app:billing:run` cron job (see [Billing](#billing)).
+   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
+   `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the daily
+   `app:billing:run` and `app:turnstile:sync` cron jobs (see [Billing](#billing) and
+   [Spam protection](#spam-protection-cloudflare-turnstile)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
 5. Back up the database and `public/uploads/` daily to somewhere off the server
    (e.g. a Hetzner Storage Box), and enable `unattended-upgrades`.
 
 For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
-point their domain's A record at the server. HTTPS works on the first visit, and the
-Search Console setup completes by itself through the cron job.
+point their domain's A record at the server. HTTPS works on the first visit, the domain is
+added to Cloudflare Turnstile automatically, and the Search Console setup completes by
+itself through the cron job.
 
 Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 
