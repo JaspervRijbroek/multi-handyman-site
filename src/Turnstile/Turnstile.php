@@ -56,16 +56,9 @@ final class Turnstile
      */
     public function verify(Request $request, ?string $action = null): bool
     {
-        return $this->verifyToken(
-            $request->getHost(),
-            (string) $request->request->get(self::RESPONSE_FIELD),
-            $request->getClientIp(),
-            $action,
-        );
-    }
+        $hostname = $request->getHost();
+        $token = (string) $request->request->get(self::RESPONSE_FIELD);
 
-    public function verifyToken(string $hostname, string $token, ?string $remoteIp = null, ?string $action = null): bool
-    {
         $keys = $this->keysFor($hostname);
         if (null === $keys) {
             return true;
@@ -80,7 +73,7 @@ final class Turnstile
                 'body' => array_filter([
                     'secret' => $keys->secretKey,
                     'response' => $token,
-                    'remoteip' => $remoteIp,
+                    'remoteip' => $request->getClientIp(),
                 ]),
                 'timeout' => 10,
             ])->toArray(false);

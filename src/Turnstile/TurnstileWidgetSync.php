@@ -141,7 +141,7 @@ final class TurnstileWidgetSync
                 }
             }
 
-            $widget->setHostnames($list)->markSynced();
+            $widget->setHostnames($list);
             $this->entityManager->flush();
         }
 
@@ -149,7 +149,7 @@ final class TurnstileWidgetSync
         $number = \count($widgets);
         foreach (array_chunk($unplaced, $capacity) as $list) {
             $created = $this->api->createWidget($this->widgetName(++$number), $list, $this->widgetMode);
-            $widget = (new TurnstileWidget($created['sitekey'], $created['secret']))->setHostnames($list)->markSynced();
+            $widget = (new TurnstileWidget($created['sitekey'], $created['secret']))->setHostnames($list);
             $this->entityManager->persist($widget);
             $this->entityManager->flush();
             ++$stats['created'];

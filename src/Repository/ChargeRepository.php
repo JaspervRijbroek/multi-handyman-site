@@ -48,10 +48,4 @@ class ChargeRepository extends ServiceEntityRepository
     {
         return $this->findBy(['status' => Charge::PENDING]);
     }
-
-    /** @return list<Charge> */
-    public function findByMolliePayment(string $paymentId): array
-    {
-        return $this->findBy(['molliePaymentId' => $paymentId]);
-    }
 }
