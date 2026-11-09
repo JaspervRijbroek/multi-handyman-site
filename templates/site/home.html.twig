@@ -11,6 +11,7 @@
         'addressLocality': tenant.city,
         'addressCountry': tenant.country,
     }|filter(v => v is not empty) : null %}
+    {# Includes the star rating for Google: only published reviews, the same ones shown on this page #}
     <script type="application/ld+json">{{ {
         '@context': 'https://schema.org',
         '@type': 'HomeAndConstructionBusiness',
@@ -25,6 +26,20 @@
         'sameAs': tenant.googleBusinessUrl ? [tenant.googleBusinessUrl] : null,
         'areaServed': tenant.serviceArea,
         'logo': tenant.logoName ? absolute_url(asset('uploads/logos/' ~ tenant.logoName)) : null,
+        'aggregateRating': tenant.reviewCount ? {
+            '@type': 'AggregateRating',
+            'ratingValue': tenant.reviewAverage,
+            'reviewCount': tenant.reviewCount,
+            'bestRating': 5,
+            'worstRating': 1,
+        } : null,
+        'review': reviews|map(review => {
+            '@type': 'Review',
+            'author': {'@type': 'Person', 'name': review.authorName},
+            'datePublished': review.createdAt|date('Y-m-d'),
+            'reviewBody': review.text,
+            'reviewRating': {'@type': 'Rating', 'ratingValue': review.rating, 'bestRating': 5, 'worstRating': 1},
+        }),
     }|filter(v => v is not empty)|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endblock %}
 

@@ -7,13 +7,11 @@ namespace App\Controller;
 use App\Entity\Enquiry;
 use App\Entity\Review;
 use App\Entity\Tenant;
-use App\Entity\Trade;
 use App\Form\ContactType;
 use App\Form\ReviewType;
 use App\Repository\ProjectRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\ServiceRepository;
-use App\Search\ProSearch;
 use App\Tenant\TenantContext;
 use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,17 +42,13 @@ final class SiteController extends AbstractController
     }
 
     #[Route('/', name: 'site_root', methods: ['GET'])]
-    public function root(Request $request, ProSearch $search): Response
+    public function root(Request $request): Response
     {
         $tenant = $this->tenantContext->get();
 
-        // The platform host: the "find a pro" homepage
+        // The platform host: the "find a pro" homepage in the visitor's language
         if (null === $tenant) {
-            return $this->render('platform/home.html.twig', [
-                'trades' => Trade::cases(),
-                'trade_counts' => $search->tradeCounts(),
-                'towns' => $search->towns(),
-            ]);
+            return $this->redirectToRoute('site_home', ['_locale' => PlatformController::preferredLocale($request)]);
         }
 
         $locale = $request->getPreferredLanguage($tenant->getLocales()) ?? $tenant->getDefaultLocale();
@@ -75,6 +69,16 @@ final class SiteController extends AbstractController
         TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
     ): Response {
+        // The same URL on the platform host is the "find a pro" homepage
+        if (!$this->tenantContext->has()) {
+            return $this->forward(PlatformController::class.'::home', [
+                '_locale' => $request->getLocale(),
+                // Kept for the language switch and hreflang links in the template
+                '_route' => 'site_home',
+                '_route_params' => ['_locale' => $request->getLocale()],
+            ]);
+        }
+
         $tenant = $this->siteTenant($request);
 
         $enquiry = (new Enquiry())->setTenant($tenant)->setLocale($request->getLocale());

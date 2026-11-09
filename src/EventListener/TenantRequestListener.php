@@ -64,7 +64,8 @@ final readonly class TenantRequestListener
         }
 
         // The admin, sign-up, password, payment and search pages only live on the platform host
-        if (preg_match('#^/(admin|login|logout|register|set-password|billing|search|for-professionals)(/|$)#', $path)) {
+        // (some of them behind a language, e.g. /es/search)
+        if (preg_match('#^/([a-z]{2}/)?(admin|login|logout|register|set-password|billing|search|for-professionals)(/|$)#', $path)) {
             throw new NotFoundHttpException();
         }
 

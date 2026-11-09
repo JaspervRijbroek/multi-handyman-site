@@ -1,21 +1,19 @@
 {% extends 'platform/layout.html.twig' %}
+{% trans_default_domain 'platform' %}
 
-{% block title %}Get your website | {{ brand }}{% endblock %}
+{% block title %}{{ 'signup.page_title'|trans }} | {{ brand }}{% endblock %}
 {% block robots %}index, follow{% endblock %}
 
 {% block body %}
-    <p class="p-eyebrow">Sign up</p>
-    <h1>Get your website</h1>
-    <p class="p-text">
-        Tell us about your business. We check your details, build your site with a map of where
-        you are, and connect it to Google Search. You get an email as soon as it is live, usually within two working days.
-    </p>
+    <p class="p-eyebrow">{{ 'signup.eyebrow'|trans }}</p>
+    <h1>{{ 'signup.page_title'|trans }}</h1>
+    <p class="p-text">{{ 'signup.intro'|trans }}</p>
 
     {{ form_start(form, {attr: {class: 'p-form', novalidate: 'novalidate'}}) }}
         {{ form_errors(form) }}
 
         <fieldset>
-            <legend>Your business</legend>
+            <legend>{{ 'signup.legend_business'|trans }}</legend>
             {{ form_row(form.businessName) }}
             {{ form_row(form.contactName) }}
             <div class="p-form-2">
@@ -26,8 +24,8 @@
         </fieldset>
 
         <fieldset>
-            <legend>Address</legend>
-            <p class="p-form-note">Shown on your website and its map. Working from home? You can hide the street later and show only your town.</p>
+            <legend>{{ 'signup.legend_address'|trans }}</legend>
+            <p class="p-form-note">{{ 'signup.address_note'|trans }}</p>
             {{ form_row(form.streetAddress) }}
             <div class="p-form-2">
                 {{ form_row(form.postalCode) }}
@@ -39,14 +37,14 @@
         </fieldset>
 
         <fieldset>
-            <legend>Website</legend>
+            <legend>{{ 'signup.legend_website'|trans }}</legend>
             {{ form_row(form.domain) }}
             {{ form_row(form.locales) }}
             {{ form_row(form.defaultLocale) }}
         </fieldset>
 
         <fieldset>
-            <legend>Your login</legend>
+            <legend>{{ 'signup.legend_login'|trans }}</legend>
             {{ form_row(form.email) }}
             {{ form_row(form.plainPassword.first) }}
             {{ form_row(form.plainPassword.second) }}
@@ -56,10 +54,10 @@
         {{ form_row(form.website) }}
 
         {% if turnstile_site_key() %}
-            <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="signup"></div>
+            <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="signup" data-language="{{ app.request.locale }}"></div>
             <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
         {% endif %}
 
-        <button type="submit" class="p-btn p-btn-primary">Send sign-up</button>
+        <button type="submit" class="p-btn p-btn-primary">{{ 'signup.submit'|trans }}</button>
     {{ form_end(form) }}
 {% endblock %}

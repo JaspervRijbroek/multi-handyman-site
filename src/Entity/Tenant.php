@@ -633,15 +633,6 @@ class Tenant
         return \in_array($trade, $this->trades, true);
     }
 
-    /** @return list<string> e.g. ['Plumbing', 'Painting'] */
-    public function getTradeLabels(): array
-    {
-        return array_values(array_filter(array_map(
-            static fn (string $value) => Trade::tryFrom($value)?->label(),
-            $this->trades,
-        )));
-    }
-
     public function getReviewCount(): int
     {
         return $this->reviewCount;

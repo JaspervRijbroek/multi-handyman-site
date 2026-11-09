@@ -1,55 +1,27 @@
 {#
-    Page for tradespeople (/for-professionals) on PLATFORM_HOST.
-    Change the price and contact details here; everything else is copy.
+    Page for tradespeople (/{locale}/for-professionals) on PLATFORM_HOST.
+    Change the price and contact details here; the texts are in translations/platform.*.yaml.
     The brand name comes from BILLING_BRAND.
 #}
 {% extends 'platform/base.html.twig' %}
+{% trans_default_domain 'platform' %}
 
 {% set price = 59 %}
 {% set currency = 'EUR' %}
 {% set contact_email = 'hello@example.com' %}
 {% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
-{% set languages = ['English', 'Español', 'Nederlands', 'Deutsch', 'Français'] %}
-
-{% set faqs = [
-    {
-        q: 'What does “findable by AI assistants” actually mean?',
-        a: 'More and more people ask ChatGPT, Gemini, Claude or Perplexity things like “find me an English-speaking plumber near Jávea”. Those assistants read websites to answer. Your site gives them clean, structured facts — what you do, where you work, how to reach you — so they can recommend you with confidence instead of guessing.',
-    },
-    {
-        q: 'Is there a setup fee or a long contract?',
-        a: 'No setup fee. You pay one monthly price that covers the website, hosting, the Google setup and ongoing SEO.',
-    },
-    {
-        q: 'Do I need to know anything about websites?',
-        a: 'No. We build the site, connect your domain and set up Google for you. Afterwards you can update your services and add photos of recent work from a simple admin — or just send them to us.',
-    },
-    {
-        q: 'Can I use my own domain name?',
-        a: 'Yes. Bring the domain you already have or we help you register one. HTTPS is included and works from the first visit.',
-    },
-    {
-        q: 'Which languages are supported?',
-        a: 'English, Spanish, Dutch, German and French. Pick the languages your customers speak; each one gets its own pages so Google and AI assistants show the right version to the right person.',
-    },
-    {
-        q: 'Is it legal for a business in Spain?',
-        a: 'Every site comes with a legal notice and privacy page (LSSI and GDPR) generated from your business details, and no tracking cookie banner is needed. We still recommend having your gestor check the texts.',
-    },
-] %}
-
+{% set language_count = 5 %}
 {% set json_flags = constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
-{% block title %}{{ brand }} | Websites for trades in Spain that Google and AI assistants can find{% endblock %}
+
+{% block title %}{{ 'pros.title'|trans({'%brand%': brand}) }}{% endblock %}
 
 {% block meta %}
-    <meta name="description" content="Multilingual websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT. Google setup and SEO included, one monthly price.">
-    <link rel="canonical" href="{{ url('platform_pros') }}">
-
-    <meta property="og:title" content="{{ brand }}: get found on Google and by AI assistants">
-    <meta property="og:description" content="Multilingual websites for trades in Spain. Google Maps, Search Console, Analytics and SEO included.">
+    <meta name="description" content="{{ 'pros.description'|trans({'%brand%': brand}) }}">
+    <link rel="canonical" href="{{ url('platform_pros', {_locale: locale}) }}">
+    <meta property="og:title" content="{{ 'pros.og_title'|trans({'%brand%': brand}) }}">
+    <meta property="og:description" content="{{ 'pros.description'|trans({'%brand%': brand}) }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('platform_pros') }}">
-
+    <meta property="og:url" content="{{ url('platform_pros', {_locale: locale}) }}">
 {% endblock %}
 
 {% block head %}
@@ -60,14 +32,14 @@
             {
                 '@type': 'Organization',
                 'name': brand,
-                'url': url('site_root'),
+                'url': url('site_home', {_locale: locale}),
                 'email': contact_email,
                 'areaServed': 'ES',
             },
             {
                 '@type': 'Service',
-                'name': brand ~ ' website package',
-                'serviceType': 'Website, local SEO and Google setup for trades',
+                'name': 'pros.plan_name'|trans({'%brand%': brand}),
+                'serviceType': 'pros.eyebrow'|trans,
                 'provider': { '@type': 'Organization', 'name': brand },
                 'areaServed': 'ES',
                 'availableLanguage': ['en', 'es', 'nl', 'de', 'fr'],
@@ -86,10 +58,10 @@
             },
             {
                 '@type': 'FAQPage',
-                'mainEntity': faqs|map(f => {
+                'mainEntity': (1..6)|map(i => {
                     '@type': 'Question',
-                    'name': f.q,
-                    'acceptedAnswer': { '@type': 'Answer', 'text': f.a },
+                    'name': ('pros.faq' ~ i ~ '_q')|trans,
+                    'acceptedAnswer': { '@type': 'Answer', 'text': ('pros.faq' ~ i ~ '_a')|trans },
                 }),
             },
         ],
@@ -98,19 +70,15 @@
 
 {% block main %}
     <main>
-        {# ── Hero ─────────────────────────────────────────────── #}
         <section class="p-hero">
             <div class="p-container p-hero-grid">
                 <div class="p-hero-copy">
-                    <p class="p-eyebrow">Websites for trades in Spain</p>
-                    <h1>More work from <span>your own</span> town.</h1>
-                    <p class="p-lead">
-                        Get a professional website, show up on Google Maps, Google Search and in AI assistants
-                        like ChatGPT, and let customers contact you directly. We handle the technical side so you can keep working.
-                    </p>
+                    <p class="p-eyebrow">{{ 'pros.eyebrow'|trans }}</p>
+                    <h1>{{ 'pros.h1_start'|trans }}<span>{{ 'pros.h1_highlight'|trans }}</span>{{ 'pros.h1_end'|trans }}</h1>
+                    <p class="p-lead">{{ 'pros.lead'|trans }}</p>
                     <div class="p-cta">
-                        <a class="p-btn p-btn-primary" href="{{ path('app_register') }}">Get started →</a>
-                        <a class="p-btn p-btn-ghost" href="#pricing">See pricing</a>
+                        <a class="p-btn p-btn-primary" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
+                        <a class="p-btn p-btn-ghost" href="#pricing">{{ 'pros.see_pricing'|trans }}</a>
                     </div>
                 </div>
 
@@ -135,132 +103,99 @@
             </div>
         </section>
 
-        {# ── Why ──────────────────────────────────────────────── #}
         <section id="why" class="p-section p-section-blue">
             <div class="p-container">
-                <h2>Why tradespeople choose {{ brand }}</h2>
+                <h2>{{ 'pros.why_title'|trans({'%brand%': brand}) }}</h2>
                 <div class="p-reasons">
-                    <article>
-                        <span class="p-num">01</span>
-                        <h3>No commission</h3>
-                        <p>Customers call, WhatsApp or email you directly. Every euro of the job is yours.</p>
-                    </article>
-                    <article>
-                        <span class="p-num">02</span>
-                        <h3>Your own website</h3>
-                        <p>A real website on your own domain, with your services, your projects and your work area, in {{ languages|length }} languages.</p>
-                    </article>
-                    <article>
-                        <span class="p-num">03</span>
-                        <h3>Found by customers nearby</h3>
-                        <p>Structured data, sitemaps and one page per language, so Google, Google Maps and AI assistants know what you do and where.</p>
-                    </article>
-                    <article>
-                        <span class="p-num">04</span>
-                        <h3>We do the technical work</h3>
-                        <p>Hosting, HTTPS, backups, Google setup and updates are taken care of. You update your projects from your phone.</p>
-                    </article>
+                    {% for i in 1..4 %}
+                        <article>
+                            <span class="p-num">0{{ i }}</span>
+                            <h3>{{ ('pros.reason' ~ i ~ '_title')|trans }}</h3>
+                            <p>{{ ('pros.reason' ~ i ~ '_text')|trans({'%brand%': brand, '%count%': language_count}) }}</p>
+                        </article>
+                    {% endfor %}
                 </div>
             </div>
         </section>
 
-        {# ── How it works ─────────────────────────────────────── #}
         <section class="p-section">
             <div class="p-container">
                 <div class="p-head">
-                    <p class="p-eyebrow">How it works</p>
-                    <h2>Live within a few days</h2>
+                    <p class="p-eyebrow">{{ 'pros.how_eyebrow'|trans }}</p>
+                    <h2>{{ 'pros.how_title'|trans }}</h2>
                 </div>
                 <ol class="p-steps">
-                    <li>
-                        <h3>Tell us about your business</h3>
-                        <p>Fill in the sign-up form: what you do, where you work and which languages you need.</p>
-                    </li>
-                    <li>
-                        <h3>We build and connect everything</h3>
-                        <p>We check your details, set up your website and domain, and connect it to Google.</p>
-                    </li>
-                    <li>
-                        <h3>Customers find you</h3>
-                        <p>On Google, on Maps and through AI assistants. You get the calls; we keep it all running.</p>
-                    </li>
+                    {% for i in 1..3 %}
+                        <li>
+                            <h3>{{ ('pros.step' ~ i ~ '_title')|trans }}</h3>
+                            <p>{{ ('pros.step' ~ i ~ '_text')|trans }}</p>
+                        </li>
+                    {% endfor %}
                 </ol>
             </div>
         </section>
 
-        {# ── Pricing ──────────────────────────────────────────── #}
         <section id="pricing" class="p-section p-section-alt">
             <div class="p-container p-mid">
                 <div class="p-head p-center">
-                    <h2>One plan. Everything included.</h2>
-                    <p class="p-text p-center">No setup fee and no commission on jobs. One new job from the site usually pays for the year.</p>
+                    <h2>{{ 'pros.price_title'|trans }}</h2>
+                    <p class="p-text p-center">{{ 'pros.price_text'|trans }}</p>
                 </div>
                 <div class="p-plan">
                     <div class="p-plan-price">
-                        <span class="p-plan-name">{{ brand }} complete</span>
-                        <p class="p-price"><strong>€{{ price }}</strong> / month</p>
-                        <span class="p-plan-sub">excl. VAT · no setup fee</span>
-                        <a class="p-btn p-btn-light" href="{{ path('app_register') }}">Get started →</a>
+                        <span class="p-plan-name">{{ 'pros.plan_name'|trans({'%brand%': brand}) }}</span>
+                        <p class="p-price"><strong>€{{ price }}</strong> {{ 'pros.per_month'|trans }}</p>
+                        <span class="p-plan-sub">{{ 'pros.plan_note'|trans }}</span>
+                        <a class="p-btn p-btn-light" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
                     </div>
                     <div class="p-plan-body">
-                        <p class="p-eyebrow">What’s included</p>
+                        <p class="p-eyebrow">{{ 'pros.included'|trans }}</p>
                         <ul class="p-included">
-                            <li><b>SEO optimisation</b><span>Page titles, descriptions and texts set up so Google shows you for jobs in your towns, in every language.</span></li>
-                            <li><b>AI search optimisation</b><span>Structured information so assistants like ChatGPT and Gemini can find and recommend you.</span></li>
-                            <li><b>Google Search Console</b><span>Connected and verified with your sitemap, so every page and language gets indexed.</span></li>
-                            <li><b>Google Maps</b><span>We set up your Google Business Profile so you appear on the map.</span></li>
-                            <li><b>Future updates</b><span>Every new feature and improvement we build is added to your plan at no extra cost.</span></li>
+                            {% for i in 1..5 %}
+                                <li><b>{{ ('pros.inc' ~ i ~ '_title')|trans }}</b><span>{{ ('pros.inc' ~ i ~ '_text')|trans }}</span></li>
+                            {% endfor %}
                         </ul>
                         <div class="p-more">
-                            <p class="p-eyebrow">And more</p>
+                            <p class="p-eyebrow">{{ 'pros.more'|trans }}</p>
                             <ul class="p-chips">
-                                <li>Listed in the {{ brand }} search and map</li>
-                                <li>Customer reviews you approve</li>
-                                <li>Your own domain with HTTPS</li>
-                                <li>{{ languages|length }} languages</li>
-                                <li>Contact form straight to your inbox</li>
-                                <li>WhatsApp &amp; click-to-call</li>
-                                <li>Project gallery you update yourself</li>
-                                <li>Legal pages for Spain</li>
-                                <li>No cookie banner needed</li>
-                                <li>Hosting, backups &amp; updates</li>
+                                {% for i in 1..10 %}
+                                    <li>{{ ('pros.more' ~ i)|trans({'%brand%': brand, '%count%': language_count}) }}</li>
+                                {% endfor %}
                             </ul>
                         </div>
                         {% if contact_whatsapp %}
-                            <a class="p-btn p-btn-ghost" href="https://wa.me/{{ contact_whatsapp }}" target="_blank" rel="noopener">Ask a question on WhatsApp</a>
+                            <a class="p-btn p-btn-ghost" href="https://wa.me/{{ contact_whatsapp }}" target="_blank" rel="noopener">{{ 'pros.whatsapp'|trans }}</a>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </section>
 
-        {# ── FAQ ──────────────────────────────────────────────── #}
         <section id="faq" class="p-section">
             <div class="p-container p-narrow">
                 <div class="p-head">
-                    <p class="p-eyebrow">FAQ</p>
-                    <h2>Questions we often get</h2>
+                    <p class="p-eyebrow">{{ 'pros.faq_eyebrow'|trans }}</p>
+                    <h2>{{ 'pros.faq_title'|trans }}</h2>
                 </div>
                 <div class="p-faq">
-                    {% for faq in faqs %}
+                    {% for i in 1..6 %}
                         <details{% if loop.first %} open{% endif %}>
-                            <summary>{{ faq.q }}</summary>
-                            <p>{{ faq.a }}</p>
+                            <summary>{{ ('pros.faq' ~ i ~ '_q')|trans }}</summary>
+                            <p>{{ ('pros.faq' ~ i ~ '_a')|trans }}</p>
                         </details>
                     {% endfor %}
                 </div>
             </div>
         </section>
 
-        {# ── Final CTA ────────────────────────────────────────── #}
         <section class="p-section p-section-end">
             <div class="p-container p-mid">
                 <div class="p-final-inner">
                     <div>
-                        <h2>Ready when you are.</h2>
-                        <p>Sign-up takes about five minutes. We check your details and your website usually goes live within two working days. €{{ price }} per month, everything included.</p>
+                        <h2>{{ 'pros.final_title'|trans }}</h2>
+                        <p>{{ 'pros.final_text'|trans({'%price%': price}) }}</p>
                     </div>
-                    <a class="p-btn p-btn-primary" href="{{ path('app_register') }}">Get started →</a>
+                    <a class="p-btn p-btn-primary" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
                 </div>
             </div>
         </section>

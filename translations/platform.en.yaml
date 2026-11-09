@@ -1,0 +1,194 @@
+# Platform pages on PLATFORM_HOST (homepage, search, for professionals, sign-up).
+# Client websites use messages.*.yaml.
+
+nav:
+    find: Find a pro
+    pros: For professionals
+    login: Client login
+    list: List your business
+    language: Language
+
+footer:
+    tagline: Local professionals across Spain
+
+trade:
+    handyman: Handyman
+    plumbing: Plumbing
+    electrical: Electrical
+    painting: Painting
+    carpentry: Carpentry
+    tiling: Tiling
+    renovation: Building & renovation
+    roofing: Roofing
+    air-conditioning: Air conditioning
+    garden: Garden
+    pool: Pool care
+    locksmith: Locksmith
+
+home:
+    title: '%brand% | Find a trusted local handyman, plumber or builder in Spain'
+    description: Find local tradespeople in Spain by trade and town. See their work and reviews, and contact them directly. No middleman, no commission.
+    og_title: '%brand%: good hands, just down the street'
+    eyebrow: ¡Hola, vecino! · Local pros across Spain
+    h1_start: 'Good hands, '
+    h1_highlight: just down
+    h1_end: ' the street.'
+    lead: Find a handyman, plumber, painter or builder near you. See their work and what neighbours say, then contact them directly.
+    popular: 'Popular:'
+    trades_title: Every trade, close to home
+    trades_text: Pick a trade to see the pros near you.
+    trade_count: '{0} Coming soon|{1} 1 pro|]1,Inf[ %count% pros'
+    step1_title: Search your town
+    step1_text: Choose what needs doing and where. We show the pros who work near you, nearest first.
+    step2_title: Compare their work
+    step2_text: Every pro has their own website with recent jobs, the towns they cover and reviews from customers.
+    step3_title: Contact them directly
+    step3_text: 'Call, WhatsApp or send a message. No middleman and no fees: the agreement is between you and them.'
+    cta_title: Your own website, and found by customers nearby.
+    cta_text: A professional website with your work and reviews, set up on Google, and listed here. No commission on jobs.
+    cta_button: See how it works
+
+search_form:
+    what: What needs doing?
+    any: Any trade
+    where: Where in Spain?
+    placeholder: Town, e.g. Jávea
+    button: Search
+
+search:
+    title_any: Local pros
+    heading_near: '%what% near %town%'
+    description: '%what%: see their work and reviews, and contact them directly.'
+    count: '{0} No pros|{1} 1 pro|]1,Inf[ %count% pros'
+    within: 'within %km% km'
+    sort: Sort
+    nearest: Nearest
+    rating: Highest rated
+    not_found: 'We couldn’t find “%town%”. Check the spelling or try a nearby town. Showing all pros for now.'
+    empty_title: No pros here yet
+    empty_text: Try another trade or a bigger town nearby.
+    show_all: Show all pros
+    reviews: '{1} 1 review|]1,Inf[ %count% reviews'
+    no_reviews: No reviews yet
+    view_site: View website
+    call: Call
+    map_show: Show on map
+    map_note: The map is loaded from OpenStreetMap when you click.
+    pages: Pages
+    page: 'Page %page% of %pages%'
+    previous: Previous
+    next: Next
+
+pros:
+    title: '%brand% | Websites for trades in Spain that Google and AI assistants can find'
+    description: Websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT, and listed in the %brand% search. One monthly price.
+    og_title: '%brand%: get found on Google and by AI assistants'
+    eyebrow: Websites for trades in Spain
+    h1_start: 'More work from '
+    h1_highlight: your own
+    h1_end: ' town.'
+    lead: Get a professional website, show up on Google Maps, Google Search and in AI assistants like ChatGPT, and let customers contact you directly. We handle the technical side so you can keep working.
+    cta: Get started
+    see_pricing: See pricing
+    why_title: Why tradespeople choose %brand%
+    reason1_title: No commission
+    reason1_text: Customers call, WhatsApp or email you directly. Every euro of the job is yours.
+    reason2_title: Your own website
+    reason2_text: A real website on your own domain, with your services, your projects, your reviews and your work area, in %count% languages.
+    reason3_title: Found by customers nearby
+    reason3_text: Listed in the %brand% search, with structured data and one page per language, so Google, Google Maps and AI assistants know what you do and where.
+    reason4_title: We do the technical work
+    reason4_text: Hosting, HTTPS, backups, Google setup and updates are taken care of. You update your projects from your phone.
+    how_eyebrow: How it works
+    how_title: Live within a few days
+    step1_title: Tell us about your business
+    step1_text: 'Fill in the sign-up form: what you do, where you work and which languages you need.'
+    step2_title: We build and connect everything
+    step2_text: We check your details, set up your website and domain, and connect it to Google.
+    step3_title: Customers find you
+    step3_text: On Google, on Maps, in our search and through AI assistants. You get the calls; we keep it all running.
+    price_title: One plan. Everything included.
+    price_text: No setup fee and no commission on jobs. One new job from the site usually pays for the year.
+    plan_name: '%brand% complete'
+    per_month: / month
+    plan_note: excl. VAT · no setup fee
+    included: What’s included
+    inc1_title: SEO optimisation
+    inc1_text: Page titles, descriptions and texts set up so Google shows you for jobs in your towns, in every language.
+    inc2_title: AI search optimisation
+    inc2_text: Structured information so assistants like ChatGPT and Gemini can find and recommend you.
+    inc3_title: Google Search Console
+    inc3_text: Connected and verified with your sitemap, so every page and language gets indexed.
+    inc4_title: Google Maps
+    inc4_text: We set up your Google Business Profile so you appear on the map.
+    inc5_title: Future updates
+    inc5_text: Every new feature and improvement we build is added to your plan at no extra cost.
+    more: And more
+    more1: Listed in the %brand% search and map
+    more2: Customer reviews you approve
+    more3: Your own domain with HTTPS
+    more4: '%count% languages'
+    more5: Contact form straight to your inbox
+    more6: WhatsApp & click-to-call
+    more7: Project gallery you update yourself
+    more8: Legal pages for Spain
+    more9: No cookie banner needed
+    more10: Hosting, backups & updates
+    whatsapp: Ask a question on WhatsApp
+    faq_eyebrow: FAQ
+    faq_title: Questions we often get
+    faq1_q: What does “findable by AI assistants” actually mean?
+    faq1_a: 'More and more people ask ChatGPT, Gemini, Claude or Perplexity things like “find me an English-speaking plumber near Jávea”. Those assistants read websites to answer. Your site gives them clean, structured facts — what you do, where you work, how to reach you — so they can recommend you with confidence instead of guessing.'
+    faq2_q: Is there a setup fee or a long contract?
+    faq2_a: No setup fee. You pay one monthly price that covers the website, hosting, the Google setup and ongoing SEO.
+    faq3_q: Do I need to know anything about websites?
+    faq3_a: No. We build the site, connect your domain and set up Google for you. Afterwards you can update your services and add photos of recent work from a simple admin — or just send them to us.
+    faq4_q: Can I use my own domain name?
+    faq4_a: Yes. Bring the domain you already have or we help you register one. HTTPS is included and works from the first visit.
+    faq5_q: Which languages are supported?
+    faq5_a: English, Spanish, Dutch, German and French. Pick the languages your customers speak; each one gets its own pages so Google and AI assistants show the right version to the right person.
+    faq6_q: Is it legal for a business in Spain?
+    faq6_a: Every site comes with a legal notice and privacy page (LSSI and GDPR) generated from your business details, and no tracking cookie banner is needed. We still recommend having your gestor check the texts.
+    final_title: Ready when you are.
+    final_text: Sign-up takes about five minutes. We check your details and your website usually goes live within two working days. €%price% per month, everything included.
+
+signup:
+    page_title: Get your website
+    eyebrow: Sign up
+    intro: Tell us about your business. We check your details, build your site with a map of where you are, and connect it to Google Search. You get an email as soon as it is live, usually within two working days.
+    legend_business: Your business
+    legend_address: Address
+    address_note: Shown on your website and its map. Working from home? You can hide the street later and show only your town.
+    legend_website: Website
+    legend_login: Your login
+    submit: Send sign-up
+    too_many: Too many attempts from your connection. Please try again later, or email us.
+    turnstile: Please confirm you are not a robot and send the form again.
+    business_name: Business name
+    contact_name: Your name
+    email: Email
+    email_help: This becomes your login, and website enquiries are sent here.
+    phone: Phone
+    whatsapp: WhatsApp number
+    whatsapp_help: Leave empty if it is the same as your phone.
+    street: Street and number
+    postal_code: Postal code
+    town: Town
+    country: Country
+    service_area: Towns and areas you work in
+    service_area_placeholder: e.g. Jávea, Dénia, Moraira and surroundings
+    domain: Your domain name
+    domain_help: Only if you already have one, e.g. myhandyman.es. No domain yet? We help you choose one.
+    locales: Languages for your website
+    default_locale: Main language
+    tax_id: NIF / NIE / CIF
+    tax_id_help: For the legal notice on your website. You can add it later.
+    message: What do you do? Anything else we should know?
+    password: Choose a password
+    password_repeat: Repeat password
+    consent: I agree that these details are stored to set up my website and to contact me about it.
+    honeypot: Leave this field empty
+    thanks_title: Thank you!
+    thanks_eyebrow: Sign-up received
+    thanks_text: We received your details and will check them shortly. As soon as your website is set up, you get an email with your login. Questions in the meantime? Just reply to that email.
+    thanks_back: Back to the homepage

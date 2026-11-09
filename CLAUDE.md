@@ -56,7 +56,7 @@ src/
   Search/                  The platform "find a pro" search
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
-translations/              messages.{en,es,nl}.yaml
+translations/              messages.{en,es,nl}.yaml (client sites), platform.{es,en}.yaml (platform pages)
 ```
 
 ## Multi-tenancy rules (important)

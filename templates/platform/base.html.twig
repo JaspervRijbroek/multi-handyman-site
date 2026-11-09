@@ -1,13 +1,28 @@
 {# Frame of the public pages on PLATFORM_HOST. The brand name comes from BILLING_BRAND. #}
+{% trans_default_domain 'platform' %}
 {% set brand = billing_brand %}
+{% set locale = app.request.locale %}
+{% set route = app.request.attributes.get('_route') %}
+{% set route_params = app.request.attributes.get('_route_params')|default({}) %}
+{% set platform_locales = constant('App\\Controller\\PlatformController::LOCALES') %}
+{# Language for the links in the header and footer #}
+{% set link_locale = locale in platform_locales ? locale : platform_locales|first %}
+{# Pages without a language in the URL (set password) get no language switch #}
+{% set locales = route_params._locale is defined ? platform_locales : [] %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ locale }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
     {% block meta %}{% endblock %}
     <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    {% for alt_locale in locales %}
+        <link rel="alternate" hreflang="{{ alt_locale }}" href="{{ url(route, route_params|merge({_locale: alt_locale})) }}">
+    {% endfor %}
+    {% if locales %}
+        <link rel="alternate" hreflang="x-default" href="{{ url(route, route_params|merge({_locale: locales|first})) }}">
+    {% endif %}
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="preload" href="{{ asset('fonts/young-serif.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
@@ -17,13 +32,23 @@
     <div class="p-stripe" aria-hidden="true"></div>
     <header class="p-header">
         <div class="p-container p-header-inner">
-            <a class="p-brand" href="{{ path('site_root') }}"><span class="p-mark" aria-hidden="true"></span>{{ brand|lower }}</a>
+            <a class="p-brand" href="{{ path('site_home', {_locale: link_locale}) }}"><span class="p-mark" aria-hidden="true"></span>{{ brand|lower }}</a>
             <nav class="p-nav" aria-label="Main">
-                <a href="{{ path('platform_search') }}">Find a pro</a>
-                <a href="{{ path('platform_pros') }}">For professionals</a>
-                <a href="{{ path('app_login') }}">Client login</a>
+                <a href="{{ path('platform_search', {_locale: link_locale}) }}">{{ 'nav.find'|trans }}</a>
+                <a href="{{ path('platform_pros', {_locale: link_locale}) }}">{{ 'nav.pros'|trans }}</a>
+                <a href="{{ path('app_login') }}">{{ 'nav.login'|trans }}</a>
             </nav>
-            <a class="p-btn p-btn-ghost" href="{{ path('app_register') }}">List your business</a>
+            {% if locales|length > 1 %}
+                <nav class="p-lang" aria-label="{{ 'nav.language'|trans }}">
+                    {% for alt_locale in locales %}
+                        {# Keeps the search (trade, town, page) when switching language #}
+                        <a href="{{ path(route, app.request.query.all|merge(route_params)|merge({_locale: alt_locale})) }}"
+                           hreflang="{{ alt_locale }}" lang="{{ alt_locale }}"
+                           {% if alt_locale == locale %}aria-current="true"{% endif %}>{{ alt_locale|upper }}</a>
+                    {% endfor %}
+                </nav>
+            {% endif %}
+            <a class="p-btn p-btn-ghost" href="{{ path('app_register', {_locale: link_locale}) }}">{{ 'nav.list'|trans }}</a>
         </div>
     </header>
 
@@ -33,10 +58,10 @@
         <div class="p-container p-footer-inner">
             <span class="p-footer-brand">{{ brand|lower }}</span>
             <p>
-                &copy; {{ 'now'|date('Y') }} {{ brand }} · Local professionals across Spain
-                · <a href="{{ path('platform_search') }}">Find a pro</a>
-                · <a href="{{ path('platform_pros') }}">For professionals</a>
-                · <a href="{{ path('app_login') }}">Client login</a>
+                &copy; {{ 'now'|date('Y') }} {{ brand }} · {{ 'footer.tagline'|trans }}
+                · <a href="{{ path('platform_search', {_locale: link_locale}) }}">{{ 'nav.find'|trans }}</a>
+                · <a href="{{ path('platform_pros', {_locale: link_locale}) }}">{{ 'nav.pros'|trans }}</a>
+                · <a href="{{ path('app_login') }}">{{ 'nav.login'|trans }}</a>
             </p>
         </div>
     </footer>

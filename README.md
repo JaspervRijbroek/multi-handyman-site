@@ -74,23 +74,32 @@ Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 
 The platform brand (**Manitas** by default) comes from `BILLING_BRAND`.
 
-**Platform pages** on `PLATFORM_HOST`: `/` is the "find a pro" homepage, `/search` the results,
-`/for-professionals` the page for tradespeople with pricing (edit the price and FAQ in
-`templates/platform/pros.html.twig`). These paths return 404 on client sites.
+**Platform pages** on `PLATFORM_HOST` are in Spanish and English (`/es`, `/en`; `/` and
+`/register` redirect to the visitor's language): the "find a pro" homepage, `/{locale}/search`,
+`/{locale}/for-professionals` (price in `templates/platform/pros.html.twig`) and the sign-up form.
+Their texts are in `translations/platform.{es,en}.yaml`. These paths return 404 on client sites.
 
-**Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain:
+**Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain.
+Filtering, sorting and paging (20 per page) happen in the database, so a search runs a handful
+of small queries however many clients there are.
 
 - Clients pick their **trades** in Settings → Work area (fixed list in `App\Entity\Trade`).
-- A **town** is matched against the clients' towns first ("javea" finds "Jávea"); anything
-  else is looked up in OpenStreetMap (Nominatim), at most 30 lookups per visitor per hour.
-  Results are within 75 km, nearest first or highest rated. If the lookup fails, all pros are shown with a notice.
-- The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a click.
+- A **town** is matched against the clients' towns first (the database collation ignores case
+  and accents, so "javea" finds "Jávea"); anything else is looked up in OpenStreetMap (Nominatim),
+  at most 30 lookups per visitor per hour. Results are within 75 km, nearest first or highest
+  rated. If the lookup fails, all pros are shown with a notice.
+- The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a
+  click and shows the pros on the current page.
 
 **Reviews**: customers write one at `/{locale}/review` on the client's site (honeypot +
 Turnstile, like the contact form). It is saved hidden and the client gets an email; it shows on
 the site once they switch on "Show on website" under Reviews in the admin. Clients cannot write
 or edit reviews, only publish, hide or delete them. The review count and average are stored on
 the tenant (`ReviewStatsListener`), so the search never reads other clients' reviews.
+
+The client's homepage passes the rating and the published reviews to Google as structured data
+(`aggregateRating` and `review`). Google decides whether to show stars: it often doesn't for
+reviews a business collects on its own website.
 
 ## Onboarding a new client
 

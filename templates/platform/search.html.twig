@@ -1,18 +1,21 @@
 {% extends 'platform/base.html.twig' %}
+{% trans_default_domain 'platform' %}
 
-{% set what = trade ? trade.label : 'Local pros' %}
+{% set what = trade ? ('trade.' ~ trade.value)|trans : 'search.title_any'|trans %}
+{% set heading = near ? 'search.heading_near'|trans({'%what%': what, '%town%': near}) : what %}
 
-{% block title %}{{ what }}{{ near ? ' near ' ~ near }} | {{ brand }}{% endblock %}
+{% block title %}{{ heading }}{% if page > 1 %} · {{ 'search.page'|trans({'%page%': page, '%pages%': pages}) }}{% endif %} | {{ brand }}{% endblock %}
 
 {% block meta %}
-    <meta name="description" content="{{ what }}{{ near ? ' near ' ~ near : ' in Spain' }}: see their work and reviews, and contact them directly.">
+    <meta name="description" content="{{ 'search.description'|trans({'%what%': heading}) }}">
 {% endblock %}
 
 {# Search results are thin, changing pages: keep them out of search engines, but follow the links to the pros #}
 {% block robots %}noindex, follow{% endblock %}
 
 {% block main %}
-    {% set query = {trade: trade ? trade.value : null, near: near ?: null} %}
+    {% set query = {_locale: locale, trade: trade ? trade.value : null, near: near ?: null, sort: sort == 'rating' ? 'rating' : null} %}
+    {% set decimal = locale == 'es' ? ',' : '.' %}
     {% set points = results|filter(r => r.tenant.hasCoordinates)|map(r => {
         lat: r.tenant.latitude,
         lon: r.tenant.longitude,
@@ -25,63 +28,77 @@
             {% include 'platform/_search_form.html.twig' %}
 
             <div class="p-results-head">
-                <h1>{{ what }}{% if near %} near {{ near }}{% endif %}</h1>
+                <h1>{{ heading }}</h1>
                 <p>
-                    {{ results|length }} {{ results|length == 1 ? 'pro' : 'pros' }}
-                    {% if near and located %} within {{ max_km }} km{% endif %}
+                    {{ 'search.count'|trans({'%count%': total}) }}
+                    {% if near and located %}{{ 'search.within'|trans({'%km%': max_km}) }}{% endif %}
                 </p>
                 {% if near and located %}
-                    <nav class="p-sort" aria-label="Sort">
-                        <a href="{{ path('platform_search', query) }}" {% if sort == 'distance' %}aria-current="true"{% endif %}>Nearest</a>
-                        <a href="{{ path('platform_search', query|merge({sort: 'rating'})) }}" {% if sort == 'rating' %}aria-current="true"{% endif %}>Highest rated</a>
+                    <nav class="p-sort" aria-label="{{ 'search.sort'|trans }}">
+                        <a href="{{ path('platform_search', query|merge({sort: null})) }}" {% if sort == 'distance' %}aria-current="true"{% endif %}>{{ 'search.nearest'|trans }}</a>
+                        <a href="{{ path('platform_search', query|merge({sort: 'rating'})) }}" {% if sort == 'rating' %}aria-current="true"{% endif %}>{{ 'search.rating'|trans }}</a>
                     </nav>
                 {% endif %}
             </div>
 
             {% if not located %}
-                <p class="p-notice" role="status">We couldn’t find “{{ near }}”. Check the spelling or try a nearby town. Showing all pros for now.</p>
+                <p class="p-notice" role="status">{{ 'search.not_found'|trans({'%town%': near}) }}</p>
             {% endif %}
 
             {% if results is empty %}
                 <div class="p-empty">
-                    <h2>No pros here yet</h2>
-                    <p>Try another trade or a bigger town nearby.</p>
-                    <a class="p-btn p-btn-ghost" href="{{ path('platform_search') }}">Show all pros</a>
+                    <h2>{{ 'search.empty_title'|trans }}</h2>
+                    <p>{{ 'search.empty_text'|trans }}</p>
+                    <a class="p-btn p-btn-ghost" href="{{ path('platform_search', {_locale: locale}) }}">{{ 'search.show_all'|trans }}</a>
                 </div>
             {% else %}
                 <div class="p-results">
-                    <ol class="p-result-list">
-                        {% for result in results %}
-                            {% set pro = result.tenant %}
-                            {% set site = 'https://' ~ pro.primaryDomain.hostname %}
-                            <li class="p-result">
-                                <span class="p-result-mark" style="background: {{ pro.primaryColor }}" aria-hidden="true">{{ pro.initials }}</span>
-                                <div class="p-result-body">
-                                    <h2><a href="{{ site }}">{{ pro.name }}</a></h2>
-                                    <p class="p-result-meta">
-                                        {% if pro.reviewCount %}
-                                            <span class="p-stars" aria-hidden="true">★</span>
-                                            <b>{{ pro.reviewAverage|number_format(1) }}</b> ({{ pro.reviewCount }} {{ pro.reviewCount == 1 ? 'review' : 'reviews' }})
-                                        {% else %}
-                                            No reviews yet
+                    <div>
+                        <ol class="p-result-list" start="{{ (page - 1) * constant('App\\Search\\ProSearch::PER_PAGE') + 1 }}">
+                            {% for result in results %}
+                                {% set pro = result.tenant %}
+                                {% set site = 'https://' ~ pro.primaryDomain.hostname %}
+                                <li class="p-result">
+                                    <span class="p-result-mark" style="background: {{ pro.primaryColor }}" aria-hidden="true">{{ pro.initials }}</span>
+                                    <div class="p-result-body">
+                                        <h2><a href="{{ site }}">{{ pro.name }}</a></h2>
+                                        <p class="p-result-meta">
+                                            {% if pro.reviewCount %}
+                                                <span class="p-stars" aria-hidden="true">★</span>
+                                                <b>{{ pro.reviewAverage|number_format(1, decimal) }}</b> ({{ 'search.reviews'|trans({'%count%': pro.reviewCount}) }})
+                                            {% else %}
+                                                {{ 'search.no_reviews'|trans }}
+                                            {% endif %}
+                                            {% if pro.city %} · {{ pro.city }}{% endif %}
+                                            {% if result.km is not null %} · {{ result.km < 1 ? '< 1' : result.km|round }} km{% endif %}
+                                        </p>
+                                        {% if pro.tagline|localized(locale) %}<p class="p-result-tagline">{{ pro.tagline|localized(locale) }}</p>{% endif %}
+                                        {% if pro.trades is not empty %}
+                                            <ul class="p-chips">
+                                                {% for value in pro.trades %}<li>{{ ('trade.' ~ value)|trans }}</li>{% endfor %}
+                                            </ul>
                                         {% endif %}
-                                        {% if pro.city %} · {{ pro.city }}{% endif %}
-                                        {% if result.km is not null %} · {{ result.km < 1 ? '< 1' : result.km|round }} km{% endif %}
-                                    </p>
-                                    {% if pro.tagline|localized %}<p class="p-result-tagline">{{ pro.tagline|localized('en') }}</p>{% endif %}
-                                    {% if pro.tradeLabels is not empty %}
-                                        <ul class="p-chips">
-                                            {% for label in pro.tradeLabels %}<li>{{ label }}</li>{% endfor %}
-                                        </ul>
-                                    {% endif %}
-                                </div>
-                                <div class="p-result-actions">
-                                    <a class="p-btn p-btn-primary" href="{{ site }}">View website →</a>
-                                    {% if pro.phoneLink %}<a class="p-btn p-btn-ghost" href="tel:{{ pro.phoneLink }}">Call</a>{% endif %}
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ol>
+                                    </div>
+                                    <div class="p-result-actions">
+                                        <a class="p-btn p-btn-primary" href="{{ site }}">{{ 'search.view_site'|trans }} →</a>
+                                        {% if pro.phoneLink %}<a class="p-btn p-btn-ghost" href="tel:{{ pro.phoneLink }}">{{ 'search.call'|trans }}</a>{% endif %}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ol>
+
+                        {% if pages > 1 %}
+                            <nav class="p-pages" aria-label="{{ 'search.pages'|trans }}">
+                                {% if page > 1 %}
+                                    <a href="{{ path('platform_search', query|merge({page: page > 2 ? page - 1 : null})) }}" rel="prev">← {{ 'search.previous'|trans }}</a>
+                                {% endif %}
+                                <span>{{ 'search.page'|trans({'%page%': page, '%pages%': pages}) }}</span>
+                                {% if page < pages %}
+                                    <a href="{{ path('platform_search', query|merge({page: page + 1})) }}" rel="next">{{ 'search.next'|trans }} →</a>
+                                {% endif %}
+                            </nav>
+                        {% endif %}
+                    </div>
 
                     {% if points is not empty %}
                         {# The map is only loaded from OpenStreetMap after a click, like on the client sites #}
@@ -89,8 +106,8 @@
                              data-points="{{ points|json_encode }}"
                              data-js="{{ asset('vendor/leaflet/leaflet.js') }}"
                              data-css="{{ asset('vendor/leaflet/leaflet.css') }}">
-                            <button type="button" class="p-btn p-btn-ghost" id="p-map-load">Show on map</button>
-                            <p>The map is loaded from OpenStreetMap when you click.</p>
+                            <button type="button" class="p-btn p-btn-ghost" id="p-map-load">{{ 'search.map_show'|trans }}</button>
+                            <p>{{ 'search.map_note'|trans }}</p>
                         </div>
                     {% endif %}
                 </div>

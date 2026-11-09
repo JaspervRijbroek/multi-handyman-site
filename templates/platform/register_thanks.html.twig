@@ -1,13 +1,11 @@
 {% extends 'platform/layout.html.twig' %}
+{% trans_default_domain 'platform' %}
 
-{% block title %}Thank you | {{ brand }}{% endblock %}
+{% block title %}{{ 'signup.thanks_title'|trans }} | {{ brand }}{% endblock %}
 
 {% block body %}
-    <p class="p-eyebrow">Sign-up received</p>
-    <h1>Thank you!</h1>
-    <p class="p-text">
-        We received your details and will check them shortly. As soon as your website is set up,
-        you get an email with your login. Questions in the meantime? Just reply to that email.
-    </p>
-    <p><a class="p-btn p-btn-ghost" href="{{ path('site_root') }}">Back to the homepage</a></p>
+    <p class="p-eyebrow">{{ 'signup.thanks_eyebrow'|trans }}</p>
+    <h1>{{ 'signup.thanks_title'|trans }}</h1>
+    <p class="p-text">{{ 'signup.thanks_text'|trans }}</p>
+    <p><a class="p-btn p-btn-ghost" href="{{ path('site_home', {_locale: app.request.locale}) }}">{{ 'signup.thanks_back'|trans }}</a></p>
 {% endblock %}

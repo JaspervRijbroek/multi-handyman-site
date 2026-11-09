@@ -1,0 +1,7 @@
+# Spanish texts for the app's own validation messages on the sign-up form.
+# Symfony's standard messages ("This value should not be blank.") are translated by Symfony itself.
+'Enter a valid phone number.': Introduce un número de teléfono válido.
+'Choose at least one language.': Elige al menos un idioma.
+'Use at least {{ limit }} characters.': Usa al menos {{ limit }} caracteres.
+'Please agree, otherwise we cannot set up your website.': Acepta, por favor; si no, no podemos crear tu web.
+'The passwords do not match.': Las contraseñas no coinciden.
