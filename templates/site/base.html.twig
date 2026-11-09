@@ -1,6 +1,7 @@
 {% set route = app.request.attributes.get('_route') %}
 {% set route_params = app.request.attributes.get('_route_params')|default({}) %}
 {% set locale = app.request.locale %}
+{% set home = path('site_home', {_locale: locale}) %}
 <!DOCTYPE html>
 <html lang="{{ locale }}">
 <head>
@@ -30,6 +31,7 @@
     {% endif %}
 
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="preload" href="{{ asset('fonts/young-serif.woff2') }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ asset('css/site.css') }}">
     <style>:root { --primary: {{ tenant.primaryColor }}; }</style>
 
@@ -41,16 +43,17 @@
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="{{ path('site_home', {_locale: locale}) }}">
+            <a class="brand" href="{{ home }}">
                 {%- if tenant.logoName -%}
-                    <img src="{{ asset('uploads/logos/' ~ tenant.logoName) }}" alt="" height="40">
+                    <img src="{{ asset('uploads/logos/' ~ tenant.logoName) }}" alt="" height="44">
+                {%- else -%}
+                    <span class="brand-mark" aria-hidden="true">{{ tenant.name|split(' ')|slice(0, 2)|map(w => w|first|upper)|join }}</span>
                 {%- endif -%}
                 <span>{{ tenant.name }}</span>
             </a>
             <nav class="nav" aria-label="Main">
-                <a href="{{ path('site_home', {_locale: locale}) }}#services">{{ 'nav.services'|trans }}</a>
-                <a href="{{ path('site_home', {_locale: locale}) }}#projects">{{ 'nav.projects'|trans }}</a>
-                <a href="{{ path('site_home', {_locale: locale}) }}#contact">{{ 'nav.contact'|trans }}</a>
+                <a href="{{ home }}#services">{{ 'nav.services'|trans }}</a>
+                <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
             </nav>
             {% if tenant.locales|length > 1 %}
                 <nav class="lang" aria-label="Language">
@@ -61,6 +64,7 @@
                     {% endfor %}
                 </nav>
             {% endif %}
+            <a class="btn btn-primary btn-small" href="{{ home }}#contact">{{ 'nav.contact'|trans }}</a>
         </div>
     </header>
 

@@ -11,17 +11,15 @@
     <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
 </head>
 <body>
+    <div class="p-stripe" aria-hidden="true"></div>
     <header class="p-header">
         <div class="p-container p-header-inner">
-            <a class="p-brand" href="{{ path('site_root') }}">
-                <img src="{{ asset('favicon.svg') }}" alt="" width="28" height="28">
-                {{ brand }}
-            </a>
+            <a class="p-brand" href="{{ path('site_root') }}"><span class="p-mark" aria-hidden="true"></span>{{ brand }}</a>
             <a class="p-login" href="{{ path('app_login') }}">Client login</a>
         </div>
     </header>
 
-    <main class="p-section p-section-alt p-form-page">
+    <main class="p-form-page">
         <div class="p-container p-form-container">
             {% block body %}{% endblock %}
         </div>
@@ -29,8 +27,8 @@
 
     <footer class="p-footer">
         <div class="p-container p-footer-inner">
-            <p>&copy; {{ 'now'|date('Y') }} {{ brand }} · Websites for trades in Spain</p>
-            <p><a href="{{ path('site_root') }}">Home</a> · <a href="{{ path('app_login') }}">Client login</a></p>
+            <span class="p-footer-brand">{{ brand }}</span>
+            <p>&copy; {{ 'now'|date('Y') }} · Websites for trades in Spain · <a href="{{ path('site_root') }}">Home</a> · <a href="{{ path('app_login') }}">Client login</a></p>
         </div>
     </footer>
 </body>
