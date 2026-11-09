@@ -1,0 +1,104 @@
+{#
+    Homepage of PLATFORM_HOST: find a local pro. Tradespeople go to /for-professionals.
+#}
+{% extends 'platform/base.html.twig' %}
+
+{% block title %}{{ brand }} | Find a trusted local handyman, plumber or builder in Spain{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Find local tradespeople in Spain by trade and town. See their work and reviews, and contact them directly. No middleman, no commission.">
+    <link rel="canonical" href="{{ url('site_root') }}">
+    <meta property="og:title" content="{{ brand }}: good hands, just down the street">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('site_root') }}">
+{% endblock %}
+
+{% block main %}
+    {% set popular = trades|filter(t => trade_counts[t.value] > 0)|sort((a, b) => trade_counts[b.value] <=> trade_counts[a.value])|slice(0, 4) %}
+    <main>
+        <section class="p-hero">
+            <div class="p-container p-hero-grid">
+                <div class="p-hero-copy">
+                    <p class="p-eyebrow">¡Hola, vecino! · Local pros across Spain</p>
+                    <h1>Good hands, <span>just down</span> the street.</h1>
+                    <p class="p-lead">Find a handyman, plumber, painter or builder near you. See their work and what neighbours say, then contact them directly.</p>
+
+                    {% include 'platform/_search_form.html.twig' with {trade: null, near: ''} %}
+
+                    {% if popular is not empty %}
+                        <p class="p-popular">
+                            <span>Popular:</span>
+                            {% for trade in popular %}
+                                <a href="{{ path('platform_search', {trade: trade.value}) }}">{{ trade.label }}</a>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="p-visual" aria-hidden="true">
+                    <div class="p-tiles"></div>
+                    <div class="p-browser">
+                        <div class="p-browser-bar"><i></i><i></i><span>{{ brand|lower }} · search</span></div>
+                        <div class="p-browser-body">
+                            {% for color in ['#1e4d8c', '#b9471f', '#4d6b2a'] %}
+                                <div class="p-b-row"><i class="p-b-dot" style="background: {{ color }}"></i><span><i class="p-b-title"></i><i class="p-b-short"></i></span><b>★</b></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-section p-section-blue">
+            <div class="p-container">
+                <div class="p-head-row">
+                    <h2>Every trade, close to home</h2>
+                    <p>Pick a trade to see the pros near you.</p>
+                </div>
+                <ul class="p-trades">
+                    {% for trade in trades %}
+                        {% set count = trade_counts[trade.value] %}
+                        <li>
+                            <a href="{{ path('platform_search', {trade: trade.value}) }}">
+                                <span class="p-trade-name">{{ trade.label }}</span>
+                                <span class="p-trade-count">{{ count ? count ~ (count == 1 ? ' pro' : ' pros') : 'Coming soon' }} <b aria-hidden="true">→</b></span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section class="p-section">
+            <div class="p-container">
+                <ol class="p-steps">
+                    <li>
+                        <h3>Search your town</h3>
+                        <p>Choose what needs doing and where. We show the pros who work near you, nearest first.</p>
+                    </li>
+                    <li>
+                        <h3>Compare their work</h3>
+                        <p>Every pro has their own website with recent jobs, the towns they cover and reviews from customers.</p>
+                    </li>
+                    <li>
+                        <h3>Contact them directly</h3>
+                        <p>Call, WhatsApp or send a message. No middleman and no fees: the agreement is between you and them.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="p-section p-section-end">
+            <div class="p-container">
+                <div class="p-cta-block">
+                    <div>
+                        <p class="p-eyebrow">For professionals</p>
+                        <h2>Your own website, and found by customers nearby.</h2>
+                        <p>A professional website with your work and reviews, set up on Google, and listed here. No commission on jobs.</p>
+                        <a class="p-btn p-btn-light" href="{{ path('platform_pros') }}">See how it works →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

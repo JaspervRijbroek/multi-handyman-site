@@ -1,8 +1,10 @@
 {#
-    Marketing landing page, served on PLATFORM_HOST.
-    Change the brand, price and contact details here; everything else is copy.
+    Page for tradespeople (/for-professionals) on PLATFORM_HOST.
+    Change the price and contact details here; everything else is copy.
+    The brand name comes from BILLING_BRAND.
 #}
-{% set brand = 'Handy Sites' %}
+{% extends 'platform/base.html.twig' %}
+
 {% set price = 59 %}
 {% set currency = 'EUR' %}
 {% set contact_email = 'hello@example.com' %}
@@ -37,23 +39,20 @@
 ] %}
 
 {% set json_flags = constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ brand }} | Websites for trades in Spain that Google and AI assistants can find</title>
+{% block title %}{{ brand }} | Websites for trades in Spain that Google and AI assistants can find{% endblock %}
+
+{% block meta %}
     <meta name="description" content="Multilingual websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT. Google setup and SEO included, one monthly price.">
-    <link rel="canonical" href="{{ url('site_root') }}">
+    <link rel="canonical" href="{{ url('platform_pros') }}">
 
     <meta property="og:title" content="{{ brand }}: get found on Google and by AI assistants">
     <meta property="og:description" content="Multilingual websites for trades in Spain. Google Maps, Search Console, Analytics and SEO included.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url('site_root') }}">
+    <meta property="og:url" content="{{ url('platform_pros') }}">
 
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
+{% endblock %}
 
+{% block head %}
     {# We practise what we sell: this page is described in structured data too #}
     <script type="application/ld+json">{{ {
         '@context': 'https://schema.org',
@@ -95,22 +94,9 @@
             },
         ],
     }|json_encode(json_flags)|raw }}</script>
-</head>
-<body>
-    <div class="p-stripe" aria-hidden="true"></div>
-    <header class="p-header">
-        <div class="p-container p-header-inner">
-            <a class="p-brand" href="{{ path('site_root') }}"><span class="p-mark" aria-hidden="true"></span>{{ brand }}</a>
-            <nav class="p-nav" aria-label="Main">
-                <a href="#why">Why {{ brand }}</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#faq">FAQ</a>
-                <a class="p-login" href="{{ path('app_login') }}">Client login</a>
-            </nav>
-            <a class="p-btn p-btn-ghost" href="{{ path('app_register') }}">Get started</a>
-        </div>
-    </header>
+{% endblock %}
 
+{% block main %}
     <main>
         {# ── Hero ─────────────────────────────────────────────── #}
         <section class="p-hero">
@@ -228,6 +214,8 @@
                         <div class="p-more">
                             <p class="p-eyebrow">And more</p>
                             <ul class="p-chips">
+                                <li>Listed in the {{ brand }} search and map</li>
+                                <li>Customer reviews you approve</li>
                                 <li>Your own domain with HTTPS</li>
                                 <li>{{ languages|length }} languages</li>
                                 <li>Contact form straight to your inbox</li>
@@ -277,17 +265,4 @@
             </div>
         </section>
     </main>
-
-    <footer class="p-footer">
-        <div class="p-container p-footer-inner">
-            <span class="p-footer-brand">{{ brand }}</span>
-            <p>
-                &copy; {{ 'now'|date('Y') }} · Websites for trades in Spain
-                · <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
-                · <a href="{{ path('app_register') }}">Sign up</a>
-                · <a href="{{ path('app_login') }}">Client login</a>
-            </p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}

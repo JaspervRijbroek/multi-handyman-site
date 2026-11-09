@@ -7,6 +7,9 @@ which client's site is shown; clients edit their own content in a simple admin.
 - **EasyAdmin 5** for the client admin
 - Multilingual content per client (EN, ES, NL, DE, FR), with hreflang, sitemap and canonical URLs
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
+- **Reviews**: customers write them on the client's site, the client publishes them in the admin
+- **Find a pro**: the platform homepage searches all clients by trade and town, with a map,
+  see [Search and reviews](#search-and-reviews)
 - Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
 - Spanish legal notice / privacy page generated from the client's details
 - Cookieless analytics (Plausible) and Search Console verification per client
@@ -44,14 +47,14 @@ in `.ddev/config.yaml`, run `ddev restart`, and add the domain in the admin.
 
 ```
 Request ─► TenantRequestListener
-            ├─ PLATFORM_HOST?   → admin / login / landing page
+            ├─ PLATFORM_HOST?   → admin / login / search / platform pages
             ├─ known domain?    → TenantContext::set(tenant) → client site
             └─ unknown host     → 404
 ```
 
 - **`Tenant`** is a client. **`Domain`** maps hostnames to a tenant; non-primary
   domains (e.g. `www.`) 301-redirect to the primary one.
-- Everything a client owns (`Service`, `Project`, `Enquiry`) implements
+- Everything a client owns (`Service`, `Project`, `Enquiry`, `Review`) implements
   `TenantOwnedInterface`. For those entities:
   - `TenantFilter` (Doctrine SQL filter) adds `tenant_id = …` to **every** query
     once a tenant is active, including `find()` and lazy loading.
@@ -66,6 +69,28 @@ Adding a new kind of client content? Implement `TenantOwnedInterface` (use
 
 Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 `TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig.
+
+## Search and reviews
+
+The platform brand (**Manitas** by default) comes from `BILLING_BRAND`.
+
+**Platform pages** on `PLATFORM_HOST`: `/` is the "find a pro" homepage, `/search` the results,
+`/for-professionals` the page for tradespeople with pricing (edit the price and FAQ in
+`templates/platform/pros.html.twig`). These paths return 404 on client sites.
+
+**Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain:
+
+- Clients pick their **trades** in Settings → Work area (fixed list in `App\Entity\Trade`).
+- A **town** is matched against the clients' towns first ("javea" finds "Jávea"); anything
+  else is looked up in OpenStreetMap (Nominatim), at most 30 lookups per visitor per hour.
+  Results are within 75 km, nearest first or highest rated. If the lookup fails, all pros are shown with a notice.
+- The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a click.
+
+**Reviews**: customers write one at `/{locale}/review` on the client's site (honeypot +
+Turnstile, like the contact form). It is saved hidden and the client gets an email; it shows on
+the site once they switch on "Show on website" under Reviews in the admin. Clients cannot write
+or edit reviews, only publish, hide or delete them. The review count and average are stored on
+the tenant (`ReviewStatsListener`), so the search never reads other clients' reviews.
 
 ## Onboarding a new client
 

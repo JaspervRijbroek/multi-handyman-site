@@ -47,13 +47,14 @@
                 {%- if tenant.logoName -%}
                     <img src="{{ asset('uploads/logos/' ~ tenant.logoName) }}" alt="" height="44">
                 {%- else -%}
-                    <span class="brand-mark" aria-hidden="true">{{ tenant.name|split(' ')|slice(0, 2)|map(w => w|first|upper)|join }}</span>
+                    <span class="brand-mark" aria-hidden="true">{{ tenant.initials }}</span>
                 {%- endif -%}
                 <span>{{ tenant.name }}</span>
             </a>
             <nav class="nav" aria-label="Main">
                 <a href="{{ home }}#services">{{ 'nav.services'|trans }}</a>
                 <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
+                <a href="{{ home }}#reviews">{{ 'nav.reviews'|trans }}</a>
             </nav>
             {% if tenant.locales|length > 1 %}
                 <nav class="lang" aria-label="Language">

@@ -6,16 +6,18 @@ namespace App\DataFixtures;
 
 use App\Entity\Domain;
 use App\Entity\Project;
+use App\Entity\Review;
 use App\Entity\Service;
 use App\Entity\Signup;
 use App\Entity\Tenant;
+use App\Entity\Trade;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Demo data for local development: two client sites, three logins and two sign-ups.
+ * Demo data for local development: two client sites with reviews, three logins and two sign-ups.
  * Load with: ddev console doctrine:fixtures:load
  */
 final class AppFixtures extends Fixture
@@ -37,6 +39,7 @@ final class AppFixtures extends Fixture
             ->setWhatsapp('+34 600 111 222')
             ->setEmail('jan@example.com')
             ->setServiceArea('Torrent, Valencia and surroundings')
+            ->setTrades([Trade::Handyman->value, Trade::Painting->value, Trade::Tiling->value, Trade::Garden->value])
             ->setStreetAddress('Calle Ejemplo 1')
             ->setPostalCode('46900')
             ->setCity('Torrent')
@@ -71,6 +74,11 @@ final class AppFixtures extends Fixture
             ['en' => 'New bathroom tiles in Torrent', 'nl' => 'Nieuwe badkamertegels in Torrent'],
             ['en' => 'Terrace painted in Paterna', 'nl' => 'Terras geschilderd in Paterna'],
         ]);
+        $this->addReviews($manager, $jan, [
+            ['Maria', 'Torrent', 5, 'Jan retiled our bathroom in three days. Tidy, on time and exactly the price he quoted.', true],
+            ['Peter', 'Paterna', 4, 'Good painting job on our terrace. Took a day longer because of the rain, but he kept us informed.', true],
+            ['Spam Bot', null, 1, 'Cheap watches at example dot com, best prices online.', false],
+        ]);
 
         $javea = (new Tenant())
             ->setName('Jávea Handyman Services')
@@ -82,6 +90,7 @@ final class AppFixtures extends Fixture
             ->setWhatsapp('+34 600 333 444')
             ->setEmail('javea@example.com')
             ->setServiceArea('Jávea, Dénia, Moraira')
+            ->setTrades([Trade::Handyman->value, Trade::Electrical->value, Trade::Pool->value])
             ->setPostalCode('03730')
             ->setCity('Jávea')
             ->setShowStreetAddress(false)
@@ -104,6 +113,9 @@ final class AppFixtures extends Fixture
             ['en' => 'Villa maintenance', 'es' => 'Mantenimiento de villas'],
             ['en' => 'Key holding', 'es' => 'Custodia de llaves'],
             ['en' => 'Small electrical jobs', 'es' => 'Pequeños trabajos eléctricos'],
+        ]);
+        $this->addReviews($manager, $javea, [
+            ['Sue', 'Jávea', 5, 'They look after our villa while we are in the UK. Always reachable and very reliable.', true],
         ]);
 
         // Sign-ups waiting for approval (admin → Sign-ups, or: ddev console app:client:approve)
@@ -155,6 +167,20 @@ final class AppFixtures extends Fixture
                 ->setTenant($tenant)
                 ->setTitle($title)
                 ->setCompletedAt(new \DateTimeImmutable(\sprintf('-%d weeks', ($i + 1) * 3))));
+        }
+    }
+
+    /** @param list<array{string, ?string, int, string, bool}> $reviews name, town, stars, text, published */
+    private function addReviews(ObjectManager $manager, Tenant $tenant, array $reviews): void
+    {
+        foreach ($reviews as [$name, $town, $rating, $text, $published]) {
+            $manager->persist((new Review())
+                ->setTenant($tenant)
+                ->setAuthorName($name)
+                ->setTown($town)
+                ->setRating($rating)
+                ->setText($text)
+                ->setPublished($published));
         }
     }
 

@@ -49,6 +49,12 @@
                         <a class="btn btn-whatsapp" href="https://wa.me/{{ tenant.whatsappDigits }}?text={{ 'whatsapp.prefill'|trans({'%name%': tenant.name})|url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
                     {% endif %}
                 </div>
+                {% if tenant.reviewCount %}
+                    <a class="rating" href="#reviews">
+                        <span class="stars" aria-hidden="true">★</span>
+                        {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1), '%count%': tenant.reviewCount}) }}
+                    </a>
+                {% endif %}
             </div>
             {# Arch-shaped photo: the newest project with a picture, otherwise a tile pattern #}
             <div class="hero-photo{{ hero_project ? '' : ' hero-photo-empty' }}">
@@ -112,6 +118,35 @@
             </div>
         </section>
     {% endif %}
+
+    <section id="reviews" class="section section-tint">
+        <div class="container">
+            <div class="section-head">
+                <h2>{{ 'reviews.title'|trans }}</h2>
+                {% if tenant.reviewCount %}
+                    <p class="muted"><span class="stars" aria-hidden="true">★</span> {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1), '%count%': tenant.reviewCount}) }}</p>
+                {% endif %}
+            </div>
+            {% if reviews is not empty %}
+                <div class="reviews">
+                    {% for review in reviews %}
+                        <blockquote class="review">
+                            <p class="stars" role="img" aria-label="{{ review.rating }}/5">{% for star in 1..5 %}<span{% if star > review.rating %} class="star-off"{% endif %}>★</span>{% endfor %}</p>
+                            <p class="review-text">“{{ review.text }}”</p>
+                            <footer>
+                                <span class="review-initial" aria-hidden="true">{{ review.authorName|first|upper }}</span>
+                                <span><b>{{ review.authorName }}</b>{% if review.town %}<br>{{ review.town }}{% endif %}</span>
+                                <time datetime="{{ review.createdAt|date('Y-m-d') }}">{{ review.createdAt|date('m/Y') }}</time>
+                            </footer>
+                        </blockquote>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="muted">{{ 'reviews.none'|trans }}</p>
+            {% endif %}
+            <p><a class="btn btn-secondary" href="{{ path('site_review', {_locale: app.request.locale}) }}">{{ 'reviews.write'|trans }}</a></p>
+        </div>
+    </section>
 
     <section id="contact" class="section">
         <div class="container contact">

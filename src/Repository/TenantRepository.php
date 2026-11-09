@@ -17,4 +17,21 @@ class TenantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tenant::class);
     }
+
+    /**
+     * Clients shown in the platform search: active, online and with a website address.
+     *
+     * @return list<Tenant>
+     */
+    public function findListed(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('d')
+            ->join('t.domains', 'd')
+            ->andWhere('t.active = true')
+            ->andWhere('t.suspendedAt IS NULL')
+            ->orderBy('t.name')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,35 +1,12 @@
-{# Simple pages on PLATFORM_HOST (sign-up, set password). Brand name: keep in sync with index.html.twig #}
-{% set brand = 'Handy Sites' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %} | {{ brand }}</title>
-    <meta name="robots" content="{% block robots %}noindex, follow{% endblock %}">
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
-</head>
-<body>
-    <div class="p-stripe" aria-hidden="true"></div>
-    <header class="p-header">
-        <div class="p-container p-header-inner">
-            <a class="p-brand" href="{{ path('site_root') }}"><span class="p-mark" aria-hidden="true"></span>{{ brand }}</a>
-            <a class="p-login" href="{{ path('app_login') }}">Client login</a>
-        </div>
-    </header>
+{# Simple form pages on PLATFORM_HOST (sign-up, set password) #}
+{% extends 'platform/base.html.twig' %}
 
+{% block robots %}noindex, follow{% endblock %}
+
+{% block main %}
     <main class="p-form-page">
         <div class="p-container p-form-container">
             {% block body %}{% endblock %}
         </div>
     </main>
-
-    <footer class="p-footer">
-        <div class="p-container p-footer-inner">
-            <span class="p-footer-brand">{{ brand }}</span>
-            <p>&copy; {{ 'now'|date('Y') }} · Websites for trades in Spain · <a href="{{ path('site_root') }}">Home</a> · <a href="{{ path('app_login') }}">Client login</a></p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}

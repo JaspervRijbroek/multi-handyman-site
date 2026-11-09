@@ -178,6 +178,76 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .p-chips li { background: var(--p-sand); border-radius: 999px; padding: 6px 14px; font-size: .875rem; font-weight: 600; color: var(--p-ink); }
 
+/* Search box ("what / where") */
+.p-search { display: flex; flex-wrap: wrap; gap: 6px; max-width: 680px; padding: 10px; background: #fff; border: 1px solid var(--p-border); border-radius: 22px; box-shadow: 0 24px 60px rgba(60, 40, 20, .14); }
+.p-search-field { flex: 1 1 200px; display: grid; gap: 2px; padding: 8px 16px; border-radius: 14px; cursor: pointer; }
+.p-search-field:hover, .p-search-field:focus-within { background: var(--p-sand); }
+.p-search-field span { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--p-muted); }
+.p-search-field select, .p-search-field input { min-width: 0; border: 0; padding: 0; background: transparent; font-size: 1.0625rem; font-weight: 600; color: var(--p-ink); outline: none; }
+.p-search .p-btn { flex: 0 0 auto; min-height: 60px; border-radius: 16px; }
+@media (max-width: 520px) { .p-search .p-btn { flex-basis: 100%; } }
+.p-popular { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: .875rem; }
+.p-popular span { color: var(--p-muted); margin-right: 4px; }
+.p-popular a { padding: 6px 14px; border: 1px solid var(--p-border); border-radius: 999px; background: #fff; font-weight: 600; color: var(--p-ink); text-decoration: none; }
+.p-popular a:hover { border-color: var(--p-ink); }
+
+/* Mini results list in the homepage visual */
+.p-b-row { display: flex; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f0e6d4; }
+.p-b-row span { flex: 1; display: grid; gap: 6px; }
+.p-b-row b { color: #b07a10; }
+.p-browser-body .p-b-dot { flex: none; width: 28px; height: 32px; border-radius: 999px 999px 6px 6px; }
+
+/* Trades grid on the blue band */
+.p-head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 36px; }
+.p-head-row h2 { margin: 0; }
+.p-head-row p { margin: 0; color: #c9d6ea; max-width: 38ch; }
+.p-trades { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.p-trades a { height: 100%; display: grid; gap: 26px; padding: 22px 20px 18px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 18px; background: rgba(255, 255, 255, .06); color: #fff; text-decoration: none; transition: background .2s, color .2s, transform .2s; }
+.p-trades a:hover { background: var(--p-cream); color: var(--p-ink); transform: translateY(-3px); }
+.p-trade-name { font-family: var(--p-serif); font-size: 1.375rem; line-height: 1.1; }
+.p-trade-count { display: flex; justify-content: space-between; font-size: .875rem; opacity: .85; }
+.p-trade-count b { color: var(--p-saffron); }
+
+/* "For professionals" block on the homepage */
+.p-cta-block { background: var(--p-terracotta); border-radius: 32px; padding: clamp(36px, 6vw, 72px); color: #fde3d6; }
+.p-cta-block div { display: grid; gap: 18px; justify-items: start; max-width: 640px; }
+.p-cta-block div > * { margin: 0; }
+.p-cta-block .p-eyebrow { color: #ffd98a; }
+.p-cta-block h2 { color: #fff; }
+
+/* Search results */
+.p-results-page { padding-top: clamp(28px, 4vw, 48px); }
+.p-results-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; margin: 40px 0 20px; }
+.p-results-head h1 { margin: 0; font-size: clamp(2rem, 4vw, 3rem); }
+.p-results-head p { margin: 0; color: var(--p-muted); }
+.p-sort { display: flex; gap: 6px; margin-left: auto; }
+.p-sort a { padding: 6px 14px; border: 1px solid var(--p-border); border-radius: 999px; background: #fff; font-size: .875rem; font-weight: 600; color: var(--p-ink); text-decoration: none; }
+.p-sort a[aria-current] { background: var(--p-ink); border-color: var(--p-ink); color: #fff; }
+.p-notice { background: #fff; border-left: 4px solid var(--p-saffron); border-radius: 12px; padding: 14px 18px; font-weight: 600; }
+.p-empty { background: #fff; border: 1px solid var(--p-border); border-radius: 24px; padding: clamp(28px, 4vw, 48px); display: grid; gap: 12px; justify-items: start; }
+.p-empty > * { margin: 0; }
+.p-results { display: grid; gap: 24px; align-items: start; }
+@media (min-width: 1000px) { .p-results { grid-template-columns: minmax(0, 1fr) 420px; } .p-map { position: sticky; top: 96px; } }
+.p-result-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.p-result { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; padding: 22px; background: #fff; border: 1px solid var(--p-border); border-radius: 22px; }
+.p-result-mark { grid-row: span 2; width: 52px; height: 60px; padding-top: 4px; border-radius: 999px 999px 10px 10px; display: grid; place-items: center; font-family: var(--p-serif); font-size: 1.1rem; color: #fff; }
+.p-result-body { display: grid; gap: 6px; min-width: 0; }
+.p-result-body > * { margin: 0; }
+.p-result h2 { font-size: 1.5rem; letter-spacing: -.01em; }
+.p-result h2 a { color: var(--p-ink); text-decoration: none; }
+.p-result h2 a:hover { color: var(--p-terracotta); }
+.p-result-meta { font-size: .875rem; color: var(--p-muted); }
+.p-result-meta b { color: var(--p-ink); }
+.p-stars { color: #b07a10; }
+.p-result-tagline { color: var(--p-text); }
+.p-result .p-chips li { padding: 4px 12px; font-size: .8125rem; }
+.p-result-actions { grid-column: 2; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.p-result-actions .p-btn { padding: 9px 18px; font-size: .9375rem; box-shadow: none; }
+@media (max-width: 520px) { .p-result { grid-template-columns: 1fr; } .p-result-mark { grid-row: auto; } .p-result-actions { grid-column: 1; } }
+.p-map { min-height: 420px; height: 70vh; max-height: 640px; border: 1px solid var(--p-border); border-radius: 22px; overflow: hidden; background: #efe3cc; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center; }
+.p-map p { margin: 0; color: var(--p-muted); font-size: .8125rem; }
+.p-map.is-loaded { display: block; padding: 0; }
+
 /* FAQ */
 .p-faq { display: grid; gap: 12px; }
 .p-faq details { background: #fff; border: 1px solid var(--p-border); border-radius: 18px; padding: 18px 22px; }

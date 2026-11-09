@@ -1,0 +1,44 @@
+{# Frame of the public pages on PLATFORM_HOST. The brand name comes from BILLING_BRAND. #}
+{% set brand = billing_brand %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    {% block meta %}{% endblock %}
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="preload" href="{{ asset('fonts/young-serif.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ asset('css/platform.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="p-stripe" aria-hidden="true"></div>
+    <header class="p-header">
+        <div class="p-container p-header-inner">
+            <a class="p-brand" href="{{ path('site_root') }}"><span class="p-mark" aria-hidden="true"></span>{{ brand|lower }}</a>
+            <nav class="p-nav" aria-label="Main">
+                <a href="{{ path('platform_search') }}">Find a pro</a>
+                <a href="{{ path('platform_pros') }}">For professionals</a>
+                <a href="{{ path('app_login') }}">Client login</a>
+            </nav>
+            <a class="p-btn p-btn-ghost" href="{{ path('app_register') }}">List your business</a>
+        </div>
+    </header>
+
+    {% block main %}{% endblock %}
+
+    <footer class="p-footer">
+        <div class="p-container p-footer-inner">
+            <span class="p-footer-brand">{{ brand|lower }}</span>
+            <p>
+                &copy; {{ 'now'|date('Y') }} {{ brand }} · Local professionals across Spain
+                · <a href="{{ path('platform_search') }}">Find a pro</a>
+                · <a href="{{ path('platform_pros') }}">For professionals</a>
+                · <a href="{{ path('app_login') }}">Client login</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

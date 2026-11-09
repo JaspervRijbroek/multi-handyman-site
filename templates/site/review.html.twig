@@ -1,0 +1,41 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ 'reviews.write'|trans }} | {{ tenant.name }}{% endblock %}
+{% block description %}{{ 'reviews.intro'|trans({'%name%': tenant.name}) }}{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, follow">
+    {% if turnstile_site_key() %}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <section class="section">
+        <div class="container narrow stack">
+            <h1>{{ 'reviews.write'|trans }}</h1>
+            <p class="muted">{{ 'reviews.intro'|trans({'%name%': tenant.name}) }}</p>
+
+            {% for message in app.flashes('review_success') %}
+                <p class="notice" role="status">{{ message|trans }}</p>
+                <p><a class="btn btn-secondary" href="{{ path('site_home', {_locale: app.request.locale}) }}">{{ 'reviews.back'|trans }}</a></p>
+            {% else %}
+                <div class="contact-card">
+                    {{ form_start(form, {attr: {class: 'contact-form', novalidate: 'novalidate'}}) }}
+                        {{ form_errors(form) }}
+                        {{ form_row(form.rating, {row_attr: {class: 'rating-choice'}}) }}
+                        {{ form_row(form.authorName) }}
+                        {{ form_row(form.town) }}
+                        {{ form_row(form.text) }}
+                        {{ form_row(form.website) }}
+                        {% if turnstile_site_key() %}
+                            <div class="cf-turnstile" data-sitekey="{{ turnstile_site_key() }}" data-action="review" data-language="{{ app.request.locale }}"></div>
+                        {% endif %}
+                        <p class="privacy-note">{{ 'reviews.privacy'|trans({'%url%': path('site_legal', {_locale: app.request.locale}) ~ '#privacy'})|raw }}</p>
+                        <button type="submit" class="btn btn-primary">{{ 'reviews.send'|trans }}</button>
+                    {{ form_end(form) }}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

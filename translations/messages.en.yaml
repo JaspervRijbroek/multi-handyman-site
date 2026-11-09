@@ -1,6 +1,7 @@
 nav:
     services: Services
     projects: Our work
+    reviews: Reviews
     contact: Contact
 
 hero:
@@ -16,6 +17,21 @@ projects:
 
 about:
     title: About us
+
+reviews:
+    title: What customers say
+    summary: '%average% from %count% reviews'
+    none: No reviews yet. Have we done a job for you? Be the first to write one.
+    write: Write a review
+    intro: 'Had work done by %name%? Tell others how it went. Your review appears on this website once it has been checked.'
+    rating: Your rating
+    name: Your first name
+    town: Your town (optional)
+    text: Your review
+    send: Send review
+    success: Thank you! Your review will appear on this website once it has been checked.
+    back: Back to the homepage
+    privacy: 'Your first name, town, rating and review are shown on this website. See our <a href="%url%">privacy policy</a>.'
 
 contact:
     title: Get in touch
@@ -55,6 +71,7 @@ legal:
         controller: '%owner% is responsible for the personal data you send through this website.'
         purpose: We use the data from the contact form only to answer your enquiry and, if you wish, to prepare a quote. The legal basis is your consent and taking steps at your request before entering into a contract. We do not sell or share your data, except with providers that host this website and its email on our behalf. To block spam, the contact form is protected by Cloudflare Turnstile, which checks your browser without tracking cookies.
         retention: We keep your enquiry as long as needed to handle it and to meet legal obligations.
+        reviews: If you write a review, we publish your first name, town (if given), rating and review on this website once checked. You can ask us to remove it at any time.
         rights: 'You can request access, correction or deletion of your data, or object to its use, by emailing %email%. You may also file a complaint with the Spanish Data Protection Agency (www.aepd.es).'
     cookies:
         title: Cookies
