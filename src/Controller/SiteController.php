@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Enquiry;
+use App\Entity\Review;
 use App\Entity\Tenant;
 use App\Form\ContactType;
+use App\Form\ReviewType;
 use App\Repository\ProjectRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\ServiceRepository;
 use App\Tenant\TenantContext;
 use App\Turnstile\Turnstile;
@@ -43,9 +46,9 @@ final class SiteController extends AbstractController
     {
         $tenant = $this->tenantContext->get();
 
-        // The platform host: your own landing page
+        // The platform host: the "find a pro" homepage in the visitor's language
         if (null === $tenant) {
-            return $this->render('platform/index.html.twig');
+            return $this->redirectToRoute('site_home', ['_locale' => PlatformController::preferredLocale($request)]);
         }
 
         $locale = $request->getPreferredLanguage($tenant->getLocales()) ?? $tenant->getDefaultLocale();
@@ -58,6 +61,7 @@ final class SiteController extends AbstractController
         Request $request,
         ServiceRepository $services,
         ProjectRepository $projects,
+        ReviewRepository $reviews,
         EntityManagerInterface $entityManager,
         MailerInterface $mailer,
         LoggerInterface $logger,
@@ -65,6 +69,16 @@ final class SiteController extends AbstractController
         TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
     ): Response {
+        // The same URL on the platform host is the "find a pro" homepage
+        if (!$this->tenantContext->has()) {
+            return $this->forward(PlatformController::class.'::home', [
+                '_locale' => $request->getLocale(),
+                // Kept for the language switch and hreflang links in the template
+                '_route' => 'site_home',
+                '_route_params' => ['_locale' => $request->getLocale()],
+            ]);
+        }
+
         $tenant = $this->siteTenant($request);
 
         $enquiry = (new Enquiry())->setTenant($tenant)->setLocale($request->getLocale());
@@ -97,6 +111,53 @@ final class SiteController extends AbstractController
             'tenant' => $tenant,
             'services' => $services->findBy(['tenant' => $tenant], ['position' => 'ASC', 'id' => 'ASC']),
             'projects' => $projects->findBy(['tenant' => $tenant, 'published' => true], ['completedAt' => 'DESC', 'id' => 'DESC'], 12),
+            'reviews' => $reviews->findLatestPublished($tenant, 6),
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{_locale}/review', name: 'site_review', requirements: ['_locale' => '[a-z]{2}'], methods: ['GET', 'POST'])]
+    public function review(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        LoggerInterface $logger,
+        Turnstile $turnstile,
+        TranslatorInterface $translator,
+        #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
+    ): Response {
+        $tenant = $this->siteTenant($request);
+
+        $review = (new Review())->setTenant($tenant)->setLocale($request->getLocale());
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $isBot = (bool) $form->get(ContactType::HONEYPOT)->getData();
+
+            if (!$isBot && !$turnstile->verify($request, 'review')) {
+                $form->addError(new FormError($translator->trans('contact.turnstile_failed')));
+            } else {
+                // Saved unpublished: the client decides in the admin whether it is shown
+                if (!$isBot) {
+                    $entityManager->persist($review);
+                    $entityManager->flush();
+                    $this->sendMail($tenant, $mailer, $logger, $mailerFrom, \sprintf('New review from %s via %s', $review->getAuthorName(), $request->getHost()), \sprintf(
+                        "%s gave you %d out of 5 stars:\n\n%s\n\nPublish it on your website under Reviews in your admin.\n",
+                        $review->getAuthorName(),
+                        $review->getRating(),
+                        $review->getText(),
+                    ));
+                }
+
+                $this->addFlash('review_success', 'reviews.success');
+
+                return $this->redirectToRoute('site_review', ['_locale' => $request->getLocale()]);
+            }
+        }
+
+        return $this->render('site/review.html.twig', [
+            'tenant' => $tenant,
             'form' => $form,
         ]);
     }
@@ -145,6 +206,17 @@ final class SiteController extends AbstractController
 
     private function notifyTenant(Tenant $tenant, Enquiry $enquiry, MailerInterface $mailer, LoggerInterface $logger, string $from, string $host): void
     {
+        $this->sendMail($tenant, $mailer, $logger, $from, \sprintf('New enquiry from %s via %s', $enquiry->getName(), $host), \sprintf(
+            "Name: %s\nEmail / phone: %s\nLanguage: %s\n\n%s\n",
+            $enquiry->getName(),
+            $enquiry->getContact(),
+            strtoupper($enquiry->getLocale()),
+            $enquiry->getMessage(),
+        ), $enquiry->getContactEmail());
+    }
+
+    private function sendMail(Tenant $tenant, MailerInterface $mailer, LoggerInterface $logger, string $from, string $subject, string $text, ?string $replyTo = null): void
+    {
         if (!$tenant->getEmail()) {
             return;
         }
@@ -152,24 +224,18 @@ final class SiteController extends AbstractController
         $email = (new Email())
             ->from(new Address($from, $tenant->getName().' website'))
             ->to($tenant->getEmail())
-            ->subject(\sprintf('New enquiry from %s via %s', $enquiry->getName(), $host))
-            ->text(\sprintf(
-                "Name: %s\nEmail / phone: %s\nLanguage: %s\n\n%s\n",
-                $enquiry->getName(),
-                $enquiry->getContact(),
-                strtoupper($enquiry->getLocale()),
-                $enquiry->getMessage(),
-            ));
+            ->subject($subject)
+            ->text($text);
 
-        if ($replyTo = $enquiry->getContactEmail()) {
+        if ($replyTo) {
             $email->replyTo($replyTo);
         }
 
         try {
             $mailer->send($email);
         } catch (TransportExceptionInterface $e) {
-            // The enquiry is saved in the admin either way
-            $logger->error('Could not send enquiry notification: {message}', ['message' => $e->getMessage()]);
+            // The enquiry or review is saved in the admin either way
+            $logger->error('Could not send notification email: {message}', ['message' => $e->getMessage()]);
         }
     }
 }

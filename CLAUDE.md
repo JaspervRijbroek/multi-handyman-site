@@ -27,7 +27,8 @@ mainly in Spain). The request's hostname decides which client's (tenant's) site 
 clients edit their own content in a simple admin. See `README.md` for full details.
 
 Features: multilingual client sites (EN, ES, NL, DE, FR) with hreflang/sitemap/canonical
-URLs, contact form, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
+URLs, contact form, customer reviews, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
+a "find a pro" search across clients on the platform homepage (brand: Manitas),
 client onboarding (public `/register` + approval), Google Search Console setup,
 OpenStreetMap map/geocoding, monthly Mollie billing, and Cloudflare Turnstile spam protection.
 
@@ -42,7 +43,7 @@ OpenStreetMap map/geocoding, monthly Mollie billing, and Cloudflare Turnstile sp
 
 ```
 src/
-  Entity/, Repository/     Doctrine entities (Tenant, Domain, User, Service, Project, Enquiry, Signup, Charge, ...)
+  Entity/, Repository/     Doctrine entities (Tenant, Domain, User, Service, Project, Enquiry, Review, Signup, Charge, ...)
   Controller/              Public site, platform, billing, security
   Controller/Admin/        EasyAdmin dashboard and CRUD controllers
   EventListener/           Tenant resolution + isolation, Turnstile hooks
@@ -52,9 +53,10 @@ src/
   Onboarding/              Approving sign-ups / creating clients
   Billing/                 Mollie billing, reminders, suspension
   Google/, Map/, Turnstile/  External integrations
+  Search/                  The platform "find a pro" search
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
-translations/              messages.{en,es,nl}.yaml
+translations/              messages.{en,es,nl}.yaml (client sites), platform.{es,en}.yaml (platform pages)
 ```
 
 ## Multi-tenancy rules (important)

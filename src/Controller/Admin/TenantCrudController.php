@@ -8,6 +8,7 @@ use App\Admin\Field\TranslatedField;
 use App\Billing\BillingService;
 use App\Entity\SearchConsoleStatus;
 use App\Entity\Tenant;
+use App\Entity\Trade;
 use App\Entity\User;
 use App\Onboarding\ClientOnboarding;
 use App\Security\TenantAccessVoter;
@@ -182,6 +183,12 @@ class TenantCrudController extends AbstractCrudController
 
         yield FormField::addTab('Work area', 'fa fa-map-location-dot')
             ->setHelp('Where you take on jobs. Shown on your homepage, with your contact details and in the footer, and passed on to Google and AI assistants.');
+        yield ChoiceField::new('trades', 'Your trades')
+            ->setChoices(Trade::choices())
+            ->allowMultipleChoices()
+            ->renderExpanded()
+            ->setHelp('Customers find you in the Manitas search by these trades and by your town.')
+            ->hideOnIndex();
         yield TextField::new('serviceArea', 'Towns and areas you work in')
             ->setHelp('Separate places with commas, e.g. Jávea, Dénia, Moraira and surroundings')
             ->hideOnIndex();

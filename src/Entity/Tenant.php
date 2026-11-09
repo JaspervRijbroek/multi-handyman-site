@@ -116,6 +116,20 @@ class Tenant
     #[ORM\Column(type: Types::JSON)]
     private array $about = [];
 
+    /** @var list<string> Trade values: what the client can be found for in the platform search */
+    #[ORM\Column(type: Types::JSON)]
+    #[Assert\All([new Assert\Choice(callback: [Trade::class, 'values'])])]
+    private array $trades = [];
+
+    // Published reviews, kept up to date by App\EventListener\ReviewStatsListener.
+    // Stored here so the platform search never has to read other clients' reviews.
+
+    #[ORM\Column]
+    private int $reviewCount = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $reviewAverage = null;
+
     // Aviso legal (LSSI art. 10): who runs the website
 
     #[ORM\Column(length: 180, nullable: true)]
@@ -598,6 +612,43 @@ class Tenant
         $this->about = TranslatableText::clean($about);
 
         return $this;
+    }
+
+    /** @return list<string> */
+    public function getTrades(): array
+    {
+        return $this->trades;
+    }
+
+    /** @param list<string>|null $trades */
+    public function setTrades(?array $trades): static
+    {
+        $this->trades = array_values(array_unique($trades ?? []));
+
+        return $this;
+    }
+
+    public function hasTrade(string $trade): bool
+    {
+        return \in_array($trade, $this->trades, true);
+    }
+
+    public function getReviewCount(): int
+    {
+        return $this->reviewCount;
+    }
+
+    public function getReviewAverage(): ?float
+    {
+        return $this->reviewAverage;
+    }
+
+    /** e.g. "RG" for "Reformas García", shown when there is no logo */
+    public function getInitials(): string
+    {
+        $words = preg_split('/\s+/u', trim($this->name), -1, \PREG_SPLIT_NO_EMPTY) ?: [''];
+
+        return mb_strtoupper(implode('', array_map(static fn (string $word) => mb_substr($word, 0, 1), \array_slice($words, 0, 2))));
     }
 
     public function getLegalName(): ?string

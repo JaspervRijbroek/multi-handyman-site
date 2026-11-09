@@ -1,0 +1,203 @@
+{#
+    Page for tradespeople (/{locale}/for-professionals) on PLATFORM_HOST.
+    Change the price and contact details here; the texts are in translations/platform.*.yaml.
+    The brand name comes from BILLING_BRAND.
+#}
+{% extends 'platform/base.html.twig' %}
+{% trans_default_domain 'platform' %}
+
+{% set price = 59 %}
+{% set currency = 'EUR' %}
+{% set contact_email = 'hello@example.com' %}
+{% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
+{% set language_count = 5 %}
+{% set json_flags = constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
+
+{% block title %}{{ 'pros.title'|trans({'%brand%': brand}) }}{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ 'pros.description'|trans({'%brand%': brand}) }}">
+    <link rel="canonical" href="{{ url('platform_pros', {_locale: locale}) }}">
+    <meta property="og:title" content="{{ 'pros.og_title'|trans({'%brand%': brand}) }}">
+    <meta property="og:description" content="{{ 'pros.description'|trans({'%brand%': brand}) }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('platform_pros', {_locale: locale}) }}">
+{% endblock %}
+
+{% block head %}
+    {# We practise what we sell: this page is described in structured data too #}
+    <script type="application/ld+json">{{ {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'Organization',
+                'name': brand,
+                'url': url('site_home', {_locale: locale}),
+                'email': contact_email,
+                'areaServed': 'ES',
+            },
+            {
+                '@type': 'Service',
+                'name': 'pros.plan_name'|trans({'%brand%': brand}),
+                'serviceType': 'pros.eyebrow'|trans,
+                'provider': { '@type': 'Organization', 'name': brand },
+                'areaServed': 'ES',
+                'availableLanguage': ['en', 'es', 'nl', 'de', 'fr'],
+                'offers': {
+                    '@type': 'Offer',
+                    'priceCurrency': currency,
+                    'price': price,
+                    'priceSpecification': {
+                        '@type': 'UnitPriceSpecification',
+                        'price': price,
+                        'priceCurrency': currency,
+                        'unitCode': 'MON',
+                        'referenceQuantity': { '@type': 'QuantitativeValue', 'value': 1, 'unitCode': 'MON' },
+                    },
+                },
+            },
+            {
+                '@type': 'FAQPage',
+                'mainEntity': (1..6)|map(i => {
+                    '@type': 'Question',
+                    'name': ('pros.faq' ~ i ~ '_q')|trans,
+                    'acceptedAnswer': { '@type': 'Answer', 'text': ('pros.faq' ~ i ~ '_a')|trans },
+                }),
+            },
+        ],
+    }|json_encode(json_flags)|raw }}</script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="p-hero">
+            <div class="p-container p-hero-grid">
+                <div class="p-hero-copy">
+                    <p class="p-eyebrow">{{ 'pros.eyebrow'|trans }}</p>
+                    <h1>{{ 'pros.h1_start'|trans }}<span>{{ 'pros.h1_highlight'|trans }}</span>{{ 'pros.h1_end'|trans }}</h1>
+                    <p class="p-lead">{{ 'pros.lead'|trans }}</p>
+                    <div class="p-cta">
+                        <a class="p-btn p-btn-primary" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
+                        <a class="p-btn p-btn-ghost" href="#pricing">{{ 'pros.see_pricing'|trans }}</a>
+                    </div>
+                </div>
+
+                {# Illustration: a tiled arch with a mini website and a map pin, built from HTML so it stays crisp #}
+                <div class="p-visual" aria-hidden="true">
+                    <div class="p-tiles"></div>
+                    <div class="p-maps">
+                        <span class="p-maps-pin"></span>
+                        <span><b>Reformas García</b>Google Maps · Jávea</span>
+                    </div>
+                    <div class="p-browser">
+                        <div class="p-browser-bar"><i></i><i></i><span>reformas-garcia.es</span></div>
+                        <div class="p-browser-body">
+                            <i class="p-b-mark"></i>
+                            <i class="p-b-title"></i>
+                            <i class="p-b-line"></i>
+                            <i class="p-b-line p-b-short"></i>
+                            <i class="p-b-btn"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="why" class="p-section p-section-blue">
+            <div class="p-container">
+                <h2>{{ 'pros.why_title'|trans({'%brand%': brand}) }}</h2>
+                <div class="p-reasons">
+                    {% for i in 1..4 %}
+                        <article>
+                            <span class="p-num">0{{ i }}</span>
+                            <h3>{{ ('pros.reason' ~ i ~ '_title')|trans }}</h3>
+                            <p>{{ ('pros.reason' ~ i ~ '_text')|trans({'%brand%': brand, '%count%': language_count}) }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="p-section">
+            <div class="p-container">
+                <div class="p-head">
+                    <p class="p-eyebrow">{{ 'pros.how_eyebrow'|trans }}</p>
+                    <h2>{{ 'pros.how_title'|trans }}</h2>
+                </div>
+                <ol class="p-steps">
+                    {% for i in 1..3 %}
+                        <li>
+                            <h3>{{ ('pros.step' ~ i ~ '_title')|trans }}</h3>
+                            <p>{{ ('pros.step' ~ i ~ '_text')|trans }}</p>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </section>
+
+        <section id="pricing" class="p-section p-section-alt">
+            <div class="p-container p-mid">
+                <div class="p-head p-center">
+                    <h2>{{ 'pros.price_title'|trans }}</h2>
+                    <p class="p-text p-center">{{ 'pros.price_text'|trans }}</p>
+                </div>
+                <div class="p-plan">
+                    <div class="p-plan-price">
+                        <span class="p-plan-name">{{ 'pros.plan_name'|trans({'%brand%': brand}) }}</span>
+                        <p class="p-price"><strong>€{{ price }}</strong> {{ 'pros.per_month'|trans }}</p>
+                        <span class="p-plan-sub">{{ 'pros.plan_note'|trans }}</span>
+                        <a class="p-btn p-btn-light" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
+                    </div>
+                    <div class="p-plan-body">
+                        <p class="p-eyebrow">{{ 'pros.included'|trans }}</p>
+                        <ul class="p-included">
+                            {% for i in 1..5 %}
+                                <li><b>{{ ('pros.inc' ~ i ~ '_title')|trans }}</b><span>{{ ('pros.inc' ~ i ~ '_text')|trans }}</span></li>
+                            {% endfor %}
+                        </ul>
+                        <div class="p-more">
+                            <p class="p-eyebrow">{{ 'pros.more'|trans }}</p>
+                            <ul class="p-chips">
+                                {% for i in 1..10 %}
+                                    <li>{{ ('pros.more' ~ i)|trans({'%brand%': brand, '%count%': language_count}) }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% if contact_whatsapp %}
+                            <a class="p-btn p-btn-ghost" href="https://wa.me/{{ contact_whatsapp }}" target="_blank" rel="noopener">{{ 'pros.whatsapp'|trans }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="p-section">
+            <div class="p-container p-narrow">
+                <div class="p-head">
+                    <p class="p-eyebrow">{{ 'pros.faq_eyebrow'|trans }}</p>
+                    <h2>{{ 'pros.faq_title'|trans }}</h2>
+                </div>
+                <div class="p-faq">
+                    {% for i in 1..6 %}
+                        <details{% if loop.first %} open{% endif %}>
+                            <summary>{{ ('pros.faq' ~ i ~ '_q')|trans }}</summary>
+                            <p>{{ ('pros.faq' ~ i ~ '_a')|trans }}</p>
+                        </details>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="p-section p-section-end">
+            <div class="p-container p-mid">
+                <div class="p-final-inner">
+                    <div>
+                        <h2>{{ 'pros.final_title'|trans }}</h2>
+                        <p>{{ 'pros.final_text'|trans({'%price%': price}) }}</p>
+                    </div>
+                    <a class="p-btn p-btn-primary" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

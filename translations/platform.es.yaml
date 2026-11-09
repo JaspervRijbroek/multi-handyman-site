@@ -1,0 +1,205 @@
+# Páginas de la plataforma en PLATFORM_HOST (inicio, búsqueda, para profesionales, registro).
+# Las webs de los clientes usan messages.*.yaml.
+
+nav:
+    main: Menú principal
+    find: Buscar profesional
+    pros: Para profesionales
+    login: Acceso clientes
+    list: Registra tu negocio
+    language: Idioma
+
+footer:
+    tagline: Profesionales locales en toda España
+
+trade:
+    handyman: Manitas
+    plumbing: Fontanería
+    electrical: Electricidad
+    painting: Pintura
+    carpentry: Carpintería
+    tiling: Alicatado
+    renovation: Obras y reformas
+    roofing: Tejados
+    air-conditioning: Aire acondicionado
+    garden: Jardinería
+    pool: Piscinas
+    locksmith: Cerrajería
+
+home:
+    title: '%brand% | Encuentra un manitas, fontanero o albañil de confianza cerca de ti'
+    description: Encuentra profesionales locales en España por oficio y localidad. Mira sus trabajos y opiniones, y contacta directamente. Sin intermediarios ni comisiones.
+    og_title: '%brand%: buenas manos, a la vuelta de la esquina'
+    eyebrow: ¡Hola, vecino! · Profesionales locales en toda España
+    h1_start: 'Buenas manos, '
+    h1_highlight: a la vuelta
+    h1_end: ' de la esquina.'
+    lead: Encuentra un manitas, fontanero, pintor o albañil cerca de ti. Mira sus trabajos y lo que dicen los vecinos, y contacta directamente.
+    popular: 'Populares:'
+    trades_title: Todos los oficios, cerca de casa
+    trades_text: Elige un oficio para ver los profesionales cerca de ti.
+    trade_count: '{0} Próximamente|{1} 1 profesional|]1,Inf[ %count% profesionales'
+    step1_title: Busca en tu localidad
+    step1_text: Elige qué necesitas y dónde. Te mostramos los profesionales que trabajan cerca, primero los más cercanos.
+    step2_title: Compara sus trabajos
+    step2_text: Cada profesional tiene su propia web con trabajos recientes, las zonas donde trabaja y opiniones de clientes.
+    step3_title: Contacta directamente
+    step3_text: 'Llama, escribe por WhatsApp o envía un mensaje. Sin intermediarios ni comisiones: el acuerdo es entre tú y el profesional.'
+    cta_title: Tu propia web, y que te encuentren los clientes de tu zona.
+    cta_text: Una web profesional con tus trabajos y opiniones, configurada en Google y presente aquí. Sin comisiones por trabajo.
+    cta_button: Descubre cómo funciona
+
+search_form:
+    what: ¿Qué necesitas?
+    any: Cualquier oficio
+    where: ¿Dónde?
+    placeholder: Localidad, p. ej. Jávea
+    button: Buscar
+
+search:
+    title_any: Profesionales locales
+    heading_near: '%what% cerca de %town%'
+    description: '%what%: mira sus trabajos y opiniones, y contacta directamente.'
+    count: '{0} Ningún profesional|{1} 1 profesional|]1,Inf[ %count% profesionales'
+    within: 'a menos de %km% km'
+    sort: Ordenar
+    nearest: Más cercanos
+    rating: Mejor valorados
+    not_found: 'No encontramos «%town%». Revisa cómo se escribe o prueba con una localidad cercana. De momento mostramos todos los profesionales.'
+    empty_title: Aún no hay profesionales aquí
+    empty_text: Prueba con otro oficio o con una localidad más grande cercana.
+    show_all: Ver todos los profesionales
+    reviews: '{1} 1 opinión|]1,Inf[ %count% opiniones'
+    no_reviews: Aún sin opiniones
+    view_site: Ver web
+    call: Llamar
+    map_show: Ver en el mapa
+    map_note: El mapa se carga desde OpenStreetMap cuando haces clic.
+    pages: Páginas
+    page: 'Página %page% de %pages%'
+    previous: Anterior
+    next: Siguiente
+
+pros:
+    title: '%brand% | Webs para profesionales en España que Google y los asistentes de IA encuentran'
+    description: Webs para manitas y profesionales de la construcción en España. Aparece en Google Maps, en Google y en asistentes de IA como ChatGPT, y en el buscador de %brand%. Un precio mensual.
+    og_title: '%brand%: que te encuentren en Google y los asistentes de IA'
+    eyebrow: Webs para profesionales en España
+    h1_start: 'Más trabajo en '
+    h1_highlight: tu propio
+    h1_end: ' pueblo.'
+    lead: Consigue una web profesional, aparece en Google Maps, en Google y en asistentes de IA como ChatGPT, y deja que los clientes te contacten directamente. Nosotros nos encargamos de la parte técnica para que tú sigas trabajando.
+    cta: Empieza ahora
+    see_pricing: Ver precios
+    why_title: Por qué los profesionales eligen %brand%
+    reason1_title: Sin comisiones
+    reason1_text: Los clientes te llaman, te escriben por WhatsApp o te envían un email directamente. Cada euro del trabajo es tuyo.
+    reason2_title: Tu propia web
+    reason2_text: Una web de verdad con tu propio dominio, tus servicios, tus proyectos, tus opiniones y tu zona de trabajo, en %count% idiomas.
+    reason3_title: Te encuentran los clientes de tu zona
+    reason3_text: Apareces en el buscador de %brand%, con datos estructurados y una página por idioma, para que Google, Google Maps y los asistentes de IA sepan qué haces y dónde.
+    reason4_title: Nosotros hacemos lo técnico
+    reason4_text: Alojamiento, HTTPS, copias de seguridad, configuración de Google y actualizaciones incluidos. Tú actualizas tus proyectos desde el móvil.
+    how_eyebrow: Cómo funciona
+    how_title: En marcha en pocos días
+    step1_title: Cuéntanos sobre tu negocio
+    step1_text: 'Rellena el formulario de registro: qué haces, dónde trabajas y qué idiomas necesitas.'
+    step2_title: Lo creamos y conectamos todo
+    step2_text: Revisamos tus datos, preparamos tu web y tu dominio, y la conectamos con Google.
+    step3_title: Los clientes te encuentran
+    step3_text: En Google, en Maps, en nuestro buscador y a través de los asistentes de IA. Tú recibes las llamadas; nosotros lo mantenemos todo en marcha.
+    price_title: Un plan. Todo incluido.
+    price_text: Sin cuota de alta y sin comisiones por trabajo. Normalmente un solo trabajo nuevo desde la web paga el año entero.
+    plan_name: '%brand% completo'
+    per_month: / mes
+    plan_note: IVA no incluido · sin cuota de alta
+    included: Qué incluye
+    inc1_title: Optimización SEO
+    inc1_text: Títulos, descripciones y textos preparados para que Google te muestre en los trabajos de tus localidades, en todos los idiomas.
+    inc2_title: Optimización para búsqueda con IA
+    inc2_text: Información estructurada para que asistentes como ChatGPT y Gemini te encuentren y te recomienden.
+    inc3_title: Google Search Console
+    inc3_text: Conectado y verificado con tu sitemap, para que se indexen todas las páginas e idiomas.
+    inc4_title: Google Maps
+    inc4_text: Configuramos tu Perfil de Empresa de Google para que aparezcas en el mapa.
+    inc5_title: Actualizaciones futuras
+    inc5_text: Cada nueva función y mejora que creamos se añade a tu plan sin coste adicional.
+    more: Y además
+    more1: Presencia en el buscador y el mapa de %brand%
+    more2: Opiniones de clientes que tú apruebas
+    more3: Tu propio dominio con HTTPS
+    more4: '%count% idiomas'
+    more5: Formulario de contacto directo a tu correo
+    more6: WhatsApp y llamada con un clic
+    more7: Galería de proyectos que actualizas tú
+    more8: Páginas legales para España
+    more9: Sin banner de cookies
+    more10: Alojamiento, copias de seguridad y actualizaciones
+    whatsapp: Pregúntanos por WhatsApp
+    faq_eyebrow: Preguntas frecuentes
+    faq_title: Lo que nos suelen preguntar
+    faq1_q: ¿Qué significa que te encuentren los asistentes de IA?
+    faq1_a: 'Cada vez más gente pregunta a ChatGPT, Gemini, Claude o Perplexity cosas como «busca un fontanero cerca de Jávea». Esos asistentes leen webs para responder. Tu web les da datos claros y estructurados —qué haces, dónde trabajas, cómo contactarte— para que te recomienden con confianza en lugar de adivinar.'
+    faq2_q: ¿Hay cuota de alta o permanencia?
+    faq2_a: No hay cuota de alta. Pagas un precio mensual que incluye la web, el alojamiento, la configuración de Google y el SEO continuo.
+    faq3_q: ¿Tengo que saber algo de webs?
+    faq3_a: No. Creamos la web, conectamos tu dominio y configuramos Google por ti. Después puedes actualizar tus servicios y añadir fotos de trabajos recientes desde un panel sencillo, o simplemente enviárnoslas.
+    faq4_q: ¿Puedo usar mi propio dominio?
+    faq4_a: Sí. Usa el dominio que ya tienes o te ayudamos a registrar uno. HTTPS incluido y funcionando desde la primera visita.
+    faq5_q: ¿Qué idiomas hay?
+    faq5_a: Inglés, español, neerlandés, alemán y francés. Elige los idiomas de tus clientes; cada uno tiene sus propias páginas para que Google y los asistentes de IA muestren la versión correcta a cada persona.
+    faq6_q: ¿Es legal para un negocio en España?
+    faq6_a: Cada web incluye un aviso legal y una política de privacidad (LSSI y RGPD) generados con los datos de tu negocio, y no necesita banner de cookies. Aun así, te recomendamos que tu gestor revise los textos.
+    final_title: Cuando tú quieras.
+    final_text: El registro lleva unos cinco minutos. Revisamos tus datos y tu web suele estar publicada en dos días laborables. %price% € al mes, todo incluido.
+
+signup:
+    page_title: Consigue tu web
+    eyebrow: Registro
+    intro: Cuéntanos sobre tu negocio. Revisamos tus datos, creamos tu web con un mapa de dónde estás y la conectamos con Google. Recibirás un email en cuanto esté publicada, normalmente en dos días laborables.
+    legend_business: Tu negocio
+    legend_address: Dirección
+    address_note: Se muestra en tu web y en su mapa. ¿Trabajas desde casa? Más adelante puedes ocultar la calle y mostrar solo tu localidad.
+    legend_website: Web
+    legend_login: Tu acceso
+    submit: Enviar registro
+    too_many: Demasiados intentos desde tu conexión. Inténtalo más tarde o escríbenos un email.
+    turnstile: Confirma que no eres un robot y vuelve a enviar el formulario.
+    business_name: Nombre del negocio
+    contact_name: Tu nombre
+    email: Email
+    email_help: Será tu usuario de acceso, y aquí recibirás los mensajes de tu web.
+    phone: Teléfono
+    whatsapp: Número de WhatsApp
+    whatsapp_help: Déjalo vacío si es el mismo que tu teléfono.
+    street: Calle y número
+    postal_code: Código postal
+    town: Localidad
+    country: País
+    service_area: Localidades y zonas donde trabajas
+    service_area_placeholder: p. ej. Jávea, Dénia, Moraira y alrededores
+    domain: Tu dominio
+    domain_help: Solo si ya tienes uno, p. ej. mimanitas.es. ¿Aún no tienes dominio? Te ayudamos a elegirlo.
+    locales: Idiomas de tu web
+    default_locale: Idioma principal
+    tax_id: NIF / NIE / CIF
+    tax_id_help: Para el aviso legal de tu web. Puedes añadirlo más tarde.
+    message: ¿A qué te dedicas? ¿Algo más que debamos saber?
+    password: Elige una contraseña
+    password_repeat: Repite la contraseña
+    consent: Acepto que se guarden estos datos para crear mi web y contactarme sobre ella.
+    honeypot: Deja este campo vacío
+    thanks_title: ¡Gracias!
+    thanks_eyebrow: Registro recibido
+    thanks_text: Hemos recibido tus datos y los revisaremos en breve. En cuanto tu web esté lista, recibirás un email con tu acceso. ¿Alguna pregunta mientras tanto? Responde a ese email.
+    thanks_back: Volver a la página principal
+
+password:
+    title: Elige tu contraseña
+    intro: 'Para tu acceso %email%. Usa al menos 10 caracteres.'
+    new: Nueva contraseña
+    repeat: Repite la contraseña
+    save: Guardar contraseña
+    expired_title: Este enlace ha caducado
+    expired_text: Los enlaces para elegir la contraseña funcionan una vez y durante 7 días. Responde a tu email de bienvenida y te enviamos uno nuevo.
+    to_login: Ir al acceso

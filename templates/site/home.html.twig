@@ -11,6 +11,7 @@
         'addressLocality': tenant.city,
         'addressCountry': tenant.country,
     }|filter(v => v is not empty) : null %}
+    {# Includes the star rating for Google: only published reviews, the same ones shown on this page #}
     <script type="application/ld+json">{{ {
         '@context': 'https://schema.org',
         '@type': 'HomeAndConstructionBusiness',
@@ -25,45 +26,85 @@
         'sameAs': tenant.googleBusinessUrl ? [tenant.googleBusinessUrl] : null,
         'areaServed': tenant.serviceArea,
         'logo': tenant.logoName ? absolute_url(asset('uploads/logos/' ~ tenant.logoName)) : null,
+        'aggregateRating': tenant.reviewCount ? {
+            '@type': 'AggregateRating',
+            'ratingValue': tenant.reviewAverage,
+            'reviewCount': tenant.reviewCount,
+            'bestRating': 5,
+            'worstRating': 1,
+        } : null,
+        'review': reviews|map(review => {
+            '@type': 'Review',
+            'author': {'@type': 'Person', 'name': review.authorName},
+            'datePublished': review.createdAt|date('Y-m-d'),
+            'reviewBody': review.text,
+            'reviewRating': {'@type': 'Rating', 'ratingValue': review.rating, 'bestRating': 5, 'worstRating': 1},
+        }),
     }|filter(v => v is not empty)|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endblock %}
 
 {% block body %}
+    {% set hero_project = projects|filter(p => p.imageName)|first %}
     <section class="hero">
-        <div class="container">
-            <h1>{{ tenant.tagline|localized ?: tenant.name }}</h1>
-            {% if tenant.intro|localized %}
-                <p class="lead">{{ tenant.intro|localized|nl2br }}</p>
-            {% endif %}
-            <div class="cta">
-                {% if tenant.phoneLink %}
-                    <a class="btn btn-primary" href="tel:{{ tenant.phoneLink }}">{{ 'hero.call'|trans }} {{ tenant.phone }}</a>
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                {% if tenant.serviceArea %}
+                    <p class="badges"><span class="badge">{{ 'hero.area'|trans }}: {{ tenant.serviceArea }}</span></p>
                 {% endif %}
-                {% if tenant.whatsappDigits %}
-                    <a class="btn btn-whatsapp" href="https://wa.me/{{ tenant.whatsappDigits }}?text={{ 'whatsapp.prefill'|trans({'%name%': tenant.name})|url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
+                <h1>{{ tenant.tagline|localized ?: tenant.name }}</h1>
+                {% if tenant.intro|localized %}
+                    <p class="lead">{{ tenant.intro|localized|nl2br }}</p>
                 {% endif %}
-                <a class="btn btn-secondary" href="#contact">{{ 'hero.quote'|trans }}</a>
+                <div class="cta">
+                    <a class="btn btn-primary" href="#contact">{{ 'hero.quote'|trans }}</a>
+                    {% if tenant.phoneLink %}
+                        <a class="btn btn-secondary" href="tel:{{ tenant.phoneLink }}">{{ 'hero.call'|trans }} {{ tenant.phone }}</a>
+                    {% endif %}
+                    {% if tenant.whatsappDigits %}
+                        <a class="btn btn-whatsapp" href="https://wa.me/{{ tenant.whatsappDigits }}?text={{ 'whatsapp.prefill'|trans({'%name%': tenant.name})|url_encode }}" target="_blank" rel="noopener">WhatsApp</a>
+                    {% endif %}
+                </div>
+                {% if tenant.reviewCount %}
+                    <a class="rating" href="#reviews">
+                        <span class="stars" aria-hidden="true">★</span>
+                        {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1, app.request.locale == 'en' ? '.' : ','), '%count%': tenant.reviewCount}) }}
+                    </a>
+                {% endif %}
             </div>
-            {% if tenant.serviceArea %}
-                <p class="area">{{ 'hero.area'|trans }}: {{ tenant.serviceArea }}</p>
-            {% endif %}
+            {# Arch-shaped photo: the newest project with a picture, otherwise a tile pattern #}
+            <div class="hero-photo{{ hero_project ? '' : ' hero-photo-empty' }}">
+                {% if hero_project %}
+                    <img src="{{ asset('uploads/projects/' ~ hero_project.imageName) }}" alt="{{ hero_project.title|localized }}" width="460" height="552">
+                {% endif %}
+            </div>
         </div>
     </section>
 
-    {% if services is not empty %}
+    {% if tenant.about|localized or services is not empty %}
         <section id="services" class="section">
-            <div class="container">
-                <h2>{{ 'services.title'|trans }}</h2>
-                <div class="grid services">
-                    {% for service in services %}
-                        <article class="card">
-                            <h3>{{ service.title|localized }}</h3>
-                            {% if service.description|localized %}
-                                <p>{{ service.description|localized|nl2br }}</p>
-                            {% endif %}
-                        </article>
-                    {% endfor %}
+            <div class="container split">
+                <div class="stack">
+                    <p class="eyebrow">{{ 'about.title'|trans }}</p>
+                    <h2>{{ tenant.name }}</h2>
+                    {% if tenant.about|localized %}
+                        <p class="muted">{{ tenant.about|localized|nl2br }}</p>
+                    {% endif %}
                 </div>
+                {% if services is not empty %}
+                    <div>
+                        <p class="eyebrow">{{ 'services.title'|trans }}</p>
+                        <ul class="service-list">
+                            {% for service in services %}
+                                <li>
+                                    <h3>{{ service.title|localized }}</h3>
+                                    {% if service.description|localized %}
+                                        <p>{{ service.description|localized|nl2br }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
         </section>
     {% endif %}
@@ -72,12 +113,12 @@
         <section id="projects" class="section section-alt">
             <div class="container">
                 <h2>{{ 'projects.title'|trans }}</h2>
-                <div class="grid projects">
+                <div class="projects">
                     {% for project in projects %}
                         <figure class="project">
                             {% if project.imageName %}
                                 <img src="{{ asset('uploads/projects/' ~ project.imageName) }}"
-                                     alt="{{ project.title|localized }}" loading="lazy" width="600" height="450">
+                                     alt="{{ project.title|localized }}" loading="lazy" width="400" height="500">
                             {% else %}
                                 <div class="project-placeholder" aria-hidden="true"></div>
                             {% endif %}
@@ -93,20 +134,40 @@
         </section>
     {% endif %}
 
-    {% if tenant.about|localized %}
-        <section id="about" class="section">
-            <div class="container narrow">
-                <h2>{{ 'about.title'|trans }}</h2>
-                <p>{{ tenant.about|localized|nl2br }}</p>
+    <section id="reviews" class="section section-tint">
+        <div class="container">
+            <div class="section-head">
+                <h2>{{ 'reviews.title'|trans }}</h2>
+                {% if tenant.reviewCount %}
+                    <p class="muted"><span class="stars" aria-hidden="true">★</span> {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1, app.request.locale == 'en' ? '.' : ','), '%count%': tenant.reviewCount}) }}</p>
+                {% endif %}
             </div>
-        </section>
-    {% endif %}
+            {% if reviews is not empty %}
+                <div class="reviews">
+                    {% for review in reviews %}
+                        <blockquote class="review">
+                            <p class="stars" role="img" aria-label="{{ review.rating }}/5">{% for star in 1..5 %}<span{% if star > review.rating %} class="star-off"{% endif %}>★</span>{% endfor %}</p>
+                            <p class="review-text">“{{ review.text }}”</p>
+                            <footer>
+                                <span class="review-initial" aria-hidden="true">{{ review.authorName|first|upper }}</span>
+                                <span><b>{{ review.authorName }}</b>{% if review.town %}<br>{{ review.town }}{% endif %}</span>
+                                <time datetime="{{ review.createdAt|date('Y-m-d') }}">{{ review.createdAt|date('m/Y') }}</time>
+                            </footer>
+                        </blockquote>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="muted">{{ 'reviews.none'|trans }}</p>
+            {% endif %}
+            <p><a class="btn btn-secondary" href="{{ path('site_review', {_locale: app.request.locale}) }}">{{ 'reviews.write'|trans }}</a></p>
+        </div>
+    </section>
 
-    <section id="contact" class="section section-alt">
+    <section id="contact" class="section">
         <div class="container contact">
-            <div>
+            <div class="stack">
                 <h2>{{ 'contact.title'|trans }}</h2>
-                <p>{{ 'contact.intro'|trans }}</p>
+                <p class="muted">{{ 'contact.intro'|trans }}</p>
                 <ul class="contact-details">
                     {% if tenant.phoneLink %}<li><a href="tel:{{ tenant.phoneLink }}">{{ tenant.phone }}</a></li>{% endif %}
                     {% if tenant.whatsappDigits %}<li><a href="https://wa.me/{{ tenant.whatsappDigits }}" target="_blank" rel="noopener">WhatsApp</a></li>{% endif %}
@@ -140,7 +201,7 @@
                     </script>
                 {% endif %}
             </div>
-            <div>
+            <div class="contact-card">
                 {% for message in app.flashes('contact_success') %}
                     <p class="notice" role="status">{{ message|trans }}</p>
                 {% endfor %}

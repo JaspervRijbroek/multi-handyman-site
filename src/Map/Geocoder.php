@@ -15,8 +15,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * The public server's usage policy (https://operations.osmfoundation.org/policies/nominatim/)
  * asks for an identifying User-Agent and at most one request per second; both
- * are taken care of here. Onboarding only geocodes once per address, which is
- * well within that policy. For a self-hosted Nominatim, set NOMINATIM_URL.
+ * are taken care of here. Onboarding only geocodes once per address, and the
+ * platform search only asks for towns where no client works yet, which keeps
+ * us well within that policy. For a self-hosted Nominatim, set NOMINATIM_URL.
  */
 final class Geocoder
 {
@@ -56,16 +57,30 @@ final class Geocoder
         $town = ['postalcode' => $tenant->getPostalCode(), 'city' => $tenant->getCity()];
 
         if ($tenant->isShowStreetAddress() && $tenant->getStreetAddress()) {
-            $place = $this->search($tenant, ['street' => $tenant->getStreetAddress(), ...$town]);
+            $place = $this->search(['street' => $tenant->getStreetAddress(), ...$town], $tenant->getCountry(), $tenant->getDefaultLocale());
             if (null !== $place) {
                 return $this->store($tenant, $place, exact: true);
             }
         }
 
         // Street unknown to OpenStreetMap (or hidden on purpose): the town is good enough for a map
-        $place = $this->search($tenant, $town);
+        $place = $this->search($town, $tenant->getCountry(), $tenant->getDefaultLocale());
 
         return null === $place ? null : $this->store($tenant, $place, exact: false);
+    }
+
+    /**
+     * Coordinates of a town or area typed into the platform search, e.g. "Jávea".
+     *
+     * @return array{float, float}|null [latitude, longitude], or null if the place is unknown
+     *
+     * @throws GeocodingException when Nominatim cannot be reached
+     */
+    public function locate(string $place, string $country = 'ES'): ?array
+    {
+        $found = $this->search(['q' => $place], $country, 'es');
+
+        return null === $found ? null : [(float) $found['lat'], (float) $found['lon']];
     }
 
     /**
@@ -73,7 +88,7 @@ final class Geocoder
      *
      * @return array{lat: string, lon: string, display_name?: string}|null
      */
-    private function search(Tenant $tenant, array $address): ?array
+    private function search(array $address, string $country, string $language): ?array
     {
         $this->respectRateLimit();
 
@@ -81,13 +96,13 @@ final class Geocoder
             $results = $this->httpClient->request('GET', $this->baseUrl.'/search', [
                 'query' => [
                     ...array_filter($address),
-                    'countrycodes' => strtolower($tenant->getCountry()),
+                    'countrycodes' => strtolower($country),
                     'format' => 'jsonv2',
                     'limit' => 1,
                 ],
                 'headers' => [
                     'User-Agent' => $this->userAgent,
-                    'Accept-Language' => $tenant->getDefaultLocale(),
+                    'Accept-Language' => $language,
                 ],
                 'timeout' => 10,
             ])->toArray();

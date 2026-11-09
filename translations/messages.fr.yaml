@@ -1,0 +1,85 @@
+nav:
+    services: Services
+    projects: Nos réalisations
+    reviews: Avis
+    contact: Contact
+    main: Menu principal
+    language: Langue
+
+hero:
+    call: Appeler le
+    quote: Demander un devis
+    area: Nous intervenons à
+
+services:
+    title: Ce que nous faisons
+
+projects:
+    title: Réalisations récentes
+
+about:
+    title: À propos de nous
+
+reviews:
+    title: Ce que disent nos clients
+    summary: '%average% sur %count% avis'
+    none: Pas encore d’avis. Nous avons travaillé pour vous ? Soyez le premier à en écrire un.
+    write: Écrire un avis
+    intro: '%name% a travaillé pour vous ? Dites aux autres comment cela s’est passé. Votre avis apparaîtra sur ce site une fois vérifié.'
+    rating: Votre note
+    name: Votre prénom
+    town: Votre ville (facultatif)
+    text: Votre avis
+    send: Envoyer l’avis
+    success: Merci ! Votre avis apparaîtra sur ce site une fois vérifié.
+    back: Retour à l’accueil
+    privacy: 'Votre prénom, votre ville, votre note et votre avis sont affichés sur ce site. Voir notre <a href="%url%">politique de confidentialité</a>.'
+
+contact:
+    title: Nous contacter
+    intro: Dites-nous ce qu’il faut faire et nous vous répondrons dès que possible.
+    name: Votre nom
+    contact: E-mail ou numéro de téléphone
+    message: Comment pouvons-nous vous aider ?
+    send: Envoyer le message
+    success: Merci ! Votre message a été envoyé. Nous vous répondrons bientôt.
+    turnstile_failed: Merci de confirmer que vous n’êtes pas un robot et de renvoyer votre message.
+    privacy: 'Nous utilisons vos coordonnées uniquement pour répondre à votre message. Voir notre <a href="%url%">politique de confidentialité</a>.'
+
+whatsapp:
+    prefill: 'Bonjour %name%, je vous ai trouvé grâce à votre site.'
+
+map:
+    show: Afficher la carte
+    notice: La carte n’est chargée depuis OpenStreetMap que lorsque vous cliquez ; rien n’est partagé avec un tiers avant cela.
+    open: Voir une carte plus grande
+    google: Voir sur Google Maps
+    iframe: Carte de %name%
+
+footer:
+    legal: Mentions légales & confidentialité
+
+legal:
+    title: Mentions légales & confidentialité
+    owner:
+        title: Qui gère ce site
+        text: 'Conformément à la loi espagnole (Ley 34/2002, LSSI), le propriétaire de %site% est :'
+        name: Propriétaire
+        tax_id: Numéro fiscal (NIF/NIE/CIF)
+        address: Adresse
+        phone: Téléphone
+        email: E-mail
+    privacy:
+        title: Politique de confidentialité
+        controller: '%owner% est responsable des données personnelles que vous envoyez via ce site.'
+        purpose: Nous utilisons les données du formulaire de contact uniquement pour répondre à votre demande et, si vous le souhaitez, préparer un devis. La base légale est votre consentement et les mesures précontractuelles prises à votre demande. Nous ne vendons ni ne partageons vos données, sauf avec les prestataires qui hébergent ce site et ses e-mails pour notre compte. Contre le spam, le formulaire est protégé par Cloudflare Turnstile, qui vérifie votre navigateur sans cookies de suivi.
+        retention: Nous conservons votre demande le temps nécessaire à son traitement et au respect de nos obligations légales.
+        reviews: Si vous écrivez un avis, nous publions après vérification votre prénom, votre ville (si indiquée), votre note et votre avis sur ce site. Vous pouvez nous demander de le retirer à tout moment.
+        rights: 'Vous pouvez demander l’accès, la rectification ou la suppression de vos données, ou vous opposer à leur utilisation, en écrivant à %email%. Vous pouvez aussi déposer une réclamation auprès de l’autorité espagnole de protection des données (www.aepd.es).'
+    cookies:
+        title: Cookies
+        text: Ce site n’utilise aucun cookie de suivi ou publicitaire. Un cookie de session technique n’est déposé que lorsque vous utilisez le formulaire de contact, pour le protéger contre les abus. Les statistiques de visite, si elles sont activées, sont collectées de façon anonyme et sans cookies.
+        map: La carte de la section contact n’est chargée depuis OpenStreetMap (OpenStreetMap Foundation, Royaume-Uni) que lorsque vous cliquez sur « Afficher la carte » ; votre adresse IP est alors envoyée à leurs serveurs. OpenStreetMap ne dépose aucun cookie publicitaire ni de suivi.
+
+offline:
+    message: 'Ce site est temporairement indisponible. Vous pouvez toujours nous joindre directement :'

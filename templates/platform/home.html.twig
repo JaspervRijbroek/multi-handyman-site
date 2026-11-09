@@ -1,0 +1,98 @@
+{#
+    Homepage of PLATFORM_HOST (/es, /en): find a local pro. Tradespeople go to /{locale}/for-professionals.
+#}
+{% extends 'platform/base.html.twig' %}
+{% trans_default_domain 'platform' %}
+
+{% block title %}{{ 'home.title'|trans({'%brand%': brand}) }}{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ 'home.description'|trans }}">
+    <link rel="canonical" href="{{ url('site_home', {_locale: locale}) }}">
+    <meta property="og:title" content="{{ 'home.og_title'|trans({'%brand%': brand}) }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('site_home', {_locale: locale}) }}">
+{% endblock %}
+
+{% block main %}
+    {% set popular = trades|filter(t => trade_counts[t.value] > 0)|sort((a, b) => trade_counts[b.value] <=> trade_counts[a.value])|slice(0, 4) %}
+    <main>
+        <section class="p-hero">
+            <div class="p-container p-hero-grid">
+                <div class="p-hero-copy">
+                    <p class="p-eyebrow">{{ 'home.eyebrow'|trans }}</p>
+                    <h1>{{ 'home.h1_start'|trans }}<span>{{ 'home.h1_highlight'|trans }}</span>{{ 'home.h1_end'|trans }}</h1>
+                    <p class="p-lead">{{ 'home.lead'|trans }}</p>
+
+                    {% include 'platform/_search_form.html.twig' with {trade: null, near: ''} %}
+
+                    {% if popular is not empty %}
+                        <p class="p-popular">
+                            <span>{{ 'home.popular'|trans }}</span>
+                            {% for trade in popular %}
+                                <a href="{{ path('platform_search', {_locale: locale, trade: trade.value}) }}">{{ ('trade.' ~ trade.value)|trans }}</a>
+                            {% endfor %}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="p-visual" aria-hidden="true">
+                    <div class="p-tiles"></div>
+                    <div class="p-browser">
+                        <div class="p-browser-bar"><i></i><i></i><span>{{ brand|lower }} · {{ 'search_form.button'|trans|lower }}</span></div>
+                        <div class="p-browser-body">
+                            {% for color in ['#1e4d8c', '#b9471f', '#4d6b2a'] %}
+                                <div class="p-b-row"><i class="p-b-dot" style="background: {{ color }}"></i><span><i class="p-b-title"></i><i class="p-b-short"></i></span><b>★</b></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="p-section p-section-blue">
+            <div class="p-container">
+                <div class="p-head-row">
+                    <h2>{{ 'home.trades_title'|trans }}</h2>
+                    <p>{{ 'home.trades_text'|trans }}</p>
+                </div>
+                <ul class="p-trades">
+                    {% for trade in trades %}
+                        <li>
+                            <a href="{{ path('platform_search', {_locale: locale, trade: trade.value}) }}">
+                                <span class="p-trade-name">{{ ('trade.' ~ trade.value)|trans }}</span>
+                                <span class="p-trade-count">{{ 'home.trade_count'|trans({'%count%': trade_counts[trade.value]}) }} <b aria-hidden="true">→</b></span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        <section class="p-section">
+            <div class="p-container">
+                <ol class="p-steps">
+                    {% for step in 1..3 %}
+                        <li>
+                            <h3>{{ ('home.step' ~ step ~ '_title')|trans }}</h3>
+                            <p>{{ ('home.step' ~ step ~ '_text')|trans }}</p>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </section>
+
+        <section class="p-section p-section-end">
+            <div class="p-container">
+                <div class="p-cta-block">
+                    <div>
+                        <p class="p-eyebrow">{{ 'nav.pros'|trans }}</p>
+                        <h2>{{ 'home.cta_title'|trans }}</h2>
+                        <p>{{ 'home.cta_text'|trans }}</p>
+                        <a class="p-btn p-btn-light" href="{{ path('platform_pros', {_locale: locale}) }}">{{ 'home.cta_button'|trans }} →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock %}

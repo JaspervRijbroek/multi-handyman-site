@@ -1,7 +1,10 @@
 nav:
     services: Servicios
     projects: Trabajos
+    reviews: Opiniones
     contact: Contacto
+    main: Menú principal
+    language: Idioma
 
 hero:
     call: Llamar al
@@ -16,6 +19,21 @@ projects:
 
 about:
     title: Sobre nosotros
+
+reviews:
+    title: Lo que dicen los clientes
+    summary: '%average% de %count% opiniones'
+    none: Aún no hay opiniones. ¿Hemos hecho un trabajo para usted? Sea el primero en escribir una.
+    write: Escribir una opinión
+    intro: '¿%name% ha hecho un trabajo para usted? Cuente a otros cómo fue. Su opinión aparecerá en esta web una vez revisada.'
+    rating: Su valoración
+    name: Su nombre
+    town: Su localidad (opcional)
+    text: Su opinión
+    send: Enviar opinión
+    success: ¡Gracias! Su opinión aparecerá en esta web una vez revisada.
+    back: Volver a la página principal
+    privacy: 'Su nombre, localidad, valoración y opinión se muestran en esta web. Consulte nuestra <a href="%url%">política de privacidad</a>.'
 
 contact:
     title: Contacto
@@ -50,11 +68,13 @@ legal:
         tax_id: NIF/NIE/CIF
         address: Domicilio
         phone: Teléfono
+        email: Email
     privacy:
         title: Política de privacidad
         controller: '%owner% es responsable de los datos personales que envíe a través de este sitio web.'
         purpose: Utilizamos los datos del formulario de contacto únicamente para responder a su consulta y, si lo desea, preparar un presupuesto. La base legal es su consentimiento y la aplicación de medidas precontractuales a petición suya. No vendemos ni cedemos sus datos, salvo a los proveedores que alojan este sitio web y su correo en nuestro nombre. Para evitar el spam, el formulario de contacto está protegido por Cloudflare Turnstile, que comprueba su navegador sin cookies de seguimiento.
         retention: Conservamos su consulta el tiempo necesario para atenderla y cumplir con las obligaciones legales.
+        reviews: Si escribe una opinión, publicamos su nombre, localidad (si la indica), valoración y opinión en esta web una vez revisada. Puede pedirnos que la retiremos en cualquier momento.
         rights: 'Puede solicitar el acceso, la rectificación o la supresión de sus datos, u oponerse a su tratamiento, escribiendo a %email%. También puede presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).'
     cookies:
         title: Cookies

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Public sign-up on PLATFORM_HOST (TenantRequestListener returns 404 for it on
@@ -26,9 +27,17 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 final class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    /** Old and short link: the sign-up form in the visitor's language */
+    #[Route('/register', name: 'app_register_redirect', methods: ['GET'])]
+    public function redirectToLocale(Request $request): Response
+    {
+        return $this->redirectToRoute('app_register', ['_locale' => PlatformController::preferredLocale($request)]);
+    }
+
+    #[Route('/{_locale}/register', name: 'app_register', requirements: ['_locale' => 'es|en'], methods: ['GET', 'POST'])]
     public function register(
         Request $request,
+        TranslatorInterface $translator,
         EntityManagerInterface $entityManager,
         PasswordHasherFactoryInterface $hasherFactory,
         OnboardingMailer $mailer,
@@ -46,7 +55,7 @@ final class RegistrationController extends AbstractController
         if ($form->isSubmitted()) {
             // Counted for every submission, so the form cannot be used to probe which emails have an account
             if (!$signupLimiter->create($request->getClientIp())->consume()->isAccepted()) {
-                $form->addError(new FormError('Too many attempts from your connection. Please try again later, or email us.'));
+                $form->addError(new FormError($translator->trans('signup.too_many', domain: 'platform')));
             } elseif ($form->isValid()) {
                 // Bots fill in the hidden field: pretend everything went fine
                 if ($form->get(SignupType::HONEYPOT)->getData()) {
@@ -55,7 +64,7 @@ final class RegistrationController extends AbstractController
 
                 if (!$turnstile->verify($request, 'signup')) {
                     // Shown above the form, which keeps what was typed (passwords excepted)
-                    $form->addError(new FormError('Please confirm you are not a robot and send the form again.'));
+                    $form->addError(new FormError($translator->trans('signup.turnstile', domain: 'platform')));
                 } else {
                     /** @var Signup $signup */
                     $signup = $form->getData();
@@ -76,7 +85,7 @@ final class RegistrationController extends AbstractController
         ], new Response(status: $form->isSubmitted() ? 422 : 200));
     }
 
-    #[Route('/register/thanks', name: 'app_register_thanks', methods: ['GET'])]
+    #[Route('/{_locale}/register/thanks', name: 'app_register_thanks', requirements: ['_locale' => 'es|en'], methods: ['GET'])]
     public function thanks(): Response
     {
         return $this->render('platform/register_thanks.html.twig');

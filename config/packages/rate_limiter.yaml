@@ -5,3 +5,9 @@ framework:
             policy: sliding_window
             limit: 10
             interval: '1 hour'
+        # Platform search: towns looked up in OpenStreetMap (Nominatim), per IP address.
+        # Towns where clients work are found without a lookup and don't count.
+        search_geocode:
+            policy: sliding_window
+            limit: 30
+            interval: '1 hour'

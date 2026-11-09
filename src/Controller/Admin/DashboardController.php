@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\ChargeRepository;
 use App\Repository\EnquiryRepository;
 use App\Repository\ProjectRepository;
+use App\Repository\ReviewRepository;
 use App\Repository\ServiceRepository;
 use App\Repository\SignupRepository;
 use App\Repository\TenantRepository;
@@ -26,6 +27,7 @@ class DashboardController extends AbstractDashboardController
         private readonly TenantContext $tenantContext,
         private readonly EnquiryRepository $enquiries,
         private readonly ProjectRepository $projects,
+        private readonly ReviewRepository $reviews,
         private readonly ServiceRepository $services,
         private readonly TenantRepository $tenants,
         private readonly SignupRepository $signups,
@@ -38,6 +40,7 @@ class DashboardController extends AbstractDashboardController
         // All counts are automatically limited to the client's own data by the tenant filter
         $stats = [
             ['label' => 'New enquiries', 'value' => $this->enquiries->count(['handled' => false])],
+            ['label' => 'Reviews to check', 'value' => $this->reviews->countPending()],
             ['label' => 'Finished jobs on the website', 'value' => $this->projects->count(['published' => true])],
             ['label' => 'Services', 'value' => $this->services->count([])],
         ];
@@ -58,6 +61,9 @@ class DashboardController extends AbstractDashboardController
             }
             if (!$tenant->hasAddress()) {
                 $missing[] = 'your address (for the map)';
+            }
+            if (!$tenant->getTrades()) {
+                $missing[] = 'your trades (to be found in the search)';
             }
             if (!$tenant->getServiceArea()) {
                 $missing[] = 'the towns you work in';
@@ -105,6 +111,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(ProjectCrudController::class, 'Finished jobs', 'fa fa-images');
         yield MenuItem::linkTo(ServiceCrudController::class, 'Services', 'fa fa-wrench');
         yield MenuItem::linkTo(EnquiryCrudController::class, 'Enquiries', 'fa fa-envelope');
+        yield MenuItem::linkTo(ReviewCrudController::class, 'Reviews', 'fa fa-star')
+            ->setBadge($this->reviews->countPending() ?: null, 'warning');
 
         if ($tenant && $domain = $tenant->getPrimaryDomain()) {
             yield MenuItem::linkToUrl('View website', 'fa fa-external-link-alt', 'https://'.$domain->getHostname())

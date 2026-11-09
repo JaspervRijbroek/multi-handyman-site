@@ -1,0 +1,21 @@
+{# The "what / where" search box. Needs: trades, towns, trade (selected Trade or null), near #}
+{% trans_default_domain 'platform' %}
+<form class="p-search" action="{{ path('platform_search', {_locale: app.request.locale}) }}" method="get" role="search">
+    <label class="p-search-field">
+        <span>{{ 'search_form.what'|trans }}</span>
+        <select name="trade">
+            <option value="">{{ 'search_form.any'|trans }}</option>
+            {% for option in trades %}
+                <option value="{{ option.value }}" {% if trade == option %}selected{% endif %}>{{ ('trade.' ~ option.value)|trans }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label class="p-search-field">
+        <span>{{ 'search_form.where'|trans }}</span>
+        <input type="text" name="near" value="{{ near }}" list="p-towns" placeholder="{{ 'search_form.placeholder'|trans }}" autocomplete="address-level2">
+        <datalist id="p-towns">
+            {% for town in towns %}<option value="{{ town }}"></option>{% endfor %}
+        </datalist>
+    </label>
+    <button type="submit" class="p-btn p-btn-primary">{{ 'search_form.button'|trans }}</button>
+</form>

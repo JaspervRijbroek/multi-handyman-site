@@ -20,7 +20,7 @@
                 <li>{{ 'legal.owner.name'|trans }}: {{ owner }}</li>
                 {% if tenant.taxId %}<li>{{ 'legal.owner.tax_id'|trans }}: {{ tenant.taxId }}</li>{% endif %}
                 {% if tenant.legalAddress ?: tenant.addressLine %}<li>{{ 'legal.owner.address'|trans }}: {{ tenant.legalAddress ?: tenant.addressLine }}</li>{% endif %}
-                {% if tenant.email %}<li>Email: {{ tenant.email }}</li>{% endif %}
+                {% if tenant.email %}<li>{{ 'legal.owner.email'|trans }}: {{ tenant.email }}</li>{% endif %}
                 {% if tenant.phone %}<li>{{ 'legal.owner.phone'|trans }}: {{ tenant.phone }}</li>{% endif %}
             </ul>
 
@@ -28,6 +28,7 @@
             <p>{{ 'legal.privacy.controller'|trans({'%owner%': owner}) }}</p>
             <p>{{ 'legal.privacy.purpose'|trans }}</p>
             <p>{{ 'legal.privacy.retention'|trans }}</p>
+            <p>{{ 'legal.privacy.reviews'|trans }}</p>
             <p>{{ 'legal.privacy.rights'|trans({'%email%': tenant.email ?: '–'}) }}</p>
 
             <h2>{{ 'legal.cookies.title'|trans }}</h2>
