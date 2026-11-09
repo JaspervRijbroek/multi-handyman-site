@@ -21,7 +21,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 final class PasswordSetupController extends AbstractController
 {
-    #[Route('/set-password/{token}', name: 'app_password_setup', requirements: ['token' => '[a-f0-9]{64}'], methods: ['GET', 'POST'])]
+    /** The link in the welcome email: opens the page in the visitor's language */
+    #[Route('/set-password/{token}', name: 'app_password_setup', requirements: ['token' => '[a-f0-9]{64}'], methods: ['GET'])]
+    public function redirectToLocale(string $token, Request $request): Response
+    {
+        return $this->redirectToRoute('app_password_setup_form', [
+            '_locale' => PlatformController::preferredLocale($request),
+            'token' => $token,
+        ]);
+    }
+
+    #[Route('/{_locale}/set-password/{token}', name: 'app_password_setup_form', requirements: ['_locale' => 'es|en', 'token' => '[a-f0-9]{64}'], methods: ['GET', 'POST'])]
     public function setup(
         string $token,
         Request $request,
@@ -34,11 +44,11 @@ final class PasswordSetupController extends AbstractController
             return $this->render('platform/password_setup.html.twig', ['form' => null], new Response(status: 410));
         }
 
-        $form = $this->createFormBuilder()
+        $form = $this->createFormBuilder(options: ['translation_domain' => 'platform'])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'New password', 'attr' => ['autocomplete' => 'new-password']],
-                'second_options' => ['label' => 'Repeat password', 'attr' => ['autocomplete' => 'new-password']],
+                'first_options' => ['label' => 'password.new', 'attr' => ['autocomplete' => 'new-password']],
+                'second_options' => ['label' => 'password.repeat', 'attr' => ['autocomplete' => 'new-password']],
                 'invalid_message' => 'The passwords do not match.',
                 'constraints' => [new Assert\NotBlank(), new Assert\Length(min: 10, max: 4096, minMessage: 'Use at least {{ limit }} characters.')],
             ])

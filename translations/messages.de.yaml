@@ -1,0 +1,85 @@
+nav:
+    services: Leistungen
+    projects: Unsere Arbeit
+    reviews: Bewertungen
+    contact: Kontakt
+    main: Hauptmenü
+    language: Sprache
+
+hero:
+    call: Anrufen
+    quote: Angebot anfragen
+    area: Tätig in
+
+services:
+    title: Was wir machen
+
+projects:
+    title: Aktuelle Arbeiten
+
+about:
+    title: Über uns
+
+reviews:
+    title: Was Kunden sagen
+    summary: '%average% aus %count% Bewertungen'
+    none: Noch keine Bewertungen. Haben wir für Sie gearbeitet? Schreiben Sie die erste Bewertung.
+    write: Bewertung schreiben
+    intro: 'Hat %name% für Sie gearbeitet? Erzählen Sie anderen, wie es war. Ihre Bewertung erscheint auf dieser Website, sobald sie geprüft wurde.'
+    rating: Ihre Bewertung
+    name: Ihr Vorname
+    town: Ihr Wohnort (optional)
+    text: Ihr Erfahrungsbericht
+    send: Bewertung senden
+    success: Vielen Dank! Ihre Bewertung erscheint auf dieser Website, sobald sie geprüft wurde.
+    back: Zurück zur Startseite
+    privacy: 'Ihr Vorname, Wohnort, Ihre Sterne und Ihr Text werden auf dieser Website gezeigt. Siehe unsere <a href="%url%">Datenschutzerklärung</a>.'
+
+contact:
+    title: Kontakt aufnehmen
+    intro: Sagen Sie uns, was zu tun ist, und wir melden uns so schnell wie möglich.
+    name: Ihr Name
+    contact: E-Mail oder Telefonnummer
+    message: Wobei können wir helfen?
+    send: Nachricht senden
+    success: Vielen Dank! Ihre Nachricht wurde gesendet. Wir melden uns bald.
+    turnstile_failed: Bitte bestätigen Sie, dass Sie kein Roboter sind, und senden Sie Ihre Nachricht erneut.
+    privacy: 'Wir verwenden Ihre Angaben nur, um Ihre Nachricht zu beantworten. Siehe unsere <a href="%url%">Datenschutzerklärung</a>.'
+
+whatsapp:
+    prefill: 'Hallo %name%, ich habe Sie über Ihre Website gefunden.'
+
+map:
+    show: Karte anzeigen
+    notice: Die Karte wird erst beim Klicken von OpenStreetMap geladen, vorher werden keine Daten an Dritte weitergegeben.
+    open: Größere Karte anzeigen
+    google: Uns auf Google Maps ansehen
+    iframe: Karte von %name%
+
+footer:
+    legal: Impressum & Datenschutz
+
+legal:
+    title: Impressum & Datenschutz
+    owner:
+        title: Wer diese Website betreibt
+        text: 'Gemäß spanischem Recht (Ley 34/2002, LSSI) ist der Inhaber von %site%:'
+        name: Inhaber
+        tax_id: Steuernummer (NIF/NIE/CIF)
+        address: Adresse
+        phone: Telefon
+        email: E-Mail
+    privacy:
+        title: Datenschutzerklärung
+        controller: '%owner% ist verantwortlich für die personenbezogenen Daten, die Sie über diese Website senden.'
+        purpose: Wir verwenden die Daten aus dem Kontaktformular nur, um Ihre Anfrage zu beantworten und, wenn Sie möchten, ein Angebot zu erstellen. Rechtsgrundlage sind Ihre Einwilligung und vorvertragliche Maßnahmen auf Ihre Anfrage. Wir verkaufen Ihre Daten nicht und geben sie nicht weiter, außer an Dienstleister, die diese Website und ihre E-Mails in unserem Auftrag hosten. Zum Schutz vor Spam ist das Kontaktformular durch Cloudflare Turnstile gesichert, das Ihren Browser ohne Tracking-Cookies prüft.
+        retention: Wir speichern Ihre Anfrage so lange, wie es für die Bearbeitung und gesetzliche Pflichten nötig ist.
+        reviews: Wenn Sie eine Bewertung schreiben, veröffentlichen wir nach Prüfung Ihren Vornamen, Wohnort (falls angegeben), Ihre Sterne und Ihren Text auf dieser Website. Sie können uns jederzeit bitten, sie zu entfernen.
+        rights: 'Sie können Auskunft, Berichtigung oder Löschung Ihrer Daten verlangen oder der Verwendung widersprechen, per E-Mail an %email%. Sie können sich außerdem bei der spanischen Datenschutzbehörde beschweren (www.aepd.es).'
+    cookies:
+        title: Cookies
+        text: Diese Website verwendet keine Tracking- oder Werbe-Cookies. Ein technisches Sitzungs-Cookie wird nur gesetzt, wenn Sie das Kontaktformular nutzen, um es vor Missbrauch zu schützen. Besucherstatistiken werden, falls aktiviert, anonym und ohne Cookies erfasst.
+        map: Die Karte im Kontaktbereich wird erst von OpenStreetMap (OpenStreetMap Foundation, Vereinigtes Königreich) geladen, wenn Sie auf „Karte anzeigen“ klicken; dabei wird Ihre IP-Adresse an deren Server übermittelt. OpenStreetMap setzt keine Werbe- oder Tracking-Cookies.
+
+offline:
+    message: 'Diese Website ist vorübergehend nicht verfügbar. Sie erreichen uns weiterhin direkt:'

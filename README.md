@@ -253,6 +253,15 @@ ddev console app:billing:run                  # daily billing run (charges, remi
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
 ```
 
+**Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
+the platform pages into Spanish and English (`platform.*.yaml`). After adding or changing a text,
+check that no language misses it (no rows marked "missing" means complete):
+
+```bash
+for l in en es nl de fr; do ddev console debug:translation $l --domain=messages --only-missing; done
+for l in es en; do ddev console debug:translation $l --domain=platform --only-missing; done
+```
+
 ## Production (Hetzner)
 
 Rough outline for a small Ubuntu VPS:

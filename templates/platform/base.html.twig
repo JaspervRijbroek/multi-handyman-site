@@ -33,7 +33,7 @@
     <header class="p-header">
         <div class="p-container p-header-inner">
             <a class="p-brand" href="{{ path('site_home', {_locale: link_locale}) }}"><span class="p-mark" aria-hidden="true"></span>{{ brand|lower }}</a>
-            <nav class="p-nav" aria-label="Main">
+            <nav class="p-nav" aria-label="{{ 'nav.main'|trans }}">
                 <a href="{{ path('platform_search', {_locale: link_locale}) }}">{{ 'nav.find'|trans }}</a>
                 <a href="{{ path('platform_pros', {_locale: link_locale}) }}">{{ 'nav.pros'|trans }}</a>
                 <a href="{{ path('app_login') }}">{{ 'nav.login'|trans }}</a>

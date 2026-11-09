@@ -3,6 +3,8 @@ nav:
     projects: Trabajos
     reviews: Opiniones
     contact: Contacto
+    main: Menú principal
+    language: Idioma
 
 hero:
     call: Llamar al
@@ -66,6 +68,7 @@ legal:
         tax_id: NIF/NIE/CIF
         address: Domicilio
         phone: Teléfono
+        email: Email
     privacy:
         title: Política de privacidad
         controller: '%owner% es responsable de los datos personales que envíe a través de este sitio web.'

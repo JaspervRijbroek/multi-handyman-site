@@ -2,6 +2,7 @@
 # Client websites use messages.*.yaml.
 
 nav:
+    main: Main menu
     find: Find a pro
     pros: For professionals
     login: Client login
@@ -192,3 +193,13 @@ signup:
     thanks_eyebrow: Sign-up received
     thanks_text: We received your details and will check them shortly. As soon as your website is set up, you get an email with your login. Questions in the meantime? Just reply to that email.
     thanks_back: Back to the homepage
+
+password:
+    title: Choose your password
+    intro: 'For your login %email%. Use at least 10 characters.'
+    new: New password
+    repeat: Repeat password
+    save: Save password
+    expired_title: This link has expired
+    expired_text: Links to set a password work once and for 7 days. Reply to your welcome email and we send you a new one.
+    to_login: Go to login

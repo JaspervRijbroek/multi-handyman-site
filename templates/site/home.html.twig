@@ -67,7 +67,7 @@
                 {% if tenant.reviewCount %}
                     <a class="rating" href="#reviews">
                         <span class="stars" aria-hidden="true">★</span>
-                        {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1), '%count%': tenant.reviewCount}) }}
+                        {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1, app.request.locale == 'en' ? '.' : ','), '%count%': tenant.reviewCount}) }}
                     </a>
                 {% endif %}
             </div>
@@ -139,7 +139,7 @@
             <div class="section-head">
                 <h2>{{ 'reviews.title'|trans }}</h2>
                 {% if tenant.reviewCount %}
-                    <p class="muted"><span class="stars" aria-hidden="true">★</span> {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1), '%count%': tenant.reviewCount}) }}</p>
+                    <p class="muted"><span class="stars" aria-hidden="true">★</span> {{ 'reviews.summary'|trans({'%average%': tenant.reviewAverage|number_format(1, app.request.locale == 'en' ? '.' : ','), '%count%': tenant.reviewCount}) }}</p>
                 {% endif %}
             </div>
             {% if reviews is not empty %}

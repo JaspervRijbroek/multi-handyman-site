@@ -20,7 +20,7 @@
                 <li>{{ 'legal.owner.name'|trans }}: {{ owner }}</li>
                 {% if tenant.taxId %}<li>{{ 'legal.owner.tax_id'|trans }}: {{ tenant.taxId }}</li>{% endif %}
                 {% if tenant.legalAddress ?: tenant.addressLine %}<li>{{ 'legal.owner.address'|trans }}: {{ tenant.legalAddress ?: tenant.addressLine }}</li>{% endif %}
-                {% if tenant.email %}<li>Email: {{ tenant.email }}</li>{% endif %}
+                {% if tenant.email %}<li>{{ 'legal.owner.email'|trans }}: {{ tenant.email }}</li>{% endif %}
                 {% if tenant.phone %}<li>{{ 'legal.owner.phone'|trans }}: {{ tenant.phone }}</li>{% endif %}
             </ul>
 

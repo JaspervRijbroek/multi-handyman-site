@@ -51,13 +51,13 @@
                 {%- endif -%}
                 <span>{{ tenant.name }}</span>
             </a>
-            <nav class="nav" aria-label="Main">
+            <nav class="nav" aria-label="{{ 'nav.main'|trans }}">
                 <a href="{{ home }}#services">{{ 'nav.services'|trans }}</a>
                 <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
                 <a href="{{ home }}#reviews">{{ 'nav.reviews'|trans }}</a>
             </nav>
             {% if tenant.locales|length > 1 %}
-                <nav class="lang" aria-label="Language">
+                <nav class="lang" aria-label="{{ 'nav.language'|trans }}">
                     {% for alt_locale in tenant.locales %}
                         <a href="{{ path(route, route_params|merge({_locale: alt_locale})) }}"
                            {% if alt_locale == locale %}aria-current="true"{% endif %}

@@ -2,6 +2,7 @@
 # Las webs de los clientes usan messages.*.yaml.
 
 nav:
+    main: Menú principal
     find: Buscar profesional
     pros: Para profesionales
     login: Acceso clientes
@@ -192,3 +193,13 @@ signup:
     thanks_eyebrow: Registro recibido
     thanks_text: Hemos recibido tus datos y los revisaremos en breve. En cuanto tu web esté lista, recibirás un email con tu acceso. ¿Alguna pregunta mientras tanto? Responde a ese email.
     thanks_back: Volver a la página principal
+
+password:
+    title: Elige tu contraseña
+    intro: 'Para tu acceso %email%. Usa al menos 10 caracteres.'
+    new: Nueva contraseña
+    repeat: Repite la contraseña
+    save: Guardar contraseña
+    expired_title: Este enlace ha caducado
+    expired_text: Los enlaces para elegir la contraseña funcionan una vez y durante 7 días. Responde a tu email de bienvenida y te enviamos uno nuevo.
+    to_login: Ir al acceso
