@@ -79,7 +79,7 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-header-inner { display: flex; align-items: center; gap: 12px 28px; min-height: 70px; flex-wrap: wrap; padding-block: 8px; }
 .p-brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-family: var(--p-serif); font-size: 1.6rem; letter-spacing: -.02em; color: var(--p-ink); text-decoration: none; }
 .p-brand:hover { color: var(--p-ink); }
-.p-mark { flex: none; display: block; width: 30px; height: 34px; border-radius: 999px 999px 4px 4px; background: var(--p-terracotta); box-shadow: inset 0 -10px 0 var(--p-saffron); }
+.p-brand img { display: block; height: 40px; width: auto; }
 .p-nav { display: flex; gap: 24px; }
 .p-nav a, .p-login { color: var(--p-text); text-decoration: none; font-weight: 500; font-size: .9375rem; }
 .p-nav a:hover, .p-login:hover { color: var(--p-terracotta); }
@@ -272,7 +272,7 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; }
 .p-footer p { margin: 0; }
 .p-footer a { color: #e8dcc6; }
-.p-footer-brand { font-family: var(--p-serif); font-size: 1.375rem; color: var(--p-cream); }
+.p-footer-brand { display: block; height: 34px; width: auto; }
 
 /* Form pages (sign-up, set password) */
 .p-form-page { min-height: 70vh; padding: clamp(40px, 6vw, 80px) 0 96px; }

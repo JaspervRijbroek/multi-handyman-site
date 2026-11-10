@@ -72,7 +72,7 @@ Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 
 ## Search and reviews
 
-The platform brand (**Manitas** by default) comes from `BILLING_BRAND`.
+The platform brand (**CasitaFix** by default) comes from `BILLING_BRAND`.
 
 **Platform pages** on `PLATFORM_HOST` are in Spanish and English (`/es`, `/en`; `/` and
 `/register` redirect to the visitor's language): the "find a pro" homepage, `/{locale}/search`,
