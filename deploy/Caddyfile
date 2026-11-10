@@ -12,13 +12,16 @@
 }
 
 (app) {
-	root * /var/www/multi-handyman-site/public
+	root * /var/www/multi-handyman-site/current/public
 	encode zstd gzip
 
 	@static path /bundles/* /css/* /uploads/* /favicon.svg
 	header @static Cache-Control "public, max-age=604800"
 
-	php_fastcgi unix//run/php/php8.4-fpm.sock
+	# Resolve the "current" symlink so each deploy is picked up at once (no PHP-FPM reload)
+	php_fastcgi unix//run/php/php8.4-fpm.sock {
+		resolve_root_symlink
+	}
 	file_server
 }
 
