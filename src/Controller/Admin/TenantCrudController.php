@@ -187,7 +187,7 @@ class TenantCrudController extends AbstractCrudController
             ->setChoices(Trade::choices())
             ->allowMultipleChoices()
             ->renderExpanded()
-            ->setHelp('Customers find you in the Manitas search by these trades and by your town.')
+            ->setHelp('Customers find you in the CasitaFix search by these trades and by your town.')
             ->hideOnIndex();
         yield TextField::new('serviceArea', 'Towns and areas you work in')
             ->setHelp('Separate places with commas, e.g. Jávea, Dénia, Moraira and surroundings')
