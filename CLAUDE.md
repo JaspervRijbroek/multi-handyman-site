@@ -38,6 +38,7 @@ OpenStreetMap map/geocoding, monthly Mollie billing, and Cloudflare Turnstile sp
 - **EasyAdmin 5** for the admin (`/admin`)
 - Twig templates, Symfony translations (`translations/messages.*.yaml`)
 - Local dev with **DDEV**; production on a Hetzner VPS with Caddy (`deploy/Caddyfile`)
+- Deployed with **Deployer** (`deploy.php`) by GitHub Actions on every push to `main`
 
 ## Layout
 

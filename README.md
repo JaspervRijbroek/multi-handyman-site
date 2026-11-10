@@ -138,7 +138,7 @@ the status is *Waiting for the site to be online*. Add this to cron and it conne
 itself as soon as the DNS is in place:
 
 ```cron
-17 * * * * cd /var/www/multi-handyman-site && php bin/console app:google:connect --all -q
+17 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:google:connect --all -q
 ```
 
 **Google Business Profile (the listing on Google Maps) cannot be created automatically.**
@@ -194,7 +194,7 @@ First workday ─► automatic payment with the mandate
 
 - `app:billing:run` does all the scheduled work. Run it **daily** from cron; it is
   safe to run more than once a day.
-  `0 9 * * * cd /var/www/multi-handyman-site && php bin/console app:billing:run --no-interaction`
+  `0 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:billing:run --no-interaction`
 - Mollie reports payment changes to `POST /billing/webhook` (production only, set
   `BILLING_WEBHOOKS=1`). The return page and the daily run also check open
   payments, so a missed webhook is never a problem.
@@ -234,7 +234,7 @@ Daily cron                           ─► same, catches up if Cloudflare was u
 - Setup: create an API token with **Account > Turnstile > Edit** and put
   `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` in `.env.local`, then run
   `php bin/console app:turnstile:sync`. Add it to cron after the billing run:
-  `15 9 * * * cd /var/www/multi-handyman-site && php bin/console app:turnstile:sync --no-interaction`
+  `15 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:turnstile:sync --no-interaction`
 - Locally, without an API token: set `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` to
   Cloudflare's test keys (see `.env.example`), which always pass on any hostname.
   With none of these set, Turnstile is off.
@@ -267,9 +267,8 @@ for l in es en; do ddev console debug:translation $l --domain=platform --only-mi
 Rough outline for a small Ubuntu VPS:
 
 1. Install PHP 8.4 FPM (with intl, pdo_mysql, gd), MariaDB and Caddy.
-2. Deploy from Git, then `composer install --no-dev --optimize-autoloader`,
-   `php bin/console doctrine:migrations:migrate`, `php bin/console cache:clear`.
-3. Create `.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
+2. Deploy the code with Deployer (see [Deployment](#deployment)).
+3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
    the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
    `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the daily
@@ -277,8 +276,44 @@ Rough outline for a small Ubuntu VPS:
    [Spam protection](#spam-protection-cloudflare-turnstile)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
-5. Back up the database and `public/uploads/` daily to somewhere off the server
+5. Back up the database and `shared/public/uploads/` daily to somewhere off the server
    (e.g. a Hetzner Storage Box), and enable `unattended-upgrades`.
+
+### Deployment
+
+Every push to `main` is deployed automatically by GitHub Actions
+(`.github/workflows/deploy.yml`) with [Deployer](https://deployer.org) (`deploy.php`).
+It uploads the code to a new folder in `releases/`, runs `composer install`, the database
+migrations and the cache warm-up, then switches the `current` symlink. If a step fails,
+the live site stays on the previous release. The last 5 releases are kept.
+
+Layout on the server:
+
+```
+/var/www/multi-handyman-site/
+  current -> releases/N      the live site (Caddy serves current/public)
+  releases/                  previous releases
+  shared/.env.local          your production settings
+  shared/var/log/, shared/public/uploads/   kept between releases
+```
+
+One-time setup:
+
+1. On the server: create a `deploy` user that owns `/var/www/multi-handyman-site`, and
+   install `rsync`, `acl`, `unzip` and Composer. Deployer gives `www-data`
+   (PHP-FPM) write access to `var/` and the upload folders with ACLs.
+2. Make an SSH key pair for deployments (`ssh-keygen -t ed25519 -f deploy_key -N ""`) and
+   add `deploy_key.pub` to `~deploy/.ssh/authorized_keys`.
+3. In GitHub, *Settings → Secrets and variables → Actions*, add:
+   - `DEPLOY_HOST`: the server's hostname or IP
+   - `DEPLOY_USER`: `deploy`
+   - `DEPLOY_SSH_KEY`: the contents of `deploy_key` (the private key)
+   - `DEPLOY_KNOWN_HOSTS`: the output of `ssh-keyscan <server>`
+4. Put your production `.env.local` in `/var/www/multi-handyman-site/shared/`, then run
+   the workflow once (*Actions → Deploy → Run workflow*) or push to `main`.
+
+To deploy by hand: `DEPLOY_HOST=<server> dep deploy` (uploads your local working copy).
+Roll back to the previous release with `DEPLOY_HOST=<server> dep rollback`.
 
 For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
 point their domain's A record at the server. HTTPS works on the first visit, the domain is
