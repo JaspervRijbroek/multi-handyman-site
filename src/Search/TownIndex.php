@@ -15,7 +15,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * Optional: without OPENSEARCH_URL, or when OpenSearch can't be reached, find()
  * returns null and the search carries on with OpenStreetMap as before.
- * app:search:index (re)builds the index; run it from cron.
+ * app:search:index (re)builds the index; the scheduler runs it hourly.
  */
 final readonly class TownIndex
 {

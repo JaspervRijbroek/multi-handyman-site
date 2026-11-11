@@ -29,8 +29,7 @@ final class SearchIndexCommand extends Command
     protected function configure(): void
     {
         $this->setHelp(<<<'HELP'
-            Run this hourly from cron, so towns of new clients are picked up:
-              <info>23 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:search:index -q</info>
+            app:schedule:run runs this hourly, so towns of new clients are picked up.
             HELP);
     }
 

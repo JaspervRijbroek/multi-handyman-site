@@ -27,9 +27,8 @@ final class TurnstileSyncCommand extends Command
     protected function configure(): void
     {
         $this->setHelp(<<<'HELP'
-            Domains are synced automatically when they are saved in the admin. Run this
-            daily from cron as well, to catch up if Cloudflare could not be reached:
-              <info>15 9 * * * cd /var/www/multi-handyman-site && php bin/console app:turnstile:sync --no-interaction</info>
+            Domains are synced automatically when they are saved in the admin.
+            app:schedule:run also runs this daily, to catch up if Cloudflare could not be reached.
             HELP);
     }
 

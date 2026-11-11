@@ -36,10 +36,8 @@ final class ConnectGoogleCommand extends Command
             ->addOption('all', null, InputOption::VALUE_NONE, 'Every active client that is not fully connected yet')
             ->setHelp(<<<'HELP'
                 Search Console can only verify a site once its domain points to this server,
-                which is often a few days after onboarding. Run this from cron so it is
-                picked up automatically:
-
-                  <info>17 * * * * cd /var/www/multi-handyman-site && php bin/console app:google:connect --all -q</info>
+                which is often a few days after onboarding. app:schedule:run runs this with
+                --all every hour, so it is picked up automatically.
 
                 One client:
                   <info>php bin/console app:google:connect jans-klusbedrijf</info>

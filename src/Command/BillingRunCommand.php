@@ -30,8 +30,7 @@ final class BillingRunCommand extends Command
         $this
             ->addOption('date', null, InputOption::VALUE_REQUIRED, 'Pretend today is this date (YYYY-MM-DD), for testing with a Mollie test key')
             ->setHelp(<<<'HELP'
-                Run once a day from cron, e.g. at 09:00:
-                  <info>0 9 * * * cd /var/www/multi-handyman-site && php bin/console app:billing:run --no-interaction</info>
+                Runs daily at 09:00 through app:schedule:run.
 
                 Safe to run more than once a day: every client is charged at most once a month
                 and every reminder is sent once.

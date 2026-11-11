@@ -20,7 +20,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *  3. add the property to Search Console and submit the sitemap
  *
  * Step 2 can only succeed after the client's DNS points to the server, so it is
- * retried by "app:google:connect --all" (run it from cron).
+ * retried by "app:google:connect --all" (the scheduler runs it hourly).
  */
 final class SearchConsole
 {

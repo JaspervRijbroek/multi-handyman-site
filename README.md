@@ -91,8 +91,8 @@ of small queries however many clients there are.
 - **Typos in the town** ("Javae", "Benisa") are corrected when `OPENSEARCH_URL` points to an
   [OpenSearch](https://opensearch.org/) server: the clients' towns are matched fuzzily before
   OpenStreetMap is asked, and the page says which town it used. `app:search:index` rebuilds the
-  index of towns; run it hourly from cron (new towns are already found when typed correctly):
-  `23 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:search:index -q`.
+  index of towns; the [scheduler](#scheduled-tasks) runs it hourly (new towns are already found
+  when typed correctly).
   Without OpenSearch, or when it is down, the search works as before. Locally:
   `docker run -d -p 9200:9200 -e discovery.type=single-node -e DISABLE_SECURITY_PLUGIN=true opensearchproject/opensearch:2`
   and `OPENSEARCH_URL=http://host.docker.internal:9200` in `.env.local`.
@@ -142,12 +142,8 @@ nothing is saved and you get the reasons; fix the sign-up and approve again.
 
 **Search Console needs the site to be online.** Google checks the verification tag on the
 client's real domain, which only works once their DNS points to the server. Until then
-the status is *Waiting for the site to be online*. Add this to cron and it connects by
-itself as soon as the DNS is in place:
-
-```cron
-17 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:google:connect --all -q
-```
+the status is *Waiting for the site to be online*. The [scheduler](#scheduled-tasks) runs
+`app:google:connect --all` every hour, so it connects by itself as soon as the DNS is in place.
 
 **Google Business Profile (the listing on Google Maps) cannot be created automatically.**
 Google has no API for creating and verifying new listings: they verify by post, phone or
@@ -200,9 +196,8 @@ First workday ─► automatic payment with the mandate
                                paid via link → site back online, new mandate if needed
 ```
 
-- `app:billing:run` does all the scheduled work. Run it **daily** from cron; it is
-  safe to run more than once a day.
-  `0 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:billing:run --no-interaction`
+- `app:billing:run` does all the scheduled work. The [scheduler](#scheduled-tasks) runs it
+  **daily** at 09:00; it is safe to run more than once a day.
 - Mollie reports payment changes to `POST /billing/webhook` (production only, set
   `BILLING_WEBHOOKS=1`). The return page and the daily run also check open
   payments, so a missed webhook is never a problem.
@@ -227,7 +222,7 @@ it lists, so the app manages its widgets through the Cloudflare API:
 ```
 Domain saved / deleted in the admin ─► app:turnstile:sync (straight away, result shown as a flash)
 Client onboarded or deleted, fixtures ─► same, at the end of the request/command
-Daily cron                           ─► same, catches up if Cloudflare was unreachable
+Daily (scheduler)                    ─► same, catches up if Cloudflare was unreachable
 ```
 
 - Every sync rebuilds the full list from the `domain` table plus `PLATFORM_HOST`, so it is
@@ -241,11 +236,31 @@ Daily cron                           ─► same, catches up if Cloudflare was u
   protected by the honeypot field only. The Domains screen shows *Protected* or *Not on Cloudflare yet*.
 - Setup: create an API token with **Account > Turnstile > Edit** and put
   `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` in `.env.local`, then run
-  `php bin/console app:turnstile:sync`. Add it to cron after the billing run:
-  `15 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:turnstile:sync --no-interaction`
+  `php bin/console app:turnstile:sync`. After that the [scheduler](#scheduled-tasks) runs it daily.
 - Locally, without an API token: set `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` to
   Cloudflare's test keys (see `.env.example`), which always pass on any hostname.
   With none of these set, Turnstile is off.
+
+## Scheduled tasks
+
+One cron job runs everything that has to happen on a schedule. `app:schedule:run` runs every
+minute and starts the tasks that are due (times in Spanish time):
+
+| When | Command |
+|---|---|
+| daily 09:00 | `app:billing:run` |
+| daily 09:15 | `app:turnstile:sync` |
+| hourly at :17 | `app:google:connect --all` |
+| hourly at :23 | `app:search:index` |
+
+```cron
+* * * * * cd /var/www/multi-handyman-site/current && php bin/console app:schedule:run >> var/log/schedule.log 2>&1
+```
+
+Each task runs as its own process, so one failing doesn't stop the others; the output goes to
+`var/log/schedule.log`. Every task is safe to repeat, so a run missed while the server was down
+is caught up by the next one. See the schedule with `app:schedule:run --list`; change it in
+`ScheduleRunCommand::TASKS`. Locally, run a task by hand instead (e.g. `ddev console app:billing:run`).
 
 ## Useful commands
 
@@ -260,6 +275,7 @@ ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
 ddev console app:search:index                 # rebuild the OpenSearch index of towns (typo matching)
+ddev console app:schedule:run --list          # what the scheduler runs, and when
 ```
 
 **Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
@@ -280,11 +296,10 @@ Rough outline for a small Ubuntu VPS:
 3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
    the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
-   `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the daily
-   `app:billing:run` and `app:turnstile:sync` cron jobs (see [Billing](#billing) and
-   [Spam protection](#spam-protection-cloudflare-turnstile)). Optional: install OpenSearch
-   (single node, listening on 127.0.0.1 only), set `OPENSEARCH_URL` and add the hourly
-   `app:search:index` cron job (see [Search and reviews](#search-and-reviews)).
+   `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the one
+   cron job for the deploy user (see [Scheduled tasks](#scheduled-tasks)). Optional: install
+   OpenSearch (single node, listening on 127.0.0.1 only) and set `OPENSEARCH_URL` (see
+   [Search and reviews](#search-and-reviews)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
 5. Back up the database and `shared/public/uploads/` daily to somewhere off the server
@@ -329,7 +344,7 @@ Roll back to the previous release with `DEPLOY_HOST=<server> dep rollback`.
 For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
 point their domain's A record at the server. HTTPS works on the first visit, the domain is
 added to Cloudflare Turnstile automatically, and the Search Console setup completes by
-itself through the cron job.
+itself through the [scheduler](#scheduled-tasks).
 
 Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 
