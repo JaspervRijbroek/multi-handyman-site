@@ -66,6 +66,7 @@ search:
     nearest: Nearest
     rating: Highest rated
     not_found: 'We couldn’t find “%town%”. Check the spelling or try a nearby town. Showing all pros for now.'
+    corrected: 'Showing results for “%town%” (you typed “%typed%”).'
     empty_title: No pros here yet
     empty_text: Try another trade or a bigger town nearby.
     show_all: Show all pros

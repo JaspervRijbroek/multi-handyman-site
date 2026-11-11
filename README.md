@@ -88,6 +88,14 @@ of small queries however many clients there are.
   and accents, so "javea" finds "Jávea"); anything else is looked up in OpenStreetMap (Nominatim),
   at most 30 lookups per visitor per hour. Results are within 75 km, nearest first or highest
   rated. If the lookup fails, all pros are shown with a notice.
+- **Typos in the town** ("Javae", "Benisa") are corrected when `OPENSEARCH_URL` points to an
+  [OpenSearch](https://opensearch.org/) server: the clients' towns are matched fuzzily before
+  OpenStreetMap is asked, and the page says which town it used. `app:search:index` rebuilds the
+  index of towns; run it hourly from cron (new towns are already found when typed correctly):
+  `23 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:search:index -q`.
+  Without OpenSearch, or when it is down, the search works as before. Locally:
+  `docker run -d -p 9200:9200 -e discovery.type=single-node -e DISABLE_SECURITY_PLUGIN=true opensearchproject/opensearch:2`
+  and `OPENSEARCH_URL=http://host.docker.internal:9200` in `.env.local`.
 - The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a
   click and shows the pros on the current page.
 
@@ -251,6 +259,7 @@ ddev console app:client:onboard                # add a client without a sign-up
 ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
+ddev console app:search:index                 # rebuild the OpenSearch index of towns (typo matching)
 ```
 
 **Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
@@ -273,7 +282,9 @@ Rough outline for a small Ubuntu VPS:
    the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
    `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the daily
    `app:billing:run` and `app:turnstile:sync` cron jobs (see [Billing](#billing) and
-   [Spam protection](#spam-protection-cloudflare-turnstile)).
+   [Spam protection](#spam-protection-cloudflare-turnstile)). Optional: install OpenSearch
+   (single node, listening on 127.0.0.1 only), set `OPENSEARCH_URL` and add the hourly
+   `app:search:index` cron job (see [Search and reviews](#search-and-reviews)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
 5. Back up the database and `shared/public/uploads/` daily to somewhere off the server

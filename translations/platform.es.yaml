@@ -66,6 +66,7 @@ search:
     nearest: Más cercanos
     rating: Mejor valorados
     not_found: 'No encontramos «%town%». Revisa cómo se escribe o prueba con una localidad cercana. De momento mostramos todos los profesionales.'
+    corrected: 'Mostramos resultados para «%town%» (escribiste «%typed%»).'
     empty_title: Aún no hay profesionales aquí
     empty_text: Prueba con otro oficio o con una localidad más grande cercana.
     show_all: Ver todos los profesionales

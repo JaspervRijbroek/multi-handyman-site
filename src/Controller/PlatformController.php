@@ -72,6 +72,7 @@ final class PlatformController extends AbstractController
             'total' => $found['total'],
             'results' => $found['results'],
             'located' => $found['located'],
+            'town' => $found['town'],
             'trades' => Trade::cases(),
             'towns' => $search->towns(),
             'max_km' => ProSearch::MAX_DISTANCE_KM,
