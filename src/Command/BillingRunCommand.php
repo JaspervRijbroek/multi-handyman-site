@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Billing\BillingService;
-use App\Billing\WorkdayCalendar;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:billing:run',
-    description: 'Daily billing: charge clients on the first workday of the month, send payment reminders, take unpaid sites offline',
+    description: 'Daily billing: charge clients on the 1st of the month, send payment reminders, take unpaid sites offline',
 )]
 final class BillingRunCommand extends Command
 {
@@ -55,10 +54,9 @@ final class BillingRunCommand extends Command
 
         $tenants = $this->billing->chargeDueClients($now);
         $io->writeln(\sprintf(
-            '%d client(s) queued to be charged for %s (first workday: %s).',
+            '%d client(s) queued to be charged for %s.',
             \count($tenants),
             $now->format('F Y'),
-            WorkdayCalendar::firstWorkdayOfMonth($now)->format('D j M'),
         ));
         foreach ($tenants as $tenant) {
             $io->writeln('  '.$tenant->getName());

@@ -17,10 +17,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * Billing of clients through Mollie.
  *
- * 1. Onboarding: the platform is free until the first workday of the next month
+ * 1. Onboarding: the platform is free until the 1st of the next month
  *    (Tenant::$billingStartsOn). The client authorises automatic payments once:
  *    a €0.00 card verification or a €0.01 bank payment (gives a SEPA mandate).
- * 2. On the first workday of every month the client is charged automatically.
+ * 2. On the 1st of every month the client is charged automatically.
  * 3. If that payment does not come through, a reminder with a payment link is sent
  *    right away, a second one after 2 weeks, and a final one after a month
  *    (payment required within a week). A week after the final reminder the site
@@ -262,7 +262,7 @@ final readonly class BillingService
 
     /**
      * Queues a charge for every client that is due for the month of $today. Safe to
-     * run every day: a client is charged at most once per month, from the first workday on.
+     * run every day: a client is charged at most once per month, from the 1st on.
      *
      * @return list<Tenant> the clients queued
      */
@@ -332,7 +332,6 @@ final readonly class BillingService
         $today = $today->setTime(0, 0);
 
         return !$tenant->isBillingExempt() && !$tenant->isSuspended() && $tenant->isActive()
-            && $today >= WorkdayCalendar::firstWorkdayOfMonth($today)
             && $today >= $tenant->getBillingStartsOn()
             && null === $this->charges->findForPeriod($tenant, $today);
     }

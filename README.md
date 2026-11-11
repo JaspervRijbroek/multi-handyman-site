@@ -180,20 +180,20 @@ no setup: it uses OpenStreetMap.)
 ## Billing
 
 Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
-charged automatically on the **first workday of each month** (Mon–Fri, skipping
-1 Jan, 1 May and 1 Nov).
+charged automatically on the **1st of each month**. A card payment is usually decided
+straight away; a SEPA direct debit takes a few working days to come through.
 
 ```
-Client added ─► free until the first workday of next month (Tenant::billingStartsOn)
+Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
              └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
 
-First workday ─► automatic payment with the mandate
-                  ├─ paid    → done
-                  └─ failed  → reminder 1 with payment link (right away)
-                               + 2 weeks  → reminder 2
-                               + 1 month  → final reminder: pay within a week
-                               + 1 week   → site offline (503 page, admin stays available)
-                               paid via link → site back online, new mandate if needed
+1st of the month ─► automatic payment with the mandate
+                     ├─ paid    → done
+                     └─ failed  → reminder 1 with payment link (right away)
+                                  + 2 weeks  → reminder 2
+                                  + 1 month  → final reminder: pay within a week
+                                  + 1 week   → site offline (503 page, admin stays available)
+                                  paid via link → site back online, new mandate if needed
 ```
 
 - `app:billing:run` does all the scheduled work. The [scheduler](#scheduled-tasks) runs it

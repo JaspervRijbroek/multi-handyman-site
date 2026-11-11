@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Billing\WorkdayCalendar;
 use App\Repository\TenantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -227,7 +226,7 @@ class Tenant
     {
         $this->domains = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-        $this->billingStartsOn = WorkdayCalendar::firstBillingDay($this->createdAt);
+        $this->billingStartsOn = self::firstBillingDay($this->createdAt);
         $this->billingToken = self::newBillingToken();
     }
 
@@ -803,7 +802,13 @@ class Tenant
 
     public function getBillingStartsOn(): \DateTimeImmutable
     {
-        return $this->billingStartsOn ?? WorkdayCalendar::firstBillingDay($this->createdAt);
+        return $this->billingStartsOn ?? self::firstBillingDay($this->createdAt);
+    }
+
+    /** Clients are free until the 1st of the month after they were added */
+    private static function firstBillingDay(\DateTimeImmutable $addedOn): \DateTimeImmutable
+    {
+        return $addedOn->modify('first day of next month')->setTime(0, 0);
     }
 
     public function setBillingStartsOn(?\DateTimeImmutable $billingStartsOn): static
