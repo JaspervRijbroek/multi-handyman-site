@@ -23,8 +23,12 @@ Requires [DDEV](https://ddev.com) and Docker (OrbStack, Docker Desktop or Colima
 
 ```bash
 ddev start
-ddev bootstrap      # composer install, database, demo data
+ddev bootstrap      # composer install, database, demo data, search index
 ```
+
+Besides the web server and MariaDB, DDEV runs **Redis** (the [background queue](#background-queue),
+`.ddev/docker-compose.redis.yaml`), **OpenSearch** (typos in the search,
+`.ddev/docker-compose.opensearch.yaml`, about 1 GB of memory) and a queue worker.
 
 On the first run, `ddev bootstrap` creates `.env` (from `.env.example`) and
 `.env.dev` (with a random dev `APP_SECRET`), and generates the first migration in
@@ -93,9 +97,8 @@ of small queries however many clients there are.
   OpenStreetMap is asked, and the page says which town it used. `app:search:index` rebuilds the
   index of towns; the [scheduler](#scheduled-tasks) runs it hourly (new towns are already found
   when typed correctly).
-  Without OpenSearch, or when it is down, the search works as before. Locally:
-  `docker run -d -p 9200:9200 -e discovery.type=single-node -e DISABLE_SECURITY_PLUGIN=true opensearchproject/opensearch:2`
-  and `OPENSEARCH_URL=http://host.docker.internal:9200` in `.env.local`.
+  Without OpenSearch, or when it is down, the search works as before. DDEV runs OpenSearch
+  at `http://opensearch:9200`.
 - The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a
   click and shows the pros on the current page.
 
@@ -265,8 +268,8 @@ is caught up by the next one. See the schedule with `app:schedule:run --list`; c
 
 ## Background queue
 
-Work nobody should wait for goes into a queue in the database (Symfony Messenger, table
-`messenger_messages`; config in `config/packages/messenger.yaml`) and is done by a worker:
+Work nobody should wait for goes into a queue in Redis (Symfony Messenger, `REDIS_URL`; config
+in `config/packages/messenger.yaml`) and is done by a worker:
 
 - **billing**: charging a client and checking a payment with Mollie. `app:billing:run` only
   queues them; the worker charges clients one at a time, one every 2 seconds
@@ -276,7 +279,8 @@ Work nobody should wait for goes into a queue in the database (Symfony Messenger
   waiting for the mail server.
 
 Billing goes first. A failed message is retried after 1, 5 and 25 minutes, then moved to the
-`failed` queue: see it with `messenger:failed:show`, retry with `messenger:failed:retry`.
+`failed` queue, which is kept in the database (table `messenger_messages`) so it survives
+anything that happens to Redis: see it with `messenger:failed:show`, retry with `messenger:failed:retry`.
 In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
 needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
 after `ddev restart`); its output is in `ddev logs`.
@@ -312,14 +316,17 @@ for l in es en; do ddev console debug:translation $l --domain=platform --only-mi
 
 Rough outline for a small Ubuntu VPS:
 
-1. Install PHP 8.4 FPM (with intl, pdo_mysql, gd), MariaDB and Caddy.
+1. Install PHP 8.4 FPM (with intl, pdo_mysql, gd, redis), MariaDB, Caddy and Redis
+   (`apt install redis-server`; turn on `appendonly yes` in `/etc/redis/redis.conf` so queued
+   messages survive a restart, and keep it on 127.0.0.1).
 2. Deploy the code with Deployer (see [Deployment](#deployment)).
 3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
-   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
-   `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the one
+   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, `CLOUDFLARE_ACCOUNT_ID` /
+   `CLOUDFLARE_API_TOKEN`, `REDIS_URL=redis://127.0.0.1:6379` and `OPENSEARCH_URL` (empty
+   without OpenSearch: the defaults point at the DDEV services). Set the server timezone to `Europe/Madrid` and add the one
    cron job for the deploy user (see [Scheduled tasks](#scheduled-tasks)). Optional: install
-   OpenSearch (single node, listening on 127.0.0.1 only) and set `OPENSEARCH_URL` (see
+   OpenSearch (single node, listening on 127.0.0.1 only) for `OPENSEARCH_URL` (see
    [Search and reviews](#search-and-reviews)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).

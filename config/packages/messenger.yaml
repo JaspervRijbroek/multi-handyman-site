@@ -1,4 +1,5 @@
-# Background queue, stored in the database (table messenger_messages).
+# Background queue in Redis (REDIS_URL), one stream per transport. Messages that failed
+# all retries are kept in the database (table messenger_messages), so they're never lost.
 # app:schedule:run starts a worker every minute; locally DDEV runs one (.ddev/config.yaml).
 framework:
     messenger:
@@ -8,12 +9,12 @@ framework:
         transports:
             # Charges and payment checks with Mollie: one client every 2 seconds
             billing:
-                dsn: 'doctrine://default?queue_name=billing'
+                dsn: '%env(REDIS_URL)%/billing'
                 rate_limiter: billing_queue
                 retry_strategy: { max_retries: 3, delay: 60000, multiplier: 5 } # after 1, 5 and 25 minutes
             # Work a visitor shouldn't wait for, like sending emails
             async:
-                dsn: 'doctrine://default?queue_name=async'
+                dsn: '%env(REDIS_URL)%/async'
                 retry_strategy: { max_retries: 3, delay: 60000, multiplier: 5 }
             failed: 'doctrine://default?queue_name=failed'
 
