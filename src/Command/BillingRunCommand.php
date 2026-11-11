@@ -15,7 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:billing:run',
-    description: 'Daily billing: charge clients (first month, or without a Mollie subscription), check subscriptions, send payment reminders, take unpaid sites offline',
+    description: 'Daily billing: charge clients on the first workday of the month, send payment reminders, take unpaid sites offline',
 )]
 final class BillingRunCommand extends Command
 {
@@ -35,9 +35,6 @@ final class BillingRunCommand extends Command
                 Safe to run more than once a day: every client is charged at most once a month
                 and every reminder is sent once.
 
-                Clients with a running Mollie subscription are charged by Mollie on the 1st;
-                the run checks every subscription's status and latest payments.
-
                 Charges and payment checks are queued and handled one client at a time by
                 the queue worker (messenger:consume billing), which app:schedule:run starts.
                 HELP);
@@ -55,9 +52,6 @@ final class BillingRunCommand extends Command
 
         $synced = $this->billing->syncPendingCharges();
         $io->writeln(\sprintf('Queued a Mollie check for %d open automatic payment(s).', $synced));
-
-        $subscriptions = $this->billing->syncSubscriptions();
-        $io->writeln(\sprintf('Queued a Mollie check for %d subscription(s) (status and latest payments).', $subscriptions));
 
         $tenants = $this->billing->chargeDueClients($now);
         $io->writeln(\sprintf(

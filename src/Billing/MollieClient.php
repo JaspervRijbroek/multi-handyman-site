@@ -69,50 +69,6 @@ final readonly class MollieClient
         return $response['_embedded']['mandates'] ?? [];
     }
 
-    /**
-     * @param array<string, mixed> $subscription see https://docs.mollie.com/reference/create-subscription
-     *
-     * @return array<string, mixed>
-     */
-    public function createSubscription(string $customerId, array $subscription): array
-    {
-        return $this->request('POST', \sprintf('customers/%s/subscriptions', rawurlencode($customerId)), $subscription);
-    }
-
-    /** @return array<string, mixed> */
-    public function getSubscription(string $customerId, string $subscriptionId): array
-    {
-        return $this->request('GET', self::subscriptionPath($customerId, $subscriptionId));
-    }
-
-    /**
-     * @param array<string, mixed> $changes e.g. a new amount
-     *
-     * @return array<string, mixed>
-     */
-    public function updateSubscription(string $customerId, string $subscriptionId, array $changes): array
-    {
-        return $this->request('PATCH', self::subscriptionPath($customerId, $subscriptionId), $changes);
-    }
-
-    public function cancelSubscription(string $customerId, string $subscriptionId): void
-    {
-        $this->request('DELETE', self::subscriptionPath($customerId, $subscriptionId));
-    }
-
-    /** @return list<array<string, mixed>> the latest payments of the subscription, newest first */
-    public function listSubscriptionPayments(string $customerId, string $subscriptionId, int $limit = 3): array
-    {
-        $response = $this->request('GET', self::subscriptionPath($customerId, $subscriptionId).'/payments?limit='.$limit);
-
-        return $response['_embedded']['payments'] ?? [];
-    }
-
-    private static function subscriptionPath(string $customerId, string $subscriptionId): string
-    {
-        return \sprintf('customers/%s/subscriptions/%s', rawurlencode($customerId), rawurlencode($subscriptionId));
-    }
-
     /** Mollie wants amounts as strings with two decimals, e.g. "71.39" */
     public static function amount(int $cents, string $currency): array
     {

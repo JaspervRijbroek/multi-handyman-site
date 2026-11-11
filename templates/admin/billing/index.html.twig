@@ -38,13 +38,13 @@
                 <p class="mb-0">Your website is free of charge.</p>
             {% else %}
                 {% if tenant.hasMandate %}
-                    <p>Paid automatically with <strong>{{ tenant.mandateDescription }}</strong> at the start of every month.</p>
+                    <p>Paid automatically with <strong>{{ tenant.mandateDescription }}</strong> on the first workday of every month.</p>
                 {% else %}
                     <p>
                         {% if tenant.billingStartsOn > date() %}
                             Your website is free until <strong>{{ tenant.billingStartsOn|date('l j F Y') }}</strong>.
                         {% endif %}
-                        Set up a payment method so your website is paid automatically at the start of every month.
+                        Set up a payment method so your website is paid automatically on the first workday of every month.
                     </p>
                 {% endif %}
                 <div class="d-flex flex-wrap gap-2">

@@ -204,10 +204,6 @@ class Tenant
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $mandateDescription = null;
 
-    /** Mollie subscription that charges the client every month; null when there is none running */
-    #[ORM\Column(length: 40, nullable: true)]
-    private ?string $mollieSubscriptionId = null;
-
     /** Latest checkout started by the client, checked when they come back from Mollie */
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $lastCheckoutPaymentId = null;
@@ -850,18 +846,6 @@ class Tenant
     public function getMandateDescription(): ?string
     {
         return $this->mandateDescription;
-    }
-
-    public function getMollieSubscriptionId(): ?string
-    {
-        return $this->mollieSubscriptionId;
-    }
-
-    public function setMollieSubscriptionId(?string $mollieSubscriptionId): static
-    {
-        $this->mollieSubscriptionId = $mollieSubscriptionId;
-
-        return $this;
     }
 
     public function getLastCheckoutPaymentId(): ?string
