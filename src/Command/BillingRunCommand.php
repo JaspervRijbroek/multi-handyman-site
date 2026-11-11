@@ -34,6 +34,9 @@ final class BillingRunCommand extends Command
 
                 Safe to run more than once a day: every client is charged at most once a month
                 and every reminder is sent once.
+
+                Charges and payment checks are queued and handled one client at a time by
+                the queue worker (messenger:consume billing), which app:schedule:run starts.
                 HELP);
     }
 
@@ -48,17 +51,17 @@ final class BillingRunCommand extends Command
         }
 
         $synced = $this->billing->syncPendingCharges();
-        $io->writeln(\sprintf('Checked %d open automatic payment(s) with Mollie.', $synced));
+        $io->writeln(\sprintf('Queued a Mollie check for %d open automatic payment(s).', $synced));
 
-        $charges = $this->billing->chargeDueClients($now);
+        $tenants = $this->billing->chargeDueClients($now);
         $io->writeln(\sprintf(
-            '%d client(s) charged for %s (first workday: %s).',
-            \count($charges),
+            '%d client(s) queued to be charged for %s (first workday: %s).',
+            \count($tenants),
             $now->format('F Y'),
             WorkdayCalendar::firstWorkdayOfMonth($now)->format('D j M'),
         ));
-        foreach ($charges as $charge) {
-            $io->writeln(\sprintf('  %s: %s', $charge->getTenant()->getName(), $charge->getStatus()));
+        foreach ($tenants as $tenant) {
+            $io->writeln('  '.$tenant->getName());
         }
 
         $overdue = $this->billing->processOverdue($now);

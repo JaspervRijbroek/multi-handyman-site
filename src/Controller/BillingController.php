@@ -114,14 +114,8 @@ final class BillingController extends AbstractController
             return new Response('', 200);
         }
 
-        try {
-            $this->billing->syncPayment($paymentId);
-        } catch (MollieException $e) {
-            // Non-2xx makes Mollie retry later
-            $this->logger->error('Mollie webhook for {id} failed: {message}', ['id' => $paymentId, 'message' => $e->getMessage()]);
-
-            return new Response('', 503);
-        }
+        // Answered right away; the billing queue fetches the status (and retries if Mollie is down)
+        $this->billing->queuePaymentSync($paymentId);
 
         return new Response('', 200);
     }

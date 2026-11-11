@@ -11,6 +11,7 @@ use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -27,6 +28,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Mollie reports payment status changes to the webhook; the daily
  * app:billing:run command also checks open payments in case a webhook was missed.
+ * Charges and payment checks go through the billing queue (BillingMessageHandler),
+ * so clients are handled one at a time and a Mollie hiccup is retried.
  */
 final readonly class BillingService
 {
@@ -52,6 +55,7 @@ final readonly class BillingService
         private TenantRepository $tenants,
         private UrlGeneratorInterface $urlGenerator,
         private LoggerInterface $logger,
+        private MessageBusInterface $bus,
         #[Autowire(env: 'int:BILLING_MONTHLY_PRICE')]
         private int $defaultMonthlyPrice,
         #[Autowire(env: 'BILLING_VAT_RATE')]
@@ -127,6 +131,12 @@ final readonly class BillingService
     }
 
     // Payment status updates (webhook, return page, daily check)
+
+    /** Checks the payment in the billing queue, e.g. for the webhook */
+    public function queuePaymentSync(string $paymentId): void
+    {
+        $this->bus->dispatch(new SyncPayment($paymentId));
+    }
 
     public function syncPayment(string $paymentId): void
     {
@@ -230,53 +240,51 @@ final readonly class BillingService
         }
     }
 
-    /** Daily safety net in case Mollie could not reach the webhook. */
+    /**
+     * Daily safety net in case Mollie could not reach the webhook.
+     *
+     * @return int the number of payment checks queued
+     */
     public function syncPendingCharges(): int
     {
-        $synced = 0;
+        $queued = 0;
         foreach ($this->charges->findAllPending() as $charge) {
-            if (null === $charge->getMolliePaymentId()) {
-                continue;
-            }
-            try {
-                $this->syncPayment($charge->getMolliePaymentId());
-                ++$synced;
-            } catch (MollieException $e) {
-                $this->logger->error('Could not check payment for charge {id}: {message}', ['id' => $charge->getId(), 'message' => $e->getMessage()]);
+            if (null !== $charge->getMolliePaymentId()) {
+                $this->queuePaymentSync($charge->getMolliePaymentId());
+                ++$queued;
             }
         }
 
-        return $synced;
+        return $queued;
     }
 
     // Monthly charges
 
     /**
-     * Charges every client that is due for the month of $today. Safe to run every
-     * day: a client is charged at most once per month, from the first workday on.
+     * Queues a charge for every client that is due for the month of $today. Safe to
+     * run every day: a client is charged at most once per month, from the first workday on.
      *
-     * @return list<Charge> the charges created
+     * @return list<Tenant> the clients queued
      */
     public function chargeDueClients(\DateTimeImmutable $today): array
     {
-        $created = [];
+        $queued = [];
         foreach ($this->tenants->findBy(['active' => true, 'billingExempt' => false]) as $tenant) {
-            if ($charge = $this->chargeIfDue($tenant, $today)) {
-                $created[] = $charge;
+            if ($this->isDue($tenant, $today)) {
+                $this->bus->dispatch(new ChargeClient($tenant->getId(), $today->format('Y-m-d')));
+                $queued[] = $tenant;
             }
         }
 
-        return $created;
+        return $queued;
     }
 
+    /** Charges the client if due; called from the billing queue. Checks again, so a repeated message is harmless. */
     public function chargeIfDue(Tenant $tenant, \DateTimeImmutable $today): ?Charge
     {
         $today = $today->setTime(0, 0);
 
-        if ($tenant->isBillingExempt() || $tenant->isSuspended() || !$tenant->isActive()
-            || $today < WorkdayCalendar::firstWorkdayOfMonth($today)
-            || $today < $tenant->getBillingStartsOn()
-            || null !== $this->charges->findForPeriod($tenant, $today)) {
+        if (!$this->isDue($tenant, $today)) {
             return null;
         }
 
@@ -317,6 +325,16 @@ final readonly class BillingService
         $this->entityManager->flush();
 
         return $charge;
+    }
+
+    private function isDue(Tenant $tenant, \DateTimeImmutable $today): bool
+    {
+        $today = $today->setTime(0, 0);
+
+        return !$tenant->isBillingExempt() && !$tenant->isSuspended() && $tenant->isActive()
+            && $today >= WorkdayCalendar::firstWorkdayOfMonth($today)
+            && $today >= $tenant->getBillingStartsOn()
+            && null === $this->charges->findForPeriod($tenant, $today);
     }
 
     // Reminders and taking sites offline

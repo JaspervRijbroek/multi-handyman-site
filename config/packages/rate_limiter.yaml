@@ -11,3 +11,9 @@ framework:
             policy: sliding_window
             limit: 30
             interval: '1 hour'
+        # The billing queue (config/packages/messenger.yaml): one client charged or
+        # payment checked every 2 seconds (30 per minute), evenly spread
+        billing_queue:
+            policy: token_bucket
+            limit: 1
+            rate: { interval: '2 seconds' }

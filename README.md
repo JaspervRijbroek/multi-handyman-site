@@ -248,6 +248,7 @@ minute and starts the tasks that are due (times in Spanish time):
 
 | When | Command |
 |---|---|
+| every minute | `messenger:consume billing async` (the [queue](#background-queue) worker, for 55 seconds) |
 | daily 09:00 | `app:billing:run` |
 | daily 09:15 | `app:turnstile:sync` |
 | hourly at :17 | `app:google:connect --all` |
@@ -257,10 +258,28 @@ minute and starts the tasks that are due (times in Spanish time):
 * * * * * cd /var/www/multi-handyman-site/current && php bin/console app:schedule:run >> var/log/schedule.log 2>&1
 ```
 
-Each task runs as its own process, so one failing doesn't stop the others; the output goes to
+Due tasks run side by side, each as its own process, so one failing doesn't stop the others; the output goes to
 `var/log/schedule.log`. Every task is safe to repeat, so a run missed while the server was down
 is caught up by the next one. See the schedule with `app:schedule:run --list`; change it in
 `ScheduleRunCommand::TASKS`. Locally, run a task by hand instead (e.g. `ddev console app:billing:run`).
+
+## Background queue
+
+Work nobody should wait for goes into a queue in the database (Symfony Messenger, table
+`messenger_messages`; config in `config/packages/messenger.yaml`) and is done by a worker:
+
+- **billing**: charging a client and checking a payment with Mollie. `app:billing:run` only
+  queues them; the worker charges clients one at a time, one every 2 seconds
+  (`billing_queue` in `config/packages/rate_limiter.yaml`). The Mollie webhook answers right
+  away and queues the payment check. The return page after a checkout still checks straight away.
+- **async**: every email (enquiries, reviews, onboarding, billing), so a form submits without
+  waiting for the mail server.
+
+Billing goes first. A failed message is retried after 1, 5 and 25 minutes, then moved to the
+`failed` queue: see it with `messenger:failed:show`, retry with `messenger:failed:retry`.
+In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
+needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
+after `ddev restart`); its output is in `ddev logs`.
 
 ## Useful commands
 
@@ -276,6 +295,8 @@ ddev console app:billing:run                  # daily billing run (charges, remi
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
 ddev console app:search:index                 # rebuild the OpenSearch index of towns (typo matching)
 ddev console app:schedule:run --list          # what the scheduler runs, and when
+ddev console messenger:stats                  # messages waiting in the queue
+ddev console messenger:failed:show            # messages that failed all retries
 ```
 
 **Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
