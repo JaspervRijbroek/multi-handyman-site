@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Billing;
 
 /**
- * Works out the first workday of a month: the day clients are charged.
+ * Works out the first workday of a month: the day a client without a running Mollie subscription is charged.
  *
  * Workdays are Monday to Friday, minus the national holidays that can fall on
  * the first days of a month in Spain (1 January, 1 May, 1 November).

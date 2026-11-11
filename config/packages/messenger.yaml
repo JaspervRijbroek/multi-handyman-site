@@ -6,7 +6,7 @@ framework:
         failure_transport: failed
 
         transports:
-            # Charges and payment checks with Mollie: one client every 2 seconds
+            # Charges, payment and subscription checks with Mollie: one client every 2 seconds
             billing:
                 dsn: 'doctrine://default?queue_name=billing'
                 rate_limiter: billing_queue
@@ -20,4 +20,5 @@ framework:
         routing:
             App\Billing\ChargeClient: billing
             App\Billing\SyncPayment: billing
+            App\Billing\SyncSubscription: billing
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async

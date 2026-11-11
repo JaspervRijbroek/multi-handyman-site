@@ -33,4 +33,13 @@ final readonly class BillingMessageHandler
     {
         $this->billing->syncPayment($message->paymentId);
     }
+
+    #[AsMessageHandler]
+    public function syncSubscription(SyncSubscription $message): void
+    {
+        $tenant = $this->tenants->find($message->tenantId);
+        if (null !== $tenant) {
+            $this->billing->syncSubscription($tenant);
+        }
+    }
 }

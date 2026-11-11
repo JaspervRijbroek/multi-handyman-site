@@ -179,15 +179,16 @@ no setup: it uses OpenStreetMap.)
 
 ## Billing
 
-Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
-charged automatically on the **first workday of each month** (Mon–Fri, skipping
-1 Jan, 1 May and 1 Nov).
+Clients pay monthly through [Mollie](https://www.mollie.com). The first month is charged on
+its **first workday** (Mon–Fri, skipping 1 Jan, 1 May and 1 Nov); at the same time a **Mollie
+subscription** is started, which charges the client on the **1st of every month** after that.
 
 ```
 Client added ─► free until the first workday of next month (Tenant::billingStartsOn)
              └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
 
-First workday ─► automatic payment with the mandate
+First workday ─► automatic payment with the mandate + Mollie subscription from next month
+1st of the month ─► Mollie charges the subscription → webhook / daily check records it as that month's charge
                   ├─ paid    → done
                   └─ failed  → reminder 1 with payment link (right away)
                                + 2 weeks  → reminder 2
@@ -199,8 +200,14 @@ First workday ─► automatic payment with the mandate
 - `app:billing:run` does all the scheduled work. The [scheduler](#scheduled-tasks) runs it
   **daily** at 09:00; it is safe to run more than once a day.
 - Mollie reports payment changes to `POST /billing/webhook` (production only, set
-  `BILLING_WEBHOOKS=1`). The return page and the daily run also check open
-  payments, so a missed webhook is never a problem.
+  `BILLING_WEBHOOKS=1`), also for subscription payments. The return page and the daily run
+  also check open payments, so a missed webhook is never a problem.
+- **Subscriptions.** The daily run fetches every subscription from Mollie with its latest
+  payments, so each month shows as paid or failed even without webhooks. It also updates the
+  amount when the client's price changes, and cancels the subscription for free, inactive or
+  offline clients and when the payment method is gone. A subscription that stopped at Mollie
+  is forgotten: the next month is charged once on its first workday again and a new
+  subscription starts. The client's Billing tab shows the subscription ID.
 - The payment link (`/billing/{token}`) works without logging in. Clients also
   get a **Billing** page in their admin; super admins get **Payments** (with *Mark as
   paid* for bank transfers), a **Billing** tab per client and a *Send payment
@@ -268,7 +275,7 @@ is caught up by the next one. See the schedule with `app:schedule:run --list`; c
 Work nobody should wait for goes into a queue in the database (Symfony Messenger, table
 `messenger_messages`; config in `config/packages/messenger.yaml`) and is done by a worker:
 
-- **billing**: charging a client and checking a payment with Mollie. `app:billing:run` only
+- **billing**: charging a client and checking a payment or subscription with Mollie. `app:billing:run` only
   queues them; the worker charges clients one at a time, one every 2 seconds
   (`billing_queue` in `config/packages/rate_limiter.yaml`). The Mollie webhook answers right
   away and queues the payment check. The return page after a checkout still checks straight away.

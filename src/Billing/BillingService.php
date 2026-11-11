@@ -20,7 +20,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 1. Onboarding: the platform is free until the first workday of the next month
  *    (Tenant::$billingStartsOn). The client authorises automatic payments once:
  *    a €0.00 card verification or a €0.01 bank payment (gives a SEPA mandate).
- * 2. On the first workday of every month the client is charged automatically.
+ * 2. On the first workday of the first month the client is charged once, and a
+ *    Mollie subscription is started that charges them on the 1st of every month
+ *    after that. Mollie reports each subscription payment to the webhook; the daily
+ *    run also fetches every subscription's status and latest payments, so we always
+ *    know which months are paid. If a subscription stops (e.g. the card expired),
+ *    the next month falls back to step 2.
  * 3. If that payment does not come through, a reminder with a payment link is sent
  *    right away, a second one after 2 weeks, and a final one after a month
  *    (payment required within a week). A week after the final reminder the site
@@ -28,7 +33,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Mollie reports payment status changes to the webhook; the daily
  * app:billing:run command also checks open payments in case a webhook was missed.
- * Charges and payment checks go through the billing queue (BillingMessageHandler),
+ * Charges and payment/subscription checks go through the billing queue (BillingMessageHandler),
  * so clients are handled one at a time and a Mollie hiccup is retried.
  */
 final readonly class BillingService
@@ -146,6 +151,16 @@ final readonly class BillingService
     /** @param array<string, mixed> $payment as returned by the Mollie API */
     private function applyPayment(array $payment): void
     {
+        if (!empty($payment['subscriptionId'])) {
+            $tenant = $this->tenants->findOneBy(['mollieCustomerId' => $payment['customerId'] ?? null]);
+            null === $tenant
+                ? $this->logger->warning('Mollie subscription payment {id} is not linked to a client.', ['id' => $payment['id'] ?? '?'])
+                : $this->applySubscriptionPayment($tenant, $payment);
+            $this->entityManager->flush();
+
+            return;
+        }
+
         $metadata = $payment['metadata'] ?? [];
         $tenant = isset($metadata['tenant']) ? $this->tenants->find((int) $metadata['tenant']) : null;
         if (null === $tenant) {
@@ -174,9 +189,44 @@ final readonly class BillingService
     private function applyMonthlyPayment(Tenant $tenant, array $payment): void
     {
         $charge = $this->charges->find((int) ($payment['metadata']['charge'] ?? 0));
+        if (null !== $charge && $charge->getTenant() === $tenant) {
+            $this->applyChargePayment($tenant, $charge, $payment);
+        }
+    }
 
+    /**
+     * A payment the subscription made: recorded as the charge for the month it was made in,
+     * unless that month was already paid or is being collected another way.
+     */
+    private function applySubscriptionPayment(Tenant $tenant, array $payment): void
+    {
+        $period = (new \DateTimeImmutable($payment['createdAt'] ?? 'now'))->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
+        $charge = $this->charges->findForPeriod($tenant, $period);
+        if (null === $charge) {
+            $charge = new Charge($tenant, $period, $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice, $this->vatRate, $this->currency);
+            $this->entityManager->persist($charge);
+        }
+
+        if ($charge->getMolliePaymentId() !== $payment['id']) {
+            if ($charge->isPaid() || $charge->isFailed() || null !== $charge->getMolliePaymentId()) {
+                $this->logger->warning('Mollie subscription payment {id} ignored: {period} of {tenant} is already handled.', [
+                    'id' => $payment['id'], 'period' => $charge->getPeriodLabel(), 'tenant' => $tenant->getSlug(),
+                ]);
+
+                return;
+            }
+            $charge->startCollecting($payment['id']);
+        }
+        $this->entityManager->flush();
+
+        $this->applyChargePayment($tenant, $charge, $payment);
+    }
+
+    private function applyChargePayment(Tenant $tenant, Charge $charge, array $payment): void
+    {
         // Only the payment currently collecting the charge may change it
-        if (null === $charge || $charge->getTenant() !== $tenant || $charge->getMolliePaymentId() !== $payment['id']) {
+        if ($charge->getMolliePaymentId() !== $payment['id']) {
             return;
         }
 
@@ -314,6 +364,9 @@ final readonly class BillingService
 
                 // Card payments are often decided straight away
                 $this->applyPayment($payment);
+
+                // From next month on, Mollie charges the client by itself
+                $this->startSubscription($tenant, $today->modify('first day of next month'));
             } catch (MollieException $e) {
                 // E.g. the mandate was revoked or the card expired
                 $this->logger->warning('Automatic payment for {tenant} failed: {message}', ['tenant' => $tenant->getSlug(), 'message' => $e->getMessage()]);
@@ -331,10 +384,108 @@ final readonly class BillingService
     {
         $today = $today->setTime(0, 0);
 
+        // A running subscription charges the client by itself
         return !$tenant->isBillingExempt() && !$tenant->isSuspended() && $tenant->isActive()
+            && null === $tenant->getMollieSubscriptionId()
             && $today >= WorkdayCalendar::firstWorkdayOfMonth($today)
             && $today >= $tenant->getBillingStartsOn()
             && null === $this->charges->findForPeriod($tenant, $today);
+    }
+
+    // Subscriptions
+
+    /** Starts the monthly Mollie subscription. If that fails, next month is charged once again and it is retried. */
+    private function startSubscription(Tenant $tenant, \DateTimeImmutable $startDate): void
+    {
+        if (!$tenant->hasMandate() || null !== $tenant->getMollieSubscriptionId()) {
+            return;
+        }
+
+        try {
+            // No mandate ID: Mollie uses the client's current one, so switching cards just works
+            $subscription = $this->mollie->createSubscription($tenant->getMollieCustomerId(), array_filter([
+                'amount' => MollieClient::amount($this->monthlyTotal($tenant), $this->currency),
+                'interval' => '1 month',
+                'startDate' => $startDate->format('Y-m-d'),
+                'description' => \sprintf('%s – monthly from %s', $this->brand, $startDate->format('F Y')),
+                'webhookUrl' => $this->webhookUrl(),
+                'metadata' => ['tenant' => $tenant->getId()],
+            ]));
+            $tenant->setMollieSubscriptionId($subscription['id']);
+            $this->entityManager->flush();
+        } catch (MollieException $e) {
+            $this->logger->warning('Could not start the subscription for {tenant}: {message}', ['tenant' => $tenant->getSlug(), 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Queues a check of every running subscription (status, amount and latest payments).
+     *
+     * @return int the number of subscriptions queued
+     */
+    public function syncSubscriptions(): int
+    {
+        $queued = 0;
+        foreach ($this->tenantsWithSubscription() as $tenant) {
+            $this->bus->dispatch(new SyncSubscription($tenant->getId()));
+            ++$queued;
+        }
+
+        return $queued;
+    }
+
+    /**
+     * Fetches the subscription from Mollie, called from the billing queue:
+     *  - stopped at Mollie (cancelled, suspended, ...): forgotten, so next month falls back to a one-off charge
+     *  - client is free, inactive, offline for non-payment or has no payment method any more: cancelled
+     *  - monthly price changed: amount updated
+     *  - its latest payments are recorded, so we know if this month is paid
+     *
+     * @throws MollieException when Mollie can't be reached (the queue retries)
+     */
+    public function syncSubscription(Tenant $tenant): void
+    {
+        $customerId = $tenant->getMollieCustomerId();
+        $subscriptionId = $tenant->getMollieSubscriptionId();
+        if (null === $customerId || null === $subscriptionId) {
+            return;
+        }
+
+        $subscription = $this->mollie->getSubscription($customerId, $subscriptionId);
+        $running = \in_array($subscription['status'] ?? null, ['pending', 'active'], true);
+
+        if ($running && ($tenant->isBillingExempt() || !$tenant->isActive() || $tenant->isSuspended() || !$tenant->hasMandate() || 0 === $this->monthlyTotal($tenant))) {
+            $this->mollie->cancelSubscription($customerId, $subscriptionId);
+            $running = false;
+        }
+
+        if ($running && ($subscription['amount']['value'] ?? null) !== MollieClient::amount($this->monthlyTotal($tenant), $this->currency)['value']) {
+            $this->mollie->updateSubscription($customerId, $subscriptionId, ['amount' => MollieClient::amount($this->monthlyTotal($tenant), $this->currency)]);
+        }
+
+        foreach (array_reverse($this->mollie->listSubscriptionPayments($customerId, $subscriptionId)) as $payment) {
+            $this->applySubscriptionPayment($tenant, $payment);
+        }
+
+        if (!$running) {
+            $tenant->setMollieSubscriptionId(null);
+        }
+        $this->entityManager->flush();
+    }
+
+    /** @return list<Tenant> */
+    private function tenantsWithSubscription(): array
+    {
+        return $this->tenants->createQueryBuilder('t')
+            ->andWhere('t.mollieSubscriptionId IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** What the client pays per month, VAT included, in cents (the same sum as a Charge) */
+    private function monthlyTotal(Tenant $tenant): int
+    {
+        return (int) round(($tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice) * (1 + (float) $this->vatRate / 100));
     }
 
     // Reminders and taking sites offline
