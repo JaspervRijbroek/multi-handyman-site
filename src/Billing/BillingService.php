@@ -20,7 +20,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 1. Onboarding: the platform is free until the 1st of the next month
  *    (Tenant::$billingStartsOn). The client authorises automatic payments once:
  *    a €0.00 card verification or a €0.01 bank payment (gives a SEPA mandate).
- * 2. On the 1st of every month the client is charged automatically.
+ * 2. On the 1st of every month the client is charged automatically: first the invoice
+ *    is made in FacturaDirecta (Invoicing), then the payment with the invoice number
+ *    is sent to Mollie.
  * 3. If that payment does not come through, a reminder with a payment link is sent
  *    right away, a second one after 2 weeks, and a final one after a month
  *    (payment required within a week). A week after the final reminder the site
@@ -49,6 +51,7 @@ final readonly class BillingService
 
     public function __construct(
         private MollieClient $mollie,
+        private Invoicing $invoicing,
         private BillingMailer $mailer,
         private EntityManagerInterface $entityManager,
         private ChargeRepository $charges,
@@ -102,11 +105,11 @@ final readonly class BillingService
         }
 
         $total = array_sum(array_map(static fn (Charge $c) => $c->getTotalAmount(), $outstanding));
-        $periods = implode(', ', array_map(static fn (Charge $c) => $c->getPeriodLabel(), $outstanding));
+        $labels = implode(', ', array_map(static fn (Charge $c) => $c->getLabel(), $outstanding));
 
         $payment = $this->mollie->createPayment(array_filter([
             'amount' => MollieClient::amount($total, $this->currency),
-            'description' => $this->brand.' – '.$periods,
+            'description' => $this->brand.' – '.$labels,
             // No working mandate: let this payment set up a new one
             'sequenceType' => $tenant->hasMandate() ? 'oneoff' : 'first',
             'customerId' => $this->ensureCustomer($tenant),
@@ -116,6 +119,7 @@ final readonly class BillingService
                 'purpose' => self::PURPOSE_OUTSTANDING,
                 'tenant' => $tenant->getId(),
                 'charges' => array_map(static fn (Charge $c) => $c->getId(), $outstanding),
+                'invoices' => array_values(array_filter(array_map(static fn (Charge $c) => $c->getInvoiceNumber(), $outstanding))),
             ],
         ]));
 
@@ -270,7 +274,7 @@ final readonly class BillingService
     {
         $queued = [];
         foreach ($this->tenants->findBy(['active' => true, 'billingExempt' => false]) as $tenant) {
-            if ($this->isDue($tenant, $today)) {
+            if ($this->needsCharging($tenant, $today)) {
                 $this->bus->dispatch(new ChargeClient($tenant->getId(), $today->format('Y-m-d')));
                 $queued[] = $tenant;
             }
@@ -279,35 +283,55 @@ final readonly class BillingService
         return $queued;
     }
 
-    /** Charges the client if due; called from the billing queue. Checks again, so a repeated message is harmless. */
+    /**
+     * Charges the client if due; called from the billing queue. Checks again, so a repeated message is harmless.
+     * Also picks up a charge that got stuck before reaching Mollie (e.g. FacturaDirecta was down).
+     */
     public function chargeIfDue(Tenant $tenant, \DateTimeImmutable $today): ?Charge
     {
         $today = $today->setTime(0, 0);
 
-        if (!$this->isDue($tenant, $today)) {
+        if (!$this->needsCharging($tenant, $today)) {
             return null;
         }
 
-        $charge = new Charge($tenant, $today, $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice, $this->vatRate, $this->currency);
-        $this->entityManager->persist($charge);
-        $this->entityManager->flush(); // the unique (tenant, period) key stops double charges
+        $charge = $this->charges->findForPeriod($tenant, $today);
+        if (null === $charge) {
+            $charge = new Charge($tenant, $today, $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice, $this->vatRate, $this->currency);
+            $this->entityManager->persist($charge);
+            $this->entityManager->flush(); // the unique (tenant, period) key stops double charges
+        }
 
         $now = new \DateTimeImmutable();
 
         if (0 === $charge->getTotalAmount()) {
             $charge->markPaid('free', $now);
-        } elseif (!$tenant->hasMandate()) {
+            $this->entityManager->flush();
+
+            return $charge;
+        }
+
+        // The invoice comes first, so the payment carries its number. On a FacturaDirecta
+        // error the exception makes the queue retry; the charge stays waiting until then.
+        $this->invoicing->invoice($charge);
+
+        if (!$tenant->hasMandate()) {
             $this->failAndRemind($tenant, $charge, 'No payment method has been set up', $now);
         } else {
             try {
                 $payment = $this->mollie->createPayment(array_filter([
                     'amount' => MollieClient::amount($charge->getTotalAmount(), $charge->getCurrency()),
-                    'description' => $this->brand.' – '.$charge->getPeriodLabel(),
+                    'description' => $this->brand.' – '.$charge->getLabel(),
                     'sequenceType' => 'recurring',
                     'customerId' => $tenant->getMollieCustomerId(),
                     'mandateId' => $tenant->getMollieMandateId(),
                     'webhookUrl' => $this->webhookUrl(),
-                    'metadata' => ['purpose' => self::PURPOSE_MONTHLY, 'tenant' => $tenant->getId(), 'charge' => $charge->getId()],
+                    'metadata' => array_filter([
+                        'purpose' => self::PURPOSE_MONTHLY,
+                        'tenant' => $tenant->getId(),
+                        'charge' => $charge->getId(),
+                        'invoice' => $charge->getInvoiceNumber(),
+                    ]),
                 ]));
                 $charge->startCollecting($payment['id']);
                 $this->entityManager->flush();
@@ -327,13 +351,18 @@ final readonly class BillingService
         return $charge;
     }
 
-    private function isDue(Tenant $tenant, \DateTimeImmutable $today): bool
+    /** No charge for this month yet, or one that never reached Mollie */
+    private function needsCharging(Tenant $tenant, \DateTimeImmutable $today): bool
     {
         $today = $today->setTime(0, 0);
 
-        return !$tenant->isBillingExempt() && !$tenant->isSuspended() && $tenant->isActive()
-            && $today >= $tenant->getBillingStartsOn()
-            && null === $this->charges->findForPeriod($tenant, $today);
+        if ($tenant->isBillingExempt() || $tenant->isSuspended() || !$tenant->isActive() || $today < $tenant->getBillingStartsOn()) {
+            return false;
+        }
+
+        $charge = $this->charges->findForPeriod($tenant, $today);
+
+        return null === $charge || $charge->isAwaitingCollection();
     }
 
     // Reminders and taking sites offline

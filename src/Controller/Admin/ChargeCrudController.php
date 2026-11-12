@@ -73,6 +73,7 @@ class ChargeCrudController extends AbstractCrudController
     {
         yield AssociationField::new('tenant', 'Client');
         yield DateField::new('period', 'Month')->setFormat('MMMM yyyy');
+        yield TextField::new('invoiceNumber', 'Invoice');
         yield MoneyField::new('totalAmount', 'Amount')->setCurrencyPropertyPath('currency')->setStoredAsCents();
         yield MoneyField::new('netAmount', 'Excl. VAT')->setCurrencyPropertyPath('currency')->setStoredAsCents()->onlyOnDetail();
         yield TextField::new('vatRate', 'VAT %')->onlyOnDetail();
@@ -86,6 +87,7 @@ class ChargeCrudController extends AbstractCrudController
         yield DateTimeField::new('failedAt', 'Failed at')->onlyOnDetail();
         yield DateTimeField::new('lastReminderAt', 'Last reminder')->onlyOnDetail();
         yield DateTimeField::new('paidAt', 'Paid at');
+        yield TextField::new('facturaDirectaInvoiceId', 'FacturaDirecta invoice')->onlyOnDetail();
         yield TextField::new('molliePaymentId', 'Mollie payment')->onlyOnDetail();
     }
 

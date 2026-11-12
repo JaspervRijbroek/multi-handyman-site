@@ -203,6 +203,10 @@ class Tenant
     #[ORM\Column(length: 120, nullable: true)]
     private ?string $mandateDescription = null;
 
+    /** The client as a contact in FacturaDirecta, where their invoices are made */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $facturaDirectaContactId = null;
+
     /** Latest checkout started by the client, checked when they come back from Mollie */
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $lastCheckoutPaymentId = null;
@@ -826,6 +830,18 @@ class Tenant
     public function setMollieCustomerId(?string $mollieCustomerId): static
     {
         $this->mollieCustomerId = $mollieCustomerId;
+
+        return $this;
+    }
+
+    public function getFacturaDirectaContactId(): ?string
+    {
+        return $this->facturaDirectaContactId;
+    }
+
+    public function setFacturaDirectaContactId(?string $facturaDirectaContactId): static
+    {
+        $this->facturaDirectaContactId = $facturaDirectaContactId;
 
         return $this;
     }

@@ -62,6 +62,14 @@ class Charge implements TenantOwnedInterface
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $molliePaymentId = null;
 
+    /** The invoice (factura) in FacturaDirecta, made before the payment is sent to Mollie */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $facturaDirectaInvoiceId = null;
+
+    /** e.g. "F-26-0012": shown in the Mollie payment description and the emails */
+    #[ORM\Column(length: 40, nullable: true)]
+    private ?string $invoiceNumber = null;
+
     /** When the automatic payment failed: the reminder schedule counts from here */
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $failedAt = null;
@@ -156,6 +164,34 @@ class Charge implements TenantOwnedInterface
     public function getMolliePaymentId(): ?string
     {
         return $this->molliePaymentId;
+    }
+
+    /** Not invoiced or sent to Mollie yet, e.g. because FacturaDirecta was unreachable */
+    public function isAwaitingCollection(): bool
+    {
+        return self::PENDING === $this->status && null === $this->molliePaymentId;
+    }
+
+    public function getFacturaDirectaInvoiceId(): ?string
+    {
+        return $this->facturaDirectaInvoiceId;
+    }
+
+    public function getInvoiceNumber(): ?string
+    {
+        return $this->invoiceNumber;
+    }
+
+    public function setInvoice(string $facturaDirectaInvoiceId, string $invoiceNumber): void
+    {
+        $this->facturaDirectaInvoiceId = $facturaDirectaInvoiceId;
+        $this->invoiceNumber = mb_substr($invoiceNumber, 0, 40);
+    }
+
+    /** e.g. "F-26-0012 (December 2026)", or just the month without an invoice */
+    public function getLabel(): string
+    {
+        return null === $this->invoiceNumber ? $this->getPeriodLabel() : \sprintf('%s (%s)', $this->invoiceNumber, $this->getPeriodLabel());
     }
 
     public function startCollecting(string $molliePaymentId): void

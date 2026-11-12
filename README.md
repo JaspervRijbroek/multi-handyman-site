@@ -16,7 +16,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
-- Monthly billing through Mollie with automatic reminders, see [Billing](#billing)
+- Monthly billing through Mollie with automatic reminders, invoices made in FacturaDirecta, see [Billing](#billing)
 
 ## Getting started
 
@@ -200,7 +200,8 @@ straight away; a SEPA direct debit takes a few working days to come through.
 Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
              └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
 
-1st of the month ─► automatic payment with the mandate
+1st of the month ─► invoice (factura) in FacturaDirecta
+                 ─► automatic payment with the mandate, invoice number in the description
                      ├─ paid    → done
                      └─ failed  → reminder 1 with payment link (right away)
                                   + 2 weeks  → reminder 2
@@ -223,7 +224,25 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
   then try a later date with `ddev console app:billing:run --date=2026-12-01`.
 
-Mollie does not issue invoices (facturas). Send those from your accounting tool.
+### Invoices (FacturaDirecta)
+
+Every monthly charge is invoiced in [FacturaDirecta](https://www.facturadirecta.com) **before**
+it goes to Mollie. The invoice number (e.g. `F-26-0012`) then appears in the Mollie payment
+description and metadata, the reminder emails, the payment page and the admin.
+
+- The client becomes a contact in FacturaDirecta on their first invoice, using the legal
+  name, tax ID (NIF/CIF) and address from their Billing tab. Fill those in first.
+- Settings in `.env.local`: `FACTURADIRECTA_API_KEY` (scopes `invoices:write`,
+  `contacts:write`, `settings:read`), `FACTURADIRECTA_COMPANY_ID`, and the invoice
+  series, tax (matching `BILLING_VAT_RATE`) and income account; see `.env.example`.
+  Try it with a FacturaDirecta sandbox company first.
+- Not configured (e.g. locally): no invoice is made, a warning is logged and the payment
+  goes to Mollie without a number.
+- FacturaDirecta down or refusing the invoice: nothing is sent to Mollie. The billing
+  queue retries, and the daily run picks the charge up again until the invoice is made.
+  See the error with `messenger:failed:show`.
+- Free months (€0) get no invoice. Invoices are not emailed or marked as paid in
+  FacturaDirecta yet.
 
 ## Spam protection (Cloudflare Turnstile)
 
@@ -332,7 +351,8 @@ Rough outline for a small Ubuntu VPS:
 2. Deploy the code with Deployer (see [Deployment](#deployment)).
 3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
-   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, `CLOUDFLARE_ACCOUNT_ID` /
+   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, `FACTURADIRECTA_API_KEY` /
+   `FACTURADIRECTA_COMPANY_ID`, `CLOUDFLARE_ACCOUNT_ID` /
    `CLOUDFLARE_API_TOKEN`, `REDIS_URL=redis://127.0.0.1:6379` and `OPENSEARCH_URL` (empty
    without OpenSearch: the defaults point at the DDEV services). Set the server timezone to `Europe/Madrid` and add the one
    cron job for the deploy user (see [Scheduled tasks](#scheduled-tasks)). Optional: install

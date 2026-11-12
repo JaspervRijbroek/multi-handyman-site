@@ -17,7 +17,7 @@
                 <table class="table">
                     {% for charge in outstanding %}
                         <tr>
-                            <td>{{ charge.periodLabel }}{% if charge.failureReason %} <span class="text-muted small">· {{ charge.failureReason }}</span>{% endif %}</td>
+                            <td>{{ charge.label }}{% if charge.failureReason %} <span class="text-muted small">· {{ charge.failureReason }}</span>{% endif %}</td>
                             <td class="text-end">{{ charge.totalAmount|money(charge.currency) }}</td>
                         </tr>
                     {% endfor %}
@@ -71,7 +71,7 @@
                     <thead><tr><th>Month</th><th class="text-end">Amount</th><th>Status</th></tr></thead>
                     {% for charge in history %}
                         <tr>
-                            <td>{{ charge.periodLabel }}</td>
+                            <td>{{ charge.label }}</td>
                             <td class="text-end">{{ charge.totalAmount|money(charge.currency) }}</td>
                             <td>
                                 {% if charge.paid %}<span class="badge badge-success">Paid {{ charge.paidAt ? charge.paidAt|date('j M Y') }}</span>
