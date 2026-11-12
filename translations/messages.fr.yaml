@@ -34,6 +34,15 @@ reviews:
     success: Merci ! Votre avis apparaîtra sur ce site une fois vérifié.
     back: Retour à l’accueil
     privacy: 'Votre prénom, votre ville, votre note et votre avis sont affichés sur ce site. Voir notre <a href="%url%">politique de confidentialité</a>.'
+    name_optional: Votre prénom (facultatif)
+    anonymous_help: Laissez vide pour publier votre avis de façon anonyme.
+    anonymous: Anonyme
+    invite_intro: '%name% a récemment réalisé ce travail pour vous : « %job% ». Comment cela s’est-il passé ? Votre avis apparaîtra sur ce site une fois vérifié.'
+    invite_expired: 'Ce lien d’avis a expiré ou a déjà été utilisé. Demandez un nouveau lien à %name% si vous souhaitez encore écrire un avis.'
+
+review_request:
+    subject: 'Comment s’est passé votre travail avec %name% ? Laissez un avis'
+    message: "Bonjour ! Merci d’avoir choisi %name%. Voulez-vous dire aux autres comment s’est passé le travail ? Laissez votre avis ici (avec votre prénom ou de façon anonyme) :\n\n%url%\n\nLe lien est valable %days% jours."
 
 contact:
     title: Nous contacter
@@ -74,7 +83,7 @@ legal:
         controller: '%owner% est responsable des données personnelles que vous envoyez via ce site.'
         purpose: Nous utilisons les données du formulaire de contact uniquement pour répondre à votre demande et, si vous le souhaitez, préparer un devis. La base légale est votre consentement et les mesures précontractuelles prises à votre demande. Nous ne vendons ni ne partageons vos données, sauf avec les prestataires qui hébergent ce site et ses e-mails pour notre compte. Contre le spam, le formulaire est protégé par Cloudflare Turnstile, qui vérifie votre navigateur sans cookies de suivi.
         retention: Nous conservons votre demande le temps nécessaire à son traitement et au respect de nos obligations légales.
-        reviews: Si vous écrivez un avis, nous publions après vérification votre prénom, votre ville (si indiquée), votre note et votre avis sur ce site. Vous pouvez nous demander de le retirer à tout moment.
+        reviews: Si vous écrivez un avis, nous publions après vérification votre prénom, votre ville (si indiquée), votre note et votre avis sur ce site. Vous pouvez nous demander de le retirer à tout moment. Si nous avons travaillé pour vous et que vous nous avez donné votre e-mail ou votre téléphone, nous l’utilisons pour vous envoyer un lien afin de noter ce travail ; nous le supprimons dès que vous avez laissé votre avis.
         rights: 'Vous pouvez demander l’accès, la rectification ou la suppression de vos données, ou vous opposer à leur utilisation, en écrivant à %email%. Vous pouvez aussi déposer une réclamation auprès de l’autorité espagnole de protection des données (www.aepd.es).'
     cookies:
         title: Cookies
@@ -82,4 +91,4 @@ legal:
         map: La carte de la section contact n’est chargée depuis OpenStreetMap (OpenStreetMap Foundation, Royaume-Uni) que lorsque vous cliquez sur « Afficher la carte » ; votre adresse IP est alors envoyée à leurs serveurs. OpenStreetMap ne dépose aucun cookie publicitaire ni de suivi.
 
 offline:
-    message: 'Ce site est temporairement indisponible. Vous pouvez toujours nous joindre directement :'
+    message: "Ce site est temporairement indisponible. Vous pouvez toujours nous joindre directement :"

@@ -34,6 +34,15 @@ reviews:
     success: ¡Gracias! Su opinión aparecerá en esta web una vez revisada.
     back: Volver a la página principal
     privacy: 'Su nombre, localidad, valoración y opinión se muestran en esta web. Consulte nuestra <a href="%url%">política de privacidad</a>.'
+    name_optional: Su nombre (opcional)
+    anonymous_help: Déjelo vacío para publicar su opinión de forma anónima.
+    anonymous: Anónimo
+    invite_intro: '%name% hizo hace poco este trabajo para usted: «%job%». ¿Qué tal fue? Su opinión aparecerá en esta web una vez revisada.'
+    invite_expired: 'Este enlace para opinar ha caducado o ya se ha utilizado. Pida un enlace nuevo a %name% si aún quiere escribir una opinión.'
+
+review_request:
+    subject: '¿Qué tal %name%? Deje su opinión'
+    message: "¡Hola! Gracias por confiar en %name%. ¿Nos cuenta qué tal fue el trabajo? Deje aquí su opinión (con su nombre o de forma anónima):\n\n%url%\n\nEl enlace funciona durante %days% días."
 
 contact:
     title: Contacto
@@ -74,7 +83,7 @@ legal:
         controller: '%owner% es responsable de los datos personales que envíe a través de este sitio web.'
         purpose: Utilizamos los datos del formulario de contacto únicamente para responder a su consulta y, si lo desea, preparar un presupuesto. La base legal es su consentimiento y la aplicación de medidas precontractuales a petición suya. No vendemos ni cedemos sus datos, salvo a los proveedores que alojan este sitio web y su correo en nuestro nombre. Para evitar el spam, el formulario de contacto está protegido por Cloudflare Turnstile, que comprueba su navegador sin cookies de seguimiento.
         retention: Conservamos su consulta el tiempo necesario para atenderla y cumplir con las obligaciones legales.
-        reviews: Si escribe una opinión, publicamos su nombre, localidad (si la indica), valoración y opinión en esta web una vez revisada. Puede pedirnos que la retiremos en cualquier momento.
+        reviews: Si escribe una opinión, publicamos su nombre, localidad (si la indica), valoración y opinión en esta web una vez revisada. Puede pedirnos que la retiremos en cualquier momento. Si hemos hecho un trabajo para usted y nos ha dado su correo electrónico o teléfono, lo usamos para enviarle un enlace para opinar sobre ese trabajo; lo borramos en cuanto deja su opinión.
         rights: 'Puede solicitar el acceso, la rectificación o la supresión de sus datos, u oponerse a su tratamiento, escribiendo a %email%. También puede presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).'
     cookies:
         title: Cookies
@@ -82,4 +91,4 @@ legal:
         map: El mapa de la sección de contacto solo se carga desde OpenStreetMap (OpenStreetMap Foundation, Reino Unido) cuando hace clic en «Mostrar mapa»; entonces su dirección IP se envía a sus servidores para cargar el mapa. OpenStreetMap no utiliza cookies de publicidad ni de seguimiento.
 
 offline:
-    message: 'Este sitio web no está disponible temporalmente. Puede contactarnos directamente:'
+    message: "Este sitio web no está disponible temporalmente. Puede contactarnos directamente:"

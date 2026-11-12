@@ -162,6 +162,54 @@ final class SiteController extends AbstractController
         ]);
     }
 
+    /** The review link sent to a project's customer: no spam check needed, and the name is optional. */
+    #[Route('/{_locale}/review/{token}', name: 'site_review_invite', requirements: ['_locale' => '[a-z]{2}', 'token' => '[0-9a-f]{32}'], methods: ['GET', 'POST'])]
+    public function reviewInvite(
+        string $token,
+        Request $request,
+        ProjectRepository $projects,
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer,
+        LoggerInterface $logger,
+        #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
+    ): Response {
+        $tenant = $this->siteTenant($request);
+        $project = $projects->findOneBy(['tenant' => $tenant, 'reviewToken' => $token]);
+
+        // Unknown, used or older than a week
+        if (!$project?->isReviewLinkValid()) {
+            return $this->render('site/review_invite.html.twig', ['tenant' => $tenant, 'project' => null, 'form' => null], new Response('', Response::HTTP_GONE));
+        }
+
+        $review = (new Review())->setTenant($tenant)->setLocale($request->getLocale())->setProject($project);
+        $form = $this->createForm(ReviewType::class, $review, ['allow_anonymous' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Saved unpublished, like other reviews: the client decides whether it is shown
+            $project->completeReviewRequest();
+            $entityManager->persist($review);
+            $entityManager->flush();
+            $this->sendMail($tenant, $mailer, $logger, $mailerFrom, \sprintf('New review from %s for "%s"', $review, $project), \sprintf(
+                "%s gave you %d out of 5 stars for \"%s\":\n\n%s\n\nPublish it on your website under Reviews in your admin.\n",
+                $review,
+                $review->getRating(),
+                $project,
+                $review->getText(),
+            ));
+
+            $this->addFlash('review_success', 'reviews.success');
+
+            return $this->redirectToRoute('site_review', ['_locale' => $request->getLocale()]);
+        }
+
+        return $this->render('site/review_invite.html.twig', [
+            'tenant' => $tenant,
+            'project' => $project,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{_locale}/legal', name: 'site_legal', requirements: ['_locale' => '[a-z]{2}'], methods: ['GET'])]
     public function legal(Request $request): Response
     {

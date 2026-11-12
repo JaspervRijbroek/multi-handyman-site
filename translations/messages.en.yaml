@@ -34,6 +34,15 @@ reviews:
     success: Thank you! Your review will appear on this website once it has been checked.
     back: Back to the homepage
     privacy: 'Your first name, town, rating and review are shown on this website. See our <a href="%url%">privacy policy</a>.'
+    name_optional: Your first name (optional)
+    anonymous_help: Leave empty to post your review anonymously.
+    anonymous: Anonymous
+    invite_intro: '%name% recently did this job for you: “%job%”. How did it go? Your review appears on this website once it has been checked.'
+    invite_expired: 'This review link has expired or has already been used. Ask %name% for a new link if you still want to write a review.'
+
+review_request:
+    subject: 'How did %name% do? Leave a review'
+    message: "Hello! Thank you for choosing %name%. Would you tell others how the job went? Leave your review here (with your name or anonymously):\n\n%url%\n\nThe link works for %days% days."
 
 contact:
     title: Get in touch
@@ -74,7 +83,7 @@ legal:
         controller: '%owner% is responsible for the personal data you send through this website.'
         purpose: We use the data from the contact form only to answer your enquiry and, if you wish, to prepare a quote. The legal basis is your consent and taking steps at your request before entering into a contract. We do not sell or share your data, except with providers that host this website and its email on our behalf. To block spam, the contact form is protected by Cloudflare Turnstile, which checks your browser without tracking cookies.
         retention: We keep your enquiry as long as needed to handle it and to meet legal obligations.
-        reviews: If you write a review, we publish your first name, town (if given), rating and review on this website once checked. You can ask us to remove it at any time.
+        reviews: If you write a review, we publish your first name, town (if given), rating and review on this website once checked. You can ask us to remove it at any time. If we did a job for you and you gave us your email address or phone number, we use it to send you a link to review that job; we delete it once you have left your review.
         rights: 'You can request access, correction or deletion of your data, or object to its use, by emailing %email%. You may also file a complaint with the Spanish Data Protection Agency (www.aepd.es).'
     cookies:
         title: Cookies
@@ -82,4 +91,4 @@ legal:
         map: The map in the contact section is only loaded from OpenStreetMap (OpenStreetMap Foundation, United Kingdom) when you click “Show map”; your IP address is then sent to their servers to load the map. OpenStreetMap sets no advertising or tracking cookies.
 
 offline:
-    message: 'This website is temporarily unavailable. You can still reach us directly:'
+    message: "This website is temporarily unavailable. You can still reach us directly:"

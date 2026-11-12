@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 final class ReviewType extends AbstractType
 {
@@ -25,8 +26,12 @@ final class ReviewType extends AbstractType
                 'choice_attr' => static fn (int $rating) => ['aria-label' => $rating.'/5'],
                 'expanded' => true,
             ])
+            // Customers with a review link may stay anonymous; everyone else must give a name
             ->add('authorName', TextType::class, [
-                'label' => 'reviews.name',
+                'label' => $options['allow_anonymous'] ? 'reviews.name_optional' : 'reviews.name',
+                'required' => !$options['allow_anonymous'],
+                'constraints' => $options['allow_anonymous'] ? [] : [new NotBlank()],
+                'help' => $options['allow_anonymous'] ? 'reviews.anonymous_help' : null,
                 'attr' => ['autocomplete' => 'given-name'],
             ])
             ->add('town', TextType::class, [
@@ -54,6 +59,8 @@ final class ReviewType extends AbstractType
             'translation_domain' => 'messages',
             // Public form without login, like the contact form
             'csrf_protection' => false,
+            'allow_anonymous' => false,
         ]);
+        $resolver->setAllowedTypes('allow_anonymous', 'bool');
     }
 }

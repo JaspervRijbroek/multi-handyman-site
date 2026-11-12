@@ -8,6 +8,7 @@ use App\Entity\Review;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -31,7 +32,7 @@ class ReviewCrudController extends AbstractTenantCrudController
             ->setEntityLabelInSingular('Review')
             ->setEntityLabelInPlural('Reviews')
             ->setDefaultSort(['published' => 'ASC', 'createdAt' => 'DESC'])
-            ->setHelp(Crud::PAGE_INDEX, 'Customers write reviews on your website. They are only shown once you switch on "Show on website".');
+            ->setHelp(Crud::PAGE_INDEX, 'Customers write reviews on your website, or through the review link you send them from a finished job. They are only shown once you switch on "Show on website".');
     }
 
     public function configureActions(Actions $actions): Actions
@@ -52,7 +53,8 @@ class ReviewCrudController extends AbstractTenantCrudController
         yield from $this->tenantFields();
         yield DateTimeField::new('createdAt', 'Received');
         yield IntegerField::new('rating', 'Stars');
-        yield TextField::new('authorName', 'Name');
+        yield TextField::new('authorName', 'Name')->formatValue(static fn (?string $name) => $name ?: 'Anonymous');
+        yield AssociationField::new('project', 'Job')->hideOnIndex();
         yield TextField::new('town')->hideOnIndex();
         yield TextareaField::new('text', 'Review')->setMaxLength(Crud::PAGE_INDEX === $pageName ? 80 : 2000);
         yield TextField::new('locale', 'Language')->hideOnIndex();
