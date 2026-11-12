@@ -34,6 +34,15 @@ reviews:
     success: Bedankt! Je review verschijnt op deze website zodra die is gecontroleerd.
     back: Terug naar de homepage
     privacy: 'Je voornaam, woonplaats, beoordeling en review worden op deze website getoond. Zie ons <a href="%url%">privacybeleid</a>.'
+    name_optional: Je voornaam (optioneel)
+    anonymous_help: Laat leeg om je review anoniem te plaatsen.
+    anonymous: Anoniem
+    invite_intro: '%name% heeft onlangs deze klus voor je gedaan: “%job%”. Hoe ging het? Je review verschijnt op deze website zodra die is gecontroleerd.'
+    invite_expired: 'Deze reviewlink is verlopen of al gebruikt. Vraag %name% om een nieuwe link als je toch een review wilt schrijven.'
+
+review_request:
+    subject: 'Hoe deed %name% het? Laat een review achter'
+    message: "Hallo! Bedankt dat je voor %name% hebt gekozen. Wil je anderen vertellen hoe de klus ging? Laat hier je review achter (met je naam of anoniem):\n\n%url%\n\nDe link werkt %days% dagen."
 
 contact:
     title: Neem contact op
@@ -74,7 +83,7 @@ legal:
         controller: '%owner% is verantwoordelijk voor de persoonsgegevens die je via deze website verstuurt.'
         purpose: We gebruiken de gegevens uit het contactformulier alleen om je vraag te beantwoorden en, als je dat wilt, een offerte te maken. De grondslag is je toestemming en het nemen van stappen op jouw verzoek voordat een overeenkomst wordt gesloten. We verkopen of delen je gegevens niet, behalve met partijen die deze website en de e-mail namens ons hosten. Om spam tegen te houden is het contactformulier beveiligd met Cloudflare Turnstile, dat je browser controleert zonder trackingcookies.
         retention: We bewaren je bericht zolang nodig is om het af te handelen en om aan wettelijke verplichtingen te voldoen.
-        reviews: Als je een review schrijft, publiceren we na controle je voornaam, woonplaats (indien ingevuld), beoordeling en review op deze website. Je kunt ons altijd vragen die te verwijderen.
+        reviews: Als je een review schrijft, publiceren we na controle je voornaam, woonplaats (indien ingevuld), beoordeling en review op deze website. Je kunt ons altijd vragen die te verwijderen. Als we een klus voor je hebben gedaan en je ons je e-mailadres of telefoonnummer hebt gegeven, gebruiken we dat om je een link te sturen om die klus te beoordelen; we verwijderen het zodra je je review hebt achtergelaten.
         rights: 'Je kunt inzage, correctie of verwijdering van je gegevens vragen, of bezwaar maken tegen het gebruik ervan, door te mailen naar %email%. Je kunt ook een klacht indienen bij de Spaanse privacytoezichthouder (www.aepd.es).'
     cookies:
         title: Cookies
@@ -82,4 +91,4 @@ legal:
         map: De kaart bij contact wordt pas van OpenStreetMap (OpenStreetMap Foundation, Verenigd Koninkrijk) geladen als je op “Kaart tonen” klikt; je IP-adres gaat dan naar hun servers om de kaart te laden. OpenStreetMap gebruikt geen advertentie- of trackingcookies.
 
 offline:
-    message: 'Deze website is tijdelijk niet beschikbaar. U kunt ons nog steeds direct bereiken:'
+    message: "Deze website is tijdelijk niet beschikbaar. U kunt ons nog steeds direct bereiken:"

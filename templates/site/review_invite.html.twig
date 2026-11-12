@@ -1,0 +1,34 @@
+{% extends 'site/base.html.twig' %}
+
+{% block title %}{{ 'reviews.write'|trans }} | {{ tenant.name }}{% endblock %}
+
+{% block head %}
+    <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block body %}
+    <section class="section">
+        <div class="container narrow stack">
+            <h1>{{ 'reviews.write'|trans }}</h1>
+
+            {% if project is null %}
+                <p class="notice" role="status">{{ 'reviews.invite_expired'|trans({'%name%': tenant.name}) }}</p>
+                <p><a class="btn btn-secondary" href="{{ path('site_home', {_locale: app.request.locale}) }}">{{ 'reviews.back'|trans }}</a></p>
+            {% else %}
+                <p class="muted">{{ 'reviews.invite_intro'|trans({'%name%': tenant.name, '%job%': project.title|localized}) }}</p>
+                <div class="contact-card">
+                    {{ form_start(form, {attr: {class: 'contact-form', novalidate: 'novalidate'}}) }}
+                        {{ form_errors(form) }}
+                        {{ form_row(form.rating, {row_attr: {class: 'rating-choice'}}) }}
+                        {{ form_row(form.authorName) }}
+                        {{ form_row(form.town) }}
+                        {{ form_row(form.text) }}
+                        {{ form_row(form.website) }}
+                        <p class="privacy-note">{{ 'reviews.privacy'|trans({'%url%': path('site_legal', {_locale: app.request.locale}) ~ '#privacy'})|raw }}</p>
+                        <button type="submit" class="btn btn-primary">{{ 'reviews.send'|trans }}</button>
+                    {{ form_end(form) }}
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

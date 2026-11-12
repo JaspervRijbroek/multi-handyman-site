@@ -12,6 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * A customer review, written on the client's website. Only shown after the
  * client publishes it in the admin.
+ *
+ * Reviews written through a review link (sent when a project is added) are
+ * linked to that project, and may be anonymous (empty author name).
  */
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ORM\Index(columns: ['published', 'created_at'])]
@@ -24,8 +27,8 @@ class Review implements TenantOwnedInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    /** Empty for an anonymous review; the public form requires a name (see ReviewType) */
     #[ORM\Column(length: 80)]
-    #[Assert\NotBlank]
     #[Assert\Length(max: 80)]
     private string $authorName = '';
 
@@ -52,6 +55,11 @@ class Review implements TenantOwnedInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    /** The job this review is about, when written through a review link */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Project $project = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -59,7 +67,7 @@ class Review implements TenantOwnedInterface
 
     public function __toString(): string
     {
-        return $this->authorName;
+        return $this->authorName ?: 'Anonymous';
     }
 
     public function getId(): ?int
@@ -142,5 +150,22 @@ class Review implements TenantOwnedInterface
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function isAnonymous(): bool
+    {
+        return '' === $this->authorName;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
+
+        return $this;
     }
 }

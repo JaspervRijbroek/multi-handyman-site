@@ -7,7 +7,8 @@ which client's site is shown; clients edit their own content in a simple admin.
 - **EasyAdmin 5** for the client admin
 - Multilingual content per client (EN, ES, NL, DE, FR), with hreflang, sitemap and canonical URLs
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
-- **Reviews**: customers write them on the client's site, the client publishes them in the admin
+- **Reviews**: customers write them on the client's site (or through a 7-day review link the client
+  sends after a job), the client publishes them in the admin
 - **Find a pro**: the platform homepage searches all clients by trade and town, with a map,
   see [Search and reviews](#search-and-reviews)
 - Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
@@ -105,7 +106,16 @@ of small queries however many clients there are.
 **Reviews**: customers write one at `/{locale}/review` on the client's site (honeypot +
 Turnstile, like the contact form). It is saved hidden and the client gets an email; it shows on
 the site once they switch on "Show on website" under Reviews in the admin. Clients cannot write
-or edit reviews, only publish, hide or delete them. The review count and average are stored on
+or edit reviews, only publish, hide or delete them.
+
+**Review links**: when a client adds a finished job (Projects in the admin), they can fill in the
+customer's email address or phone number. The customer then gets a link to
+`/{locale}/review/{token}` on the client's site that works for 7 days (`Project::REVIEW_LINK_DAYS`)
+and only once. An email address gets the link by email; for a phone number there is no SMS
+service, so the admin shows a "Send on WhatsApp" button with the message ready. On this form the
+name is optional: an empty name is shown as "Anonymous". The review is linked to the job, and the
+customer's contact details are removed once they have left their review. "Send review link" in
+the project list sends a new link (e.g. after the old one expired). The review count and average are stored on
 the tenant (`ReviewStatsListener`), so the search never reads other clients' reviews.
 
 The client's homepage passes the rating and the published reviews to Google as structured data

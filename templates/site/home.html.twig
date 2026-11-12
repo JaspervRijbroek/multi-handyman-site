@@ -35,7 +35,7 @@
         } : null,
         'review': reviews|map(review => {
             '@type': 'Review',
-            'author': {'@type': 'Person', 'name': review.authorName},
+            'author': {'@type': 'Person', 'name': review.anonymous ? 'reviews.anonymous'|trans : review.authorName},
             'datePublished': review.createdAt|date('Y-m-d'),
             'reviewBody': review.text,
             'reviewRating': {'@type': 'Rating', 'ratingValue': review.rating, 'bestRating': 5, 'worstRating': 1},
@@ -149,8 +149,9 @@
                             <p class="stars" role="img" aria-label="{{ review.rating }}/5">{% for star in 1..5 %}<span{% if star > review.rating %} class="star-off"{% endif %}>★</span>{% endfor %}</p>
                             <p class="review-text">“{{ review.text }}”</p>
                             <footer>
-                                <span class="review-initial" aria-hidden="true">{{ review.authorName|first|upper }}</span>
-                                <span><b>{{ review.authorName }}</b>{% if review.town %}<br>{{ review.town }}{% endif %}</span>
+                                {% set author = review.anonymous ? 'reviews.anonymous'|trans : review.authorName %}
+                                <span class="review-initial" aria-hidden="true">{{ author|first|upper }}</span>
+                                <span><b>{{ author }}</b>{% if review.town %}<br>{{ review.town }}{% endif %}</span>
                                 <time datetime="{{ review.createdAt|date('Y-m-d') }}">{{ review.createdAt|date('m/Y') }}</time>
                             </footer>
                         </blockquote>
