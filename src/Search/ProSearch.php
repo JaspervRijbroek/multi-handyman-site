@@ -32,6 +32,7 @@ final readonly class ProSearch
     public function __construct(
         private TenantRepository $tenants,
         private Geocoder $geocoder,
+        private TownIndex $townIndex,
         private LoggerInterface $logger,
     ) {
     }
@@ -44,7 +45,9 @@ final readonly class ProSearch
      *     total: int,
      *     pages: int,
      *     located: bool,
-     * } located is false when a town was given but could not be found
+     *     town: ?string,
+     * } located is false when a town was given but could not be found;
+     *   town is the client town it was matched to when typed with a typo
      */
     public function search(?Trade $trade, string $near, string $sort, int $page, LimiterInterface $lookups): array
     {
@@ -54,7 +57,7 @@ final readonly class ProSearch
             $qb->andWhere('t.trades LIKE :trade')->setParameter('trade', TenantRepository::tradePattern($trade->value));
         }
 
-        $point = '' === $near ? null : $this->locate($near, $lookups);
+        [$point, $town] = '' === $near ? [null, null] : $this->locate($near, $lookups);
         if (null !== $point) {
             // Squared distance on a flat map: accurate to well under a kilometre at
             // these distances, and needs no trigonometry in the database
@@ -95,6 +98,7 @@ final readonly class ProSearch
             'total' => $total,
             'pages' => max(1, (int) ceil($total / self::PER_PAGE)),
             'located' => '' === $near || null !== $point,
+            'town' => $town,
         ];
     }
 
@@ -111,28 +115,35 @@ final readonly class ProSearch
     }
 
     /**
-     * A town where clients are based is located without leaving our server;
-     * anything else is looked up in OpenStreetMap.
+     * A town where clients are based is located without leaving our server, also
+     * when typed with a typo (if OpenSearch is set up); anything else is looked
+     * up in OpenStreetMap.
      *
-     * @return array{float, float}|null
+     * @return array{?array{float, float}, ?string} the point, and the client town when corrected from a typo
      */
-    private function locate(string $near, LimiterInterface $lookups): ?array
+    private function locate(string $near, LimiterInterface $lookups): array
     {
         $known = $this->tenants->findTownCoordinates($near);
         if (null !== $known) {
-            return $known;
+            return [$known, null];
+        }
+
+        $town = $this->townIndex->find($near);
+        $known = null === $town ? null : $this->tenants->findTownCoordinates($town);
+        if (null !== $known) {
+            return [$known, $town];
         }
 
         if (!$lookups->consume()->isAccepted()) {
-            return null;
+            return [null, null];
         }
 
         try {
-            return $this->geocoder->locate($near);
+            return [$this->geocoder->locate($near), null];
         } catch (GeocodingException $e) {
             $this->logger->warning('Search could not locate "{place}": {message}', ['place' => $near, 'message' => $e->getMessage()]);
 
-            return null;
+            return [null, null];
         }
     }
 

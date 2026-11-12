@@ -2,7 +2,7 @@
 {% trans_default_domain 'platform' %}
 
 {% set what = trade ? ('trade.' ~ trade.value)|trans : 'search.title_any'|trans %}
-{% set heading = near ? 'search.heading_near'|trans({'%what%': what, '%town%': near}) : what %}
+{% set heading = near ? 'search.heading_near'|trans({'%what%': what, '%town%': town ?: near}) : what %}
 
 {% block title %}{{ heading }}{% if page > 1 %} · {{ 'search.page'|trans({'%page%': page, '%pages%': pages}) }}{% endif %} | {{ brand }}{% endblock %}
 
@@ -41,6 +41,9 @@
                 {% endif %}
             </div>
 
+            {% if town %}
+                <p class="p-notice" role="status">{{ 'search.corrected'|trans({'%town%': town, '%typed%': near}) }}</p>
+            {% endif %}
             {% if not located %}
                 <p class="p-notice" role="status">{{ 'search.not_found'|trans({'%town%': near}) }}</p>
             {% endif %}

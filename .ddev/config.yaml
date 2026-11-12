@@ -20,3 +20,10 @@ additional_hostnames:
   - pieters-tegelwerk
 
 use_dns_when_possible: true
+
+# Background queue worker (config/packages/messenger.yaml), so emails and billing
+# go out locally too. It restarts every 5 minutes to pick up code changes.
+web_extra_daemons:
+  - name: messenger
+    command: "php bin/console messenger:consume billing async --time-limit=300 -vv"
+    directory: /var/www/html

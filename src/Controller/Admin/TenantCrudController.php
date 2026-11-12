@@ -207,7 +207,7 @@ class TenantCrudController extends AbstractCrudController
 
         if ($isSuperAdmin) {
             yield FormField::addTab('Billing', 'fa fa-credit-card')
-                ->setHelp('Charged automatically through Mollie on the first workday of every month. If a payment fails, reminders go out right away, after 2 weeks and after a month; a week after the final reminder the site goes offline.');
+                ->setHelp('Charged automatically through Mollie on the 1st of every month. If a payment fails, reminders go out right away, after 2 weeks and after a month; a week after the final reminder the site goes offline.');
             yield BooleanField::new('billingExempt', 'Free account (never charged)')->renderAsSwitch(false)->hideOnIndex();
             yield MoneyField::new('monthlyPrice', 'Monthly price excl. VAT')
                 ->setCurrency('EUR')
@@ -216,7 +216,7 @@ class TenantCrudController extends AbstractCrudController
                 ->setHelp('Leave empty for the standard price.')
                 ->hideOnIndex();
             yield DateField::new('billingStartsOn', 'Free until (first charge on)')
-                ->setHelp('Set automatically to the first workday of the month after the client was added.')
+                ->setHelp('Set automatically to the 1st of the month after the client was added.')
                 ->hideOnIndex();
             yield TextField::new('mandateDescription', 'Automatic payment')
                 ->formatValue(static fn (?string $value) => $value ?? 'Not set up')

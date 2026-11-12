@@ -1,0 +1,22 @@
+# OpenSearch for typo-tolerant town search (App\Search\TownIndex), reachable at
+# http://opensearch:9200. Single node without security: for local use only.
+services:
+  opensearch:
+    container_name: ddev-${DDEV_SITENAME}-opensearch
+    image: opensearchproject/opensearch:2.19.1
+    restart: "no"
+    environment:
+      - discovery.type=single-node
+      - DISABLE_SECURITY_PLUGIN=true
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    expose:
+      - "9200"
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
+    volumes:
+      - opensearch:/usr/share/opensearch/data
+
+volumes:
+  opensearch:

@@ -23,8 +23,12 @@ Requires [DDEV](https://ddev.com) and Docker (OrbStack, Docker Desktop or Colima
 
 ```bash
 ddev start
-ddev bootstrap      # composer install, database, demo data
+ddev bootstrap      # composer install, database, demo data, search index
 ```
+
+Besides the web server and MariaDB, DDEV runs **Redis** (the [background queue](#background-queue),
+`.ddev/docker-compose.redis.yaml`), **OpenSearch** (typos in the search,
+`.ddev/docker-compose.opensearch.yaml`, about 1 GB of memory) and a queue worker.
 
 On the first run, `ddev bootstrap` creates `.env` (from `.env.example`) and
 `.env.dev` (with a random dev `APP_SECRET`), and generates the first migration in
@@ -88,6 +92,13 @@ of small queries however many clients there are.
   and accents, so "javea" finds "Jávea"); anything else is looked up in OpenStreetMap (Nominatim),
   at most 30 lookups per visitor per hour. Results are within 75 km, nearest first or highest
   rated. If the lookup fails, all pros are shown with a notice.
+- **Typos in the town** ("Javae", "Benisa") are corrected when `OPENSEARCH_URL` points to an
+  [OpenSearch](https://opensearch.org/) server: the clients' towns are matched fuzzily before
+  OpenStreetMap is asked, and the page says which town it used. `app:search:index` rebuilds the
+  index of towns; the [scheduler](#scheduled-tasks) runs it hourly (new towns are already found
+  when typed correctly).
+  Without OpenSearch, or when it is down, the search works as before. DDEV runs OpenSearch
+  at `http://opensearch:9200`.
 - The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a
   click and shows the pros on the current page.
 
@@ -134,12 +145,8 @@ nothing is saved and you get the reasons; fix the sign-up and approve again.
 
 **Search Console needs the site to be online.** Google checks the verification tag on the
 client's real domain, which only works once their DNS points to the server. Until then
-the status is *Waiting for the site to be online*. Add this to cron and it connects by
-itself as soon as the DNS is in place:
-
-```cron
-17 * * * * cd /var/www/multi-handyman-site/current && php bin/console app:google:connect --all -q
-```
+the status is *Waiting for the site to be online*. The [scheduler](#scheduled-tasks) runs
+`app:google:connect --all` every hour, so it connects by itself as soon as the DNS is in place.
 
 **Google Business Profile (the listing on Google Maps) cannot be created automatically.**
 Google has no API for creating and verifying new listings: they verify by post, phone or
@@ -176,25 +183,24 @@ no setup: it uses OpenStreetMap.)
 ## Billing
 
 Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
-charged automatically on the **first workday of each month** (Mon–Fri, skipping
-1 Jan, 1 May and 1 Nov).
+charged automatically on the **1st of each month**. A card payment is usually decided
+straight away; a SEPA direct debit takes a few working days to come through.
 
 ```
-Client added ─► free until the first workday of next month (Tenant::billingStartsOn)
+Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
              └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
 
-First workday ─► automatic payment with the mandate
-                  ├─ paid    → done
-                  └─ failed  → reminder 1 with payment link (right away)
-                               + 2 weeks  → reminder 2
-                               + 1 month  → final reminder: pay within a week
-                               + 1 week   → site offline (503 page, admin stays available)
-                               paid via link → site back online, new mandate if needed
+1st of the month ─► automatic payment with the mandate
+                     ├─ paid    → done
+                     └─ failed  → reminder 1 with payment link (right away)
+                                  + 2 weeks  → reminder 2
+                                  + 1 month  → final reminder: pay within a week
+                                  + 1 week   → site offline (503 page, admin stays available)
+                                  paid via link → site back online, new mandate if needed
 ```
 
-- `app:billing:run` does all the scheduled work. Run it **daily** from cron; it is
-  safe to run more than once a day.
-  `0 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:billing:run --no-interaction`
+- `app:billing:run` does all the scheduled work. The [scheduler](#scheduled-tasks) runs it
+  **daily** at 09:00; it is safe to run more than once a day.
 - Mollie reports payment changes to `POST /billing/webhook` (production only, set
   `BILLING_WEBHOOKS=1`). The return page and the daily run also check open
   payments, so a missed webhook is never a problem.
@@ -219,7 +225,7 @@ it lists, so the app manages its widgets through the Cloudflare API:
 ```
 Domain saved / deleted in the admin ─► app:turnstile:sync (straight away, result shown as a flash)
 Client onboarded or deleted, fixtures ─► same, at the end of the request/command
-Daily cron                           ─► same, catches up if Cloudflare was unreachable
+Daily (scheduler)                    ─► same, catches up if Cloudflare was unreachable
 ```
 
 - Every sync rebuilds the full list from the `domain` table plus `PLATFORM_HOST`, so it is
@@ -233,11 +239,51 @@ Daily cron                           ─► same, catches up if Cloudflare was u
   protected by the honeypot field only. The Domains screen shows *Protected* or *Not on Cloudflare yet*.
 - Setup: create an API token with **Account > Turnstile > Edit** and put
   `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` in `.env.local`, then run
-  `php bin/console app:turnstile:sync`. Add it to cron after the billing run:
-  `15 9 * * * cd /var/www/multi-handyman-site/current && php bin/console app:turnstile:sync --no-interaction`
+  `php bin/console app:turnstile:sync`. After that the [scheduler](#scheduled-tasks) runs it daily.
 - Locally, without an API token: set `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` to
   Cloudflare's test keys (see `.env.example`), which always pass on any hostname.
   With none of these set, Turnstile is off.
+
+## Scheduled tasks
+
+One cron job runs everything that has to happen on a schedule. `app:schedule:run` runs every
+minute and starts the tasks that are due (times in Spanish time):
+
+| When | Command |
+|---|---|
+| every minute | `messenger:consume billing async` (the [queue](#background-queue) worker, for 55 seconds) |
+| daily 09:00 | `app:billing:run` |
+| daily 09:15 | `app:turnstile:sync` |
+| hourly at :17 | `app:google:connect --all` |
+| hourly at :23 | `app:search:index` |
+
+```cron
+* * * * * cd /var/www/multi-handyman-site/current && php bin/console app:schedule:run >> var/log/schedule.log 2>&1
+```
+
+Due tasks run side by side, each as its own process, so one failing doesn't stop the others; the output goes to
+`var/log/schedule.log`. Every task is safe to repeat, so a run missed while the server was down
+is caught up by the next one. See the schedule with `app:schedule:run --list`; change it in
+`ScheduleRunCommand::TASKS`. Locally, run a task by hand instead (e.g. `ddev console app:billing:run`).
+
+## Background queue
+
+Work nobody should wait for goes into a queue in Redis (Symfony Messenger, `REDIS_URL`; config
+in `config/packages/messenger.yaml`) and is done by a worker:
+
+- **billing**: charging a client and checking a payment with Mollie. `app:billing:run` only
+  queues them; the worker charges clients one at a time, one every 2 seconds
+  (`billing_queue` in `config/packages/rate_limiter.yaml`). The Mollie webhook answers right
+  away and queues the payment check. The return page after a checkout still checks straight away.
+- **async**: every email (enquiries, reviews, onboarding, billing), so a form submits without
+  waiting for the mail server.
+
+Billing goes first. A failed message is retried after 1, 5 and 25 minutes, then moved to the
+`failed` queue, which is kept in the database (table `messenger_messages`) so it survives
+anything that happens to Redis: see it with `messenger:failed:show`, retry with `messenger:failed:retry`.
+In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
+needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
+after `ddev restart`); its output is in `ddev logs`.
 
 ## Useful commands
 
@@ -251,6 +297,10 @@ ddev console app:client:onboard                # add a client without a sign-up
 ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
+ddev console app:search:index                 # rebuild the OpenSearch index of towns (typo matching)
+ddev console app:schedule:run --list          # what the scheduler runs, and when
+ddev console messenger:stats                  # messages waiting in the queue
+ddev console messenger:failed:show            # messages that failed all retries
 ```
 
 **Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
@@ -266,14 +316,18 @@ for l in es en; do ddev console debug:translation $l --domain=platform --only-mi
 
 Rough outline for a small Ubuntu VPS:
 
-1. Install PHP 8.4 FPM (with intl, pdo_mysql, gd), MariaDB and Caddy.
+1. Install PHP 8.4 FPM (with intl, pdo_mysql, gd, redis), MariaDB, Caddy and Redis
+   (`apt install redis-server`; turn on `appendonly yes` in `/etc/redis/redis.conf` so queued
+   messages survive a restart, and keep it on 127.0.0.1).
 2. Deploy the code with Deployer (see [Deployment](#deployment)).
 3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
    `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
-   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, and `CLOUDFLARE_ACCOUNT_ID` /
-   `CLOUDFLARE_API_TOKEN`. Set the server timezone to `Europe/Madrid` and add the daily
-   `app:billing:run` and `app:turnstile:sync` cron jobs (see [Billing](#billing) and
-   [Spam protection](#spam-protection-cloudflare-turnstile)).
+   the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, `CLOUDFLARE_ACCOUNT_ID` /
+   `CLOUDFLARE_API_TOKEN`, `REDIS_URL=redis://127.0.0.1:6379` and `OPENSEARCH_URL` (empty
+   without OpenSearch: the defaults point at the DDEV services). Set the server timezone to `Europe/Madrid` and add the one
+   cron job for the deploy user (see [Scheduled tasks](#scheduled-tasks)). Optional: install
+   OpenSearch (single node, listening on 127.0.0.1 only) for `OPENSEARCH_URL` (see
+   [Search and reviews](#search-and-reviews)).
 4. Use `deploy/Caddyfile`: Caddy gets TLS certificates automatically for every
    client domain, but only for domains listed in the admin (via `/_tls/ask`).
 5. Back up the database and `shared/public/uploads/` daily to somewhere off the server
@@ -318,7 +372,7 @@ Roll back to the previous release with `DEPLOY_HOST=<server> dep rollback`.
 For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
 point their domain's A record at the server. HTTPS works on the first visit, the domain is
 added to Cloudflare Turnstile automatically, and the Search Console setup completes by
-itself through the cron job.
+itself through the [scheduler](#scheduled-tasks).
 
 Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 

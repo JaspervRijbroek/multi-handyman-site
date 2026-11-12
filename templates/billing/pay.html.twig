@@ -78,9 +78,9 @@
             <p>
                 {% if tenant.billingStartsOn > date() %}
                     Your website is free until <strong>{{ tenant.billingStartsOn|date('l j F Y') }}</strong>.
-                    From then on it is charged automatically on the first workday of every month.
+                    From then on it is charged automatically on the 1st of every month.
                 {% else %}
-                    Your website is charged automatically on the first workday of every month.
+                    Your website is charged automatically on the 1st of every month.
                 {% endif %}
                 Choose how you want to pay:
             </p>
@@ -93,7 +93,7 @@
             <h1>You're all set</h1>
             <p>
                 Your website is paid automatically with <strong>{{ tenant.mandateDescription }}</strong>
-                on the first workday of every month{% if tenant.billingStartsOn > date() %}, starting {{ tenant.billingStartsOn|date('j F Y') }}{% endif %}.
+                on the 1st of every month{% if tenant.billingStartsOn > date() %}, starting {{ tenant.billingStartsOn|date('j F Y') }}{% endif %}.
             </p>
             <details>
                 <summary class="b-muted">Use a different card or bank account</summary>

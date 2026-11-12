@@ -1,0 +1,18 @@
+# Redis for the message queue (config/packages/messenger.yaml), reachable at redis:6379.
+# appendonly: queued messages survive a restart.
+services:
+  redis:
+    container_name: ddev-${DDEV_SITENAME}-redis
+    image: redis:7.4-alpine
+    command: redis-server --appendonly yes
+    restart: "no"
+    expose:
+      - "6379"
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: ${DDEV_APPROOT}
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
