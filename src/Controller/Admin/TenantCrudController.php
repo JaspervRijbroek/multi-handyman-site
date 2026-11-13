@@ -98,6 +98,11 @@ class TenantCrudController extends AbstractCrudController
             ->renderAsForm()
             ->askConfirmation('Create a new MCP token? The current token stops working right away.', 'Reset token')
             ->displayIf(static fn (Tenant $tenant) => $tenant->hasMcpToken());
+        $removeMcpToken = Action::new('removeMcpToken', 'Remove MCP token', 'fa fa-trash')
+            ->linkToCrudAction('removeMcpToken')
+            ->renderAsForm()
+            ->askConfirmation('Remove the MCP token? AI assistants lose access right away.', 'Remove token')
+            ->displayIf(static fn (Tenant $tenant) => $tenant->hasMcpToken());
 
         $actions
             ->setPermission(Action::NEW, User::ROLE_SUPER_ADMIN)
@@ -110,6 +115,7 @@ class TenantCrudController extends AbstractCrudController
             ->add(Crud::PAGE_DETAIL, $sendSetup)
             ->add(Crud::PAGE_EDIT, $generateMcpToken)
             ->add(Crud::PAGE_EDIT, $resetMcpToken)
+            ->add(Crud::PAGE_EDIT, $removeMcpToken)
             // Clients are created through onboarding, which sets up everything at once
             ->disable(Action::NEW);
 
@@ -294,7 +300,7 @@ class TenantCrudController extends AbstractCrudController
             ->setFormTypeOptions(['mapped' => false, 'data' => $this->generateUrl('mcp', [], UrlGeneratorInterface::ABSOLUTE_URL), 'disabled' => true]);
         yield TextField::new('mcpTokenStatus', 'Token')
             ->setFormTypeOptions(['mapped' => false, 'disabled' => true, 'data' => $tenant->hasMcpToken()
-                ? \sprintf('Created on %s. Only shown once; lost it? Use "Reset MCP token" at the top.', $tenant->getMcpTokenCreatedAt()?->format('d-m-Y H:i'))
+                ? \sprintf('Created on %s. Only shown once; lost it? Use "Reset MCP token" at the top, or "Remove MCP token" to switch access off.', $tenant->getMcpTokenCreatedAt()?->format('d-m-Y H:i'))
                 : 'No token yet, so no MCP access. Use "Generate MCP token" at the top.'])
             ->setHelp('Send it as the header <code>Authorization: Bearer &lt;token&gt;</code>.');
     }
@@ -315,6 +321,21 @@ class TenantCrudController extends AbstractCrudController
             '<strong>Your new MCP token:</strong> <code style="user-select: all">%s</code><br>Copy it now: it is only shown once. Any older token no longer works.',
             $token,
         ));
+
+        return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction(Action::EDIT)->setEntityId($tenant->getId())->generateUrl());
+    }
+
+    /** "Remove MCP token": no token, no MCP access. */
+    #[AdminRoute('/{entityId}/mcp-token/remove', name: 'mcp_token_remove', options: ['methods' => ['POST']])]
+    public function removeMcpToken(AdminContext $context): Response
+    {
+        $tenant = $context->getEntity()->getInstance();
+        \assert($tenant instanceof Tenant);
+        $this->denyAccessUnlessGranted(TenantAccessVoter::ACCESS, $tenant);
+
+        $tenant->removeMcpToken();
+        $this->entityManager->flush();
+        $this->addFlash('success', 'MCP token removed. AI assistants no longer have access.');
 
         return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction(Action::EDIT)->setEntityId($tenant->getId())->generateUrl());
     }

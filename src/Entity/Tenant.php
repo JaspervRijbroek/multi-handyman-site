@@ -925,6 +925,15 @@ class Tenant
         return $token;
     }
 
+    /** Switches MCP access off: the current token stops working. */
+    public function removeMcpToken(): static
+    {
+        $this->mcpTokenHash = null;
+        $this->mcpTokenCreatedAt = null;
+
+        return $this;
+    }
+
     public static function hashMcpToken(string $token): string
     {
         return hash('sha256', $token);

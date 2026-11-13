@@ -304,10 +304,12 @@ Clients can connect an AI assistant (Claude, ChatGPT, ...) to their own data thr
 - **No token, no access.** A client has no token until they click *Generate MCP token* under
   **Settings → AI assistant**. The token is shown once; only its hash is stored. Lost it?
   *Reset MCP token* creates a new one and the old one stops working right away.
+  *Remove MCP token* switches MCP access off again.
 - The assistant sends the token as `Authorization: Bearer <token>`. The token decides the client:
   the tenant filter and guards then limit everything to that client's data, just like in the admin.
 - Tools (`App\Mcp\McpTools`): read and change the business details and website texts, add, change
-  and delete services and finished jobs (photos only in the admin), list enquiries and mark them
+  and delete services and finished jobs (with a photo: JPG, PNG or WebP, base64-encoded, max 5 MB,
+  saved in `public/uploads/projects/` like admin uploads), list enquiries and mark them
   handled, list reviews and show, hide or delete them (not write or edit them).
 - The server (`App\Mcp\McpServer`) is a small hand-written JSON-RPC handler: tools only,
   stateless, plain JSON answers (no sessions or event streams). `/mcp` returns 404 on client sites.

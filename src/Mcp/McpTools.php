@@ -14,6 +14,7 @@ use App\Entity\Trade;
 use App\Onboarding\ClientOnboarding;
 use App\Tenant\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -47,11 +48,17 @@ final readonly class McpTools
 
     private const array TRANSLATED_BUSINESS_FIELDS = ['tagline', 'intro', 'about'];
 
+    /** Project photos: same folder as the admin uploads, max 5 MB (fits in PHP's default 8 MB request limit as base64) */
+    private const int MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+    private const array PHOTO_TYPES = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+
     public function __construct(
         private TenantContext $tenantContext,
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator,
         private ClientOnboarding $onboarding,
+        #[Autowire('%kernel.project_dir%/public/uploads/projects')]
+        private string $photoDir,
     ) {
     }
 
@@ -102,12 +109,13 @@ final readonly class McpTools
             self::tool('delete_service', 'Delete a service.', ['id' => $id], ['id'], $delete),
 
             self::tool('list_projects', 'List the finished jobs (portfolio) on the website, newest first.', [], [], $readOnly),
-            self::tool('save_project', 'Add a finished job, or change one when an ID is given. Photos can only be added in the admin.', [
+            self::tool('save_project', 'Add a finished job, or change one when an ID is given.', [
                 'id' => ['description' => 'Leave out to add a new job'] + $id,
                 'title' => $translated('What was done.'),
                 'description' => $translated('Details.'),
                 'completed_at' => ['type' => ['string', 'null'], 'format' => 'date', 'description' => 'Finished on, YYYY-MM-DD'],
                 'published' => ['type' => 'boolean', 'description' => 'Show on the website'],
+                'photo_base64' => ['type' => 'string', 'contentEncoding' => 'base64', 'description' => 'Photo of the finished work: a JPG, PNG or WebP file, base64-encoded, max 5 MB. Replaces the current photo.'],
             ], [], $write),
             self::tool('delete_project', 'Delete a finished job.', ['id' => $id], ['id'], $delete),
 
@@ -223,7 +231,48 @@ final readonly class McpTools
             $project->setPublished((bool) $args['published']);
         }
 
-        return $this->project($project, flush: true);
+        if (!isset($args['photo_base64'])) {
+            return $this->project($project, flush: true);
+        }
+
+        $oldPhoto = $project->getImageName();
+        $project->setImageName($this->savePhoto($args['photo_base64']));
+        try {
+            $data = $this->project($project, flush: true);
+        } catch (McpToolException $e) {
+            @unlink($this->photoDir.'/'.$project->getImageName());
+            throw $e;
+        }
+        if ($oldPhoto) {
+            @unlink($this->photoDir.'/'.basename($oldPhoto));
+        }
+
+        return $data;
+    }
+
+    /** Checks the photo and stores it under a random name, like the admin upload does. Returns the file name. */
+    private function savePhoto(mixed $base64): string
+    {
+        $bytes = \is_string($base64) ? base64_decode(preg_replace('/^data:[^,]*,/', '', $base64), true) : false;
+        if (false === $bytes || '' === $bytes) {
+            throw new McpToolException('photo_base64 must be a base64-encoded image.');
+        }
+        if (\strlen($bytes) > self::MAX_PHOTO_BYTES) {
+            throw new McpToolException('The photo is too big: max 5 MB.');
+        }
+
+        $mime = (@getimagesizefromstring($bytes) ?: [])['mime'] ?? null;
+        $extension = self::PHOTO_TYPES[$mime] ?? throw new McpToolException('The photo must be a JPG, PNG or WebP image.');
+
+        $name = bin2hex(random_bytes(20)).'.'.$extension;
+        if (!is_dir($this->photoDir) && !mkdir($this->photoDir, 0775, true) && !is_dir($this->photoDir)) {
+            throw new \RuntimeException('Cannot create '.$this->photoDir);
+        }
+        if (false === file_put_contents($this->photoDir.'/'.$name, $bytes)) {
+            throw new \RuntimeException('Cannot save the photo.');
+        }
+
+        return $name;
     }
 
     private function applyTexts(Service|Project $entity, array $args): void
@@ -324,7 +373,17 @@ final readonly class McpTools
             'completed_at' => $project->getCompletedAt()?->format('Y-m-d'),
             'published' => $project->isPublished(),
             'has_photo' => null !== $project->getImageName(),
+            'photo_url' => $this->photoUrl($project),
         ];
+    }
+
+    private function photoUrl(Project $project): ?string
+    {
+        $domain = $this->tenantContext->require()->getPrimaryDomain();
+
+        return $project->getImageName() && $domain
+            ? 'https://'.$domain->getHostname().'/uploads/projects/'.rawurlencode($project->getImageName())
+            : null;
     }
 
     private function enquiry(Enquiry $enquiry, bool $flush = false): array
