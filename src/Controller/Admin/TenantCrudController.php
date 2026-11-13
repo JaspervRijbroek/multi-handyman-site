@@ -43,6 +43,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Image;
 
@@ -62,6 +63,7 @@ class TenantCrudController extends AbstractCrudController
         private readonly ClientOnboarding $onboarding,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly BillingService $billing,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -86,6 +88,17 @@ class TenantCrudController extends AbstractCrudController
             ->displayIf(static fn (Tenant $tenant) => !$tenant->isBillingExempt())
             ->askConfirmation('Email %entity_name% a link to set up automatic payment?', 'Send');
 
+        // No token by default, so no MCP access until the client asks for it
+        $generateMcpToken = Action::new('generateMcpToken', 'Generate MCP token', 'fa fa-key')
+            ->linkToCrudAction('createMcpToken')
+            ->renderAsForm()
+            ->displayIf(static fn (Tenant $tenant) => !$tenant->hasMcpToken());
+        $resetMcpToken = Action::new('resetMcpToken', 'Reset MCP token', 'fa fa-rotate')
+            ->linkToCrudAction('createMcpToken')
+            ->renderAsForm()
+            ->askConfirmation('Create a new MCP token? The current token stops working right away.', 'Reset token')
+            ->displayIf(static fn (Tenant $tenant) => $tenant->hasMcpToken());
+
         $actions
             ->setPermission(Action::NEW, User::ROLE_SUPER_ADMIN)
             ->setPermission(Action::DELETE, User::ROLE_SUPER_ADMIN)
@@ -95,6 +108,8 @@ class TenantCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $sendSetup)
             ->add(Crud::PAGE_EDIT, $sendSetup)
             ->add(Crud::PAGE_DETAIL, $sendSetup)
+            ->add(Crud::PAGE_EDIT, $generateMcpToken)
+            ->add(Crud::PAGE_EDIT, $resetMcpToken)
             // Clients are created through onboarding, which sets up everything at once
             ->disable(Action::NEW);
 
@@ -205,6 +220,10 @@ class TenantCrudController extends AbstractCrudController
         yield TextField::new('taxId', 'NIF / NIE / CIF')->hideOnIndex();
         yield TextField::new('legalAddress', 'Registered address')->hideOnIndex();
 
+        if (Crud::PAGE_EDIT === $pageName) {
+            yield from $this->mcpFields();
+        }
+
         if ($isSuperAdmin) {
             yield FormField::addTab('Billing', 'fa fa-credit-card')
                 ->setHelp('Charged automatically through Mollie on the 1st of every month. If a payment fails, reminders go out right away, after 2 weeks and after a month; a week after the final reminder the site goes offline.');
@@ -257,6 +276,47 @@ class TenantCrudController extends AbstractCrudController
                 ->setHelp('Cookieless analytics, no consent banner needed.')
                 ->hideOnIndex();
         }
+    }
+
+    /** Settings → AI assistant: how to connect an AI assistant (MCP) to the client's data. */
+    private function mcpFields(): iterable
+    {
+        $tenant = $this->getContext()?->getEntity()->getInstance();
+        if (!$tenant instanceof Tenant) {
+            return;
+        }
+
+        yield FormField::addTab('AI assistant', 'fa fa-robot')
+            ->setHelp('Let an AI assistant (Claude, ChatGPT, ...) manage your website through MCP: your business details and texts, '
+                .'services, finished jobs, enquiries and reviews. Add the server URL and your token as a "custom connector" in the assistant. '
+                .'The token only gives access to your own data. Keep it secret, like a password.');
+        yield TextField::new('mcpServerUrl', 'MCP server URL')
+            ->setFormTypeOptions(['mapped' => false, 'data' => $this->generateUrl('mcp', [], UrlGeneratorInterface::ABSOLUTE_URL), 'disabled' => true]);
+        yield TextField::new('mcpTokenStatus', 'Token')
+            ->setFormTypeOptions(['mapped' => false, 'disabled' => true, 'data' => $tenant->hasMcpToken()
+                ? \sprintf('Created on %s. Only shown once; lost it? Use "Reset MCP token" at the top.', $tenant->getMcpTokenCreatedAt()?->format('d-m-Y H:i'))
+                : 'No token yet, so no MCP access. Use "Generate MCP token" at the top.'])
+            ->setHelp('Send it as the header <code>Authorization: Bearer &lt;token&gt;</code>.');
+    }
+
+    /** "Generate MCP token" and "Reset MCP token": a new token replaces the old one, shown once. */
+    #[AdminRoute('/{entityId}/mcp-token', name: 'mcp_token', options: ['methods' => ['POST']])]
+    public function createMcpToken(AdminContext $context): Response
+    {
+        $tenant = $context->getEntity()->getInstance();
+        \assert($tenant instanceof Tenant);
+        $this->denyAccessUnlessGranted(TenantAccessVoter::ACCESS, $tenant);
+
+        $token = $tenant->createMcpToken();
+        $this->entityManager->flush();
+
+        // EasyAdmin renders flashes as raw HTML; the token is hex, so safe to show as is
+        $this->addFlash('success', \sprintf(
+            '<strong>Your new MCP token:</strong> <code style="user-select: all">%s</code><br>Copy it now: it is only shown once. Any older token no longer works.',
+            $token,
+        ));
+
+        return $this->redirect($this->adminUrlGenerator->setController(self::class)->setAction(Action::EDIT)->setEntityId($tenant->getId())->generateUrl());
     }
 
     /** Looks up the map position again when the address changed. */

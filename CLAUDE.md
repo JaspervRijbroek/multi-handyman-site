@@ -30,7 +30,8 @@ Features: multilingual client sites (EN, ES, NL, DE, FR) with hreflang/sitemap/c
 URLs, contact form, customer reviews, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
 a "find a pro" search across clients on the platform homepage (brand: CasitaFix),
 client onboarding (public `/register` + approval), Google Search Console setup,
-OpenStreetMap map/geocoding, monthly Mollie billing, and Cloudflare Turnstile spam protection.
+OpenStreetMap map/geocoding, monthly Mollie billing, Cloudflare Turnstile spam protection, and an
+MCP server (`/mcp`) so clients can let an AI assistant manage their own data with a personal token.
 
 ## Stack
 
@@ -55,6 +56,7 @@ src/
   Billing/                 Mollie billing, reminders, suspension
   Google/, Map/, Turnstile/  External integrations
   Search/                  The platform "find a pro" search
+  Mcp/                     MCP server for AI assistants (tools, per-client token)
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
 translations/              messages.{en,es,nl}.yaml (client sites), platform.{es,en}.yaml (platform pages)

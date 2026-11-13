@@ -215,6 +215,16 @@ class Tenant
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $suspendedAt = null;
 
+    /**
+     * sha256 of the client's MCP access token (AI assistants, see App\Mcp).
+     * Only the hash is stored: the token is shown once. No token, no MCP access.
+     */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    private ?string $mcpTokenHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mcpTokenCreatedAt = null;
+
     /** @var Collection<int, Domain> */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'tenant', cascade: ['persist'], orphanRemoval: true)]
     private Collection $domains;
@@ -893,6 +903,31 @@ class Tenant
         $this->suspendedAt = null;
 
         return $this;
+    }
+
+    public function hasMcpToken(): bool
+    {
+        return null !== $this->mcpTokenHash;
+    }
+
+    public function getMcpTokenCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->mcpTokenCreatedAt;
+    }
+
+    /** Creates a new MCP token (an older one stops working) and returns it. */
+    public function createMcpToken(): string
+    {
+        $token = 'mcp_'.bin2hex(random_bytes(32));
+        $this->mcpTokenHash = self::hashMcpToken($token);
+        $this->mcpTokenCreatedAt = new \DateTimeImmutable();
+
+        return $token;
+    }
+
+    public static function hashMcpToken(string $token): string
+    {
+        return hash('sha256', $token);
     }
 
     private static function newBillingToken(): string

@@ -17,6 +17,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
 - Monthly billing through Mollie with automatic reminders, see [Billing](#billing)
+- **MCP server** so clients can let an AI assistant manage their own site, see [AI assistants (MCP)](#ai-assistants-mcp)
 
 ## Getting started
 
@@ -294,6 +295,29 @@ anything that happens to Redis: see it with `messenger:failed:show`, retry with 
 In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
 needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
 after `ddev restart`); its output is in `ddev logs`.
+
+## AI assistants (MCP)
+
+Clients can connect an AI assistant (Claude, ChatGPT, ...) to their own data through
+[MCP](https://modelcontextprotocol.io) at `https://PLATFORM_HOST/mcp`.
+
+- **No token, no access.** A client has no token until they click *Generate MCP token* under
+  **Settings → AI assistant**. The token is shown once; only its hash is stored. Lost it?
+  *Reset MCP token* creates a new one and the old one stops working right away.
+- The assistant sends the token as `Authorization: Bearer <token>`. The token decides the client:
+  the tenant filter and guards then limit everything to that client's data, just like in the admin.
+- Tools (`App\Mcp\McpTools`): read and change the business details and website texts, add, change
+  and delete services and finished jobs (photos only in the admin), list enquiries and mark them
+  handled, list reviews and show, hide or delete them (not write or edit them).
+- The server (`App\Mcp\McpServer`) is a small hand-written JSON-RPC handler: tools only,
+  stateless, plain JSON answers (no sessions or event streams). `/mcp` returns 404 on client sites.
+
+Try it:
+
+```bash
+curl -s https://multi-handyman-site.ddev.site/mcp -H 'Authorization: Bearer mcp_...' \
+  -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
 
 ## Useful commands
 
