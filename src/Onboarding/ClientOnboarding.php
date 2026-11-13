@@ -14,9 +14,9 @@ use App\Google\GoogleApiException;
 use App\Map\Geocoder;
 use App\Map\GeocodingException;
 use App\Google\SearchConsole;
+use App\Hosting\CustomDomains;
 use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -25,7 +25,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Turns an approved sign-up into a working client site, in one go:
  *
  *  - client (Tenant) with the details from the sign-up
- *  - domain(s): their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE
+ *  - domains: <slug>.CLIENT_SUBDOMAIN_BASE, plus their own domain + www. if they have one
+ *    (the own domain becomes the main address once its DNS points here, see CustomDomains)
  *  - client login (with the password they chose, or a "set your password" link)
  *  - welcome email, and the email to set up automatic payment (Mollie)
  *  - map position of the address (OpenStreetMap) and the Google Search Console property
@@ -45,8 +46,7 @@ final readonly class ClientOnboarding
         private BillingService $billing,
         private Geocoder $geocoder,
         private SearchConsole $searchConsole,
-        #[Autowire(env: 'default::CLIENT_SUBDOMAIN_BASE')]
-        private ?string $subdomainBase,
+        private CustomDomains $customDomains,
     ) {
     }
 
@@ -95,9 +95,13 @@ final readonly class ClientOnboarding
 
         $hostnames = $tenant->getDomains()->map(static fn (Domain $d) => $d->getHostname())->toArray();
         if ([] === $hostnames) {
-            $result->add(OnboardingResult::WARNING, 'Domain', 'No domain yet: add one under Domains, then run "Connect Google".');
+            $result->add(OnboardingResult::WARNING, 'Domain', 'No domain yet: add one under Domains (or set CLIENT_SUBDOMAIN_BASE), then run "Connect Google".');
         } else {
-            $result->add(OnboardingResult::OK, 'Domain', implode(', ', $hostnames).($signup->getDomain() ? ' (point the DNS A record to the server)' : ''));
+            $result->add(OnboardingResult::OK, 'Domain', implode(', ', $hostnames));
+        }
+        $own = $signup->getDomain();
+        if (null !== $own && $tenant->getPrimaryDomain()?->getHostname() !== $own) {
+            $result->add(OnboardingResult::OK, 'Own domain', \sprintf('%s becomes the main address by itself once its DNS points to the server; the welcome email explains how.', $own));
         }
 
         $this->mailer->sendWelcome($user, $tenant, $setupToken, $result);
@@ -244,24 +248,26 @@ final readonly class ClientOnboarding
             ->setTaxId($signup->getTaxId())
             ->setLegalAddress($signup->getAddressLine());
 
+        // Online straight away on the subdomain; the own domain takes over once its DNS points here
+        if ($subdomain = $this->customDomains->subdomainFor($tenant->getSlug())) {
+            $tenant->addDomain((new Domain())->setHostname($subdomain)->setIsPrimary(true));
+        }
         if ($own = $signup->getDomain()) {
-            $tenant->addDomain((new Domain())->setHostname($own)->setIsPrimary(true));
-            if (!str_starts_with($own, 'www.')) {
-                $tenant->addDomain((new Domain())->setHostname('www.'.$own));
-            }
-        } elseif ($base = trim((string) $this->subdomainBase, ". \t")) {
-            $tenant->addDomain((new Domain())->setHostname($tenant->getSlug().'.'.$base)->setIsPrimary(true));
+            $this->customDomains->addOwnDomain($tenant, $own);
+            // Already pointing here (e.g. the DNS was set before approval)? Then use it right away
+            $this->customDomains->updatePrimary($tenant);
         }
 
         return $tenant;
     }
 
+    /** Unique among clients and as a subdomain (<slug>.CLIENT_SUBDOMAIN_BASE), so it fits in one DNS label */
     private function uniqueSlug(string $name): string
     {
-        $base = substr(trim($this->slugger->slug($name)->lower()->toString(), '-'), 0, 70) ?: 'client';
+        $base = trim(substr(trim($this->slugger->slug($name)->lower()->toString(), '-'), 0, CustomDomains::MAX_LABEL_LENGTH - 4), '-') ?: 'client';
         $slug = $base;
 
-        for ($i = 2; null !== $this->tenants->findOneBy(['slug' => $slug]); ++$i) {
+        for ($i = 2; null !== $this->tenants->findOneBy(['slug' => $slug]) || !$this->customDomains->isSubdomainFree($slug); ++$i) {
             $slug = $base.'-'.$i;
         }
 

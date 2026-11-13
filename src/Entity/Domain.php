@@ -35,6 +35,17 @@ class Domain
     #[ORM\Column]
     private bool $isPrimary = false;
 
+    /** Turns what people type ("https://www.Example.com/") into "example.com". */
+    public static function clean(?string $hostname): string
+    {
+        $hostname = strtolower(trim((string) $hostname));
+        $hostname = (string) preg_replace('#^[a-z]+://#', '', $hostname);
+        $hostname = explode('/', $hostname, 2)[0];
+        $hostname = explode(':', $hostname, 2)[0];
+
+        return (string) preg_replace('/^www\./', '', rtrim($hostname, '.'));
+    }
+
     public function __toString(): string
     {
         return $this->hostname;

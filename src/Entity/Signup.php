@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\SignupRepository;
+use App\Validator\AvailableDomain;
 use App\Validator\AvailableLoginEmail;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -89,6 +90,7 @@ class Signup
     /** Own domain name, if the client has one (without www.) */
     #[ORM\Column(length: 253, nullable: true)]
     #[Assert\Hostname(requireTld: true)]
+    #[AvailableDomain]
     private ?string $domain = null;
 
     /** @var list<string> */
@@ -315,12 +317,7 @@ class Signup
     /** Accepts what people type ("https://www.Example.com/") and keeps "example.com". */
     public function setDomain(?string $domain): static
     {
-        $domain = strtolower(trim((string) $domain));
-        $domain = preg_replace('#^[a-z]+://#', '', $domain);
-        $domain = explode('/', $domain, 2)[0];
-        $domain = preg_replace('/^www\./', '', $domain);
-
-        $this->domain = $domain ?: null;
+        $this->domain = Domain::clean($domain) ?: null;
 
         return $this;
     }

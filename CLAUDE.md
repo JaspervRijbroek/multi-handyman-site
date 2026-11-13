@@ -53,6 +53,7 @@ src/
   Tenant/TenantContext     Holds the active tenant
   Onboarding/              Approving sign-ups / creating clients
   Billing/                 Mollie billing, reminders, suspension
+  Hosting/CustomDomains    Subdomains and clients' own domains (DNS check, going live)
   Google/, Map/, Turnstile/  External integrations
   Search/                  The platform "find a pro" search
   Command/                 app:* console commands
@@ -82,6 +83,7 @@ ddev console doctrine:migrations:migrate
 ddev console app:client:approve             # approve pending sign-ups
 ddev console app:billing:run                # daily billing run
 ddev console app:turnstile:sync             # sync domains to Cloudflare Turnstile
+ddev console app:domains:check              # switch sites to their own domain once DNS works
 ```
 
 ## Conventions

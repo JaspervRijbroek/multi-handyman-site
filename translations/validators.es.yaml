@@ -5,3 +5,4 @@
 'Use at least {{ limit }} characters.': Usa al menos {{ limit }} caracteres.
 'Please agree, otherwise we cannot set up your website.': Acepta, por favor; si no, no podemos crear tu web.
 'The passwords do not match.': Las contraseñas no coinciden.
+'This domain is already used by another website. Check the spelling, or leave it empty and tell us in the message.': Este dominio ya lo usa otra web. Revisa cómo está escrito, o déjalo vacío y cuéntanoslo en el mensaje.

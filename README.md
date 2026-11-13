@@ -16,6 +16,8 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
+- **Own domain, self-service**: clients add their domain in the admin (or on `/register`), get the
+  DNS records to set, and the site moves there by itself once the DNS works, see [Domains](#domains)
 - Monthly or yearly billing through Mollie with automatic reminders, see [Billing](#billing)
 
 ## Getting started
@@ -129,7 +131,7 @@ Client fills in /register ──► Sign-up (pending) ──► you approve ─�
 You add a client yourself ──────────────────────────────────────┘   (admin "Add client" or console)
 
   ✔ Client (Tenant) with name, phone, WhatsApp, address, work area, languages, legal defaults
-  ✔ Domain: their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE if they have none
+  ✔ Domains: <slug>.CLIENT_SUBDOMAIN_BASE (unique, online at once), plus their own domain + www.
   ✔ Client login: the password they chose on /register, or a 7-day "set your password" link
   ✔ Welcome email with the website and login links
   ✔ Payment setup email (Mollie), see Billing; skipped for free accounts
@@ -188,7 +190,35 @@ no setup: it uses OpenStreetMap.)
    becomes owner of every client property; set `GOOGLE_OWNER_EMAILS` to your own Google
    account(s) so the sites also appear in *your* Search Console.
 3. Optional: `CLIENT_SUBDOMAIN_BASE=sites.yourplatform.com` plus a wildcard DNS record
-   `*.sites.yourplatform.com → server`, so clients without a domain are online immediately.
+   `*.sites.yourplatform.com → server`, so every client is online immediately, see [Domains](#domains).
+
+## Domains
+
+Every client gets a **subdomain**, `<slug>.CLIENT_SUBDOMAIN_BASE`. The slug comes from the
+business name and is unique: if `jans-klusbedrijf` is taken (by a client or a hostname under
+*Domains*), the next one is `jans-klusbedrijf-2`. Labels are cut to fit DNS (63 characters), and
+`www`, `mail`, `admin`, `api` and `app` are never handed out.
+
+Their **own domain** is added at sign-up or later by the client under **Your domain** in the
+admin (one domain per client; `example.com` and `www.example.com` are both added). Nobody else
+may use it: the sign-up form and the admin refuse domains that are taken or belong to the platform.
+
+```
+Client adds example.com ─► page shows the DNS records: A (and AAAA) for @ and www → this server
+                           (the addresses of PLATFORM_HOST, looked up live)
+DNS points here        ─► example.com becomes the main address, the subdomain and www redirect
+                           there, Search Console is connected again for the new address
+```
+
+- The switch is checked hourly by `app:domains:check` and each time the client opens *Your domain*.
+  A domain only counts when **all** its addresses are this server's (a leftover parking AAAA
+  record keeps it waiting; the page shows what it points to now).
+- An own domain is never switched back automatically, so a DNS hiccup changes nothing.
+  Removing it in the admin puts the site back on the subdomain.
+- HTTPS works on the first visit (Caddy on-demand TLS) and Turnstile is updated automatically.
+- Without `CLIENT_SUBDOMAIN_BASE`, the own domain is the client's only address and is the main
+  address straight away; it cannot be removed by the client then.
+- Super admins can still change every hostname under **Platform → Domains**.
 
 ## Billing
 
@@ -275,6 +305,7 @@ minute and starts the tasks that are due (times in Spanish time):
 | every minute | `messenger:consume billing async` (the [queue](#background-queue) worker, for 55 seconds) |
 | daily 09:00 | `app:billing:run` |
 | daily 09:15 | `app:turnstile:sync` |
+| hourly at :12 | `app:domains:check` (move sites to their own domain once the DNS works) |
 | hourly at :17 | `app:google:connect --all` |
 | hourly at :23 | `app:search:index` |
 
@@ -318,6 +349,7 @@ ddev console app:client:onboard                # add a client without a sign-up
 ddev console app:google:connect --all          # retry Google setup
 ddev console app:billing:run                  # daily billing run (charges, reminders, offline)
 ddev console app:turnstile:sync               # put all client domains on the Cloudflare Turnstile widgets
+ddev console app:domains:check                # move sites to their own domain once its DNS points here
 ddev console app:search:index                 # rebuild the OpenSearch index of towns (typo matching)
 ddev console app:schedule:run --list          # what the scheduler runs, and when
 ddev console messenger:stats                  # messages waiting in the queue
@@ -390,10 +422,11 @@ One-time setup:
 To deploy by hand: `DEPLOY_HOST=<server> dep deploy` (uploads your local working copy).
 Roll back to the previous release with `DEPLOY_HOST=<server> dep rollback`.
 
-For a new client: approve their sign-up (or add them, see *Onboarding a new client*) and
-point their domain's A record at the server. HTTPS works on the first visit, the domain is
-added to Cloudflare Turnstile automatically, and the Search Console setup completes by
-itself through the [scheduler](#scheduled-tasks).
+For a new client: approve their sign-up (or add them, see *Onboarding a new client*). The
+welcome email and the admin page *Your domain* tell them which DNS records to set; once they
+do, the site moves to their domain by itself (see [Domains](#domains)). HTTPS works on the first
+visit, the domain is added to Cloudflare Turnstile automatically, and the Search Console setup
+completes by itself through the [scheduler](#scheduled-tasks).
 
 Set `GOOGLE_*` and `CLIENT_SUBDOMAIN_BASE` in `.env.local` too (see `.env.example`).
 

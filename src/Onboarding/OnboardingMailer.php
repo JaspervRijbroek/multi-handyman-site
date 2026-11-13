@@ -7,6 +7,7 @@ namespace App\Onboarding;
 use App\Entity\Signup;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Hosting\CustomDomains;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -23,6 +24,7 @@ final readonly class OnboardingMailer
         private UrlGeneratorInterface $urlGenerator,
         private UserRepository $users,
         private LoggerInterface $logger,
+        private CustomDomains $customDomains,
         #[Autowire(env: 'MAILER_FROM')]
         private string $from,
     ) {
@@ -35,6 +37,11 @@ final readonly class OnboardingMailer
             ? $this->urlGenerator->generate('app_password_setup', ['token' => $setupToken], UrlGeneratorInterface::ABSOLUTE_URL)
             : null;
         $domain = $tenant->getPrimaryDomain();
+        // Their own domain, while it does not point to the server yet
+        $ownDomain = array_values(array_filter(
+            $this->customDomains->ownDomains($tenant),
+            static fn ($d) => $d !== $domain && !str_starts_with($d->getHostname(), 'www.'),
+        ))[0] ?? null;
 
         $email = (new TemplatedEmail())
             ->from($this->from)
@@ -47,6 +54,8 @@ final readonly class OnboardingMailer
                 'login_url' => $this->urlGenerator->generate('app_login', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 'setup_url' => $setupUrl,
                 'site_url' => $domain ? 'https://'.$domain->getHostname() : null,
+                'own_domain' => $ownDomain?->getHostname(),
+                'dns_records' => $ownDomain ? $this->customDomains->dnsRecords() : [],
             ]);
 
         try {

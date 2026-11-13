@@ -190,7 +190,7 @@ signup:
     service_area: Towns and areas you work in
     service_area_placeholder: e.g. Jávea, Dénia, Moraira and surroundings
     domain: Your domain name
-    domain_help: Only if you already have one, e.g. myhandyman.es. No domain yet? We help you choose one.
+    domain_help: Only if you already have one, e.g. myhandyman.es. No domain yet? Leave it empty, you can add one later in your admin.
     locales: Languages for your website
     default_locale: Main language
     legend_plan: Your plan

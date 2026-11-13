@@ -60,6 +60,16 @@
         </div>
     {% endif %}
 
+    {% if pending_domain %}
+        <div class="alert alert-info d-flex flex-wrap align-items-center gap-3 mt-3">
+            <div class="flex-grow-1">
+                <strong>{{ pending_domain.hostname }} is not live yet.</strong>
+                Set its DNS records where you bought the domain; your website moves there by itself.
+            </div>
+            <a class="btn btn-sm btn-primary" href="{{ path('admin_own_domain_index') }}">Show what to set</a>
+        </div>
+    {% endif %}
+
     {% if tenant %}
         <div class="card mt-3">
             <div class="card-body">

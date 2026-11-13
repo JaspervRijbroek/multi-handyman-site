@@ -54,7 +54,7 @@ class DomainCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield TextField::new('hostname')
-            ->setHelp('Without https:// or slashes, e.g. jansklusbedrijf.com. Point its DNS (A record) to the server.');
+            ->setHelp('Without https:// or slashes, e.g. jansklusbedrijf.com. Point its DNS (A record) to the server. Clients can add their own domain themselves under "Your domain".');
         yield AssociationField::new('tenant', 'Client');
         yield BooleanField::new('isPrimary', 'Primary')
             ->setHelp('Other hostnames of the same client redirect to the primary one.')
