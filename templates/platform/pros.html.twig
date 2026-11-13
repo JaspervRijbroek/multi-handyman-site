@@ -14,6 +14,20 @@
 {% set contact_email = 'hello@example.com' %}
 {% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
 {% set language_count = 5 %}
+{#
+    Testimonials from real clients, hardcoded here (there are only a few). The section
+    is hidden while the list is empty. Only add quotes the client agreed to publish.
+    The quote and trade need an English and a Spanish text:
+
+    {
+        quote: {en: 'Since the website went live I get two or three new jobs a month.', es: 'Desde que tengo la web me llegan dos o tres trabajos nuevos al mes.'},
+        name: 'Javier Morales',
+        trade: {en: 'Carpenter', es: 'Carpintero'},
+        town: 'Jávea',
+    },
+#}
+{% set testimonials = [
+] %}
 {% set json_flags = constant('JSON_HEX_TAG') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') %}
 
 {% block title %}{{ 'pros.title'|trans({'%brand%': brand}) }}{% endblock %}
@@ -136,6 +150,28 @@
                 </div>
             </div>
         </section>
+
+        {% if testimonials is not empty %}
+            <section class="p-section p-section-alt" aria-labelledby="testimonials-title">
+                <div class="p-container">
+                    <div class="p-head">
+                        <p class="p-eyebrow">{{ 'pros.testimonials_eyebrow'|trans }}</p>
+                        <h2 id="testimonials-title">{{ 'pros.testimonials_title'|trans({'%brand%': brand}) }}</h2>
+                    </div>
+                    <div class="p-quotes">
+                        {% for t in testimonials %}
+                            <figure class="p-quote">
+                                <blockquote>{{ t.quote[locale] ?? t.quote.en }}</blockquote>
+                                <figcaption>
+                                    <span class="p-quote-initial" aria-hidden="true">{{ t.name|first|upper }}</span>
+                                    <span><b>{{ t.name }}</b><span>{{ t.trade[locale] ?? t.trade.en }} · {{ t.town }}</span></span>
+                                </figcaption>
+                            </figure>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
 
         <section class="p-section">
             <div class="p-container">

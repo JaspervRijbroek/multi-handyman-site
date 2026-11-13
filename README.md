@@ -81,7 +81,7 @@ The platform brand (**CasitaFix** by default) comes from `BILLING_BRAND`.
 
 **Platform pages** on `PLATFORM_HOST` are in Spanish and English (`/es`, `/en`; `/` and
 `/register` redirect to the visitor's language): the "find a pro" homepage, `/{locale}/search`,
-`/{locale}/for-professionals` (price in `templates/platform/pros.html.twig`) and the sign-up form.
+`/{locale}/for-professionals` (price and testimonials in `templates/platform/pros.html.twig`) and the sign-up form.
 Their texts are in `translations/platform.{es,en}.yaml`. These paths return 404 on client sites.
 
 **Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain.
