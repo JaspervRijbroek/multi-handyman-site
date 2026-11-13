@@ -207,13 +207,16 @@ class TenantCrudController extends AbstractCrudController
 
         if ($isSuperAdmin) {
             yield FormField::addTab('Billing', 'fa fa-credit-card')
-                ->setHelp('Charged automatically through Mollie on the 1st of every month. If a payment fails, reminders go out right away, after 2 weeks and after a month; a week after the final reminder the site goes offline.');
+                ->setHelp('Charged automatically through Mollie: monthly plan on the 1st of every month, yearly plan once a year (12 months for the price of 10, with an email 2 weeks before). If a payment fails, reminders go out right away, after 2 weeks and after a month; a week after the final reminder the site goes offline.');
             yield BooleanField::new('billingExempt', 'Free account (never charged)')->renderAsSwitch(false)->hideOnIndex();
+            yield ChoiceField::new('billingPlan', 'Plan')
+                ->setChoices(['Monthly' => Tenant::PLAN_MONTHLY, 'Yearly (12 months for the price of 10)' => Tenant::PLAN_YEARLY])
+                ->setHelp('A change applies from the next payment, once the period already paid for has ended.');
             yield MoneyField::new('monthlyPrice', 'Monthly price excl. VAT')
                 ->setCurrency('EUR')
                 ->setStoredAsCents()
                 ->setRequired(false)
-                ->setHelp('Leave empty for the standard price.')
+                ->setHelp('Leave empty for the standard price. The yearly plan costs 10 times this.')
                 ->hideOnIndex();
             yield DateField::new('billingStartsOn', 'Free until (first charge on)')
                 ->setHelp('Set automatically to the 1st of the month after the client was added.')

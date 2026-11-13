@@ -21,6 +21,11 @@ class Tenant
 {
     public const array SUPPORTED_LOCALES = ['en', 'es', 'nl', 'de', 'fr'];
 
+    /** Billing plans: pay every month, or pay a year up front (12 months for the price of 10) */
+    public const string PLAN_MONTHLY = 'monthly';
+    public const string PLAN_YEARLY = 'yearly';
+    public const array PLANS = [self::PLAN_MONTHLY, self::PLAN_YEARLY];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -187,6 +192,14 @@ class Tenant
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero]
     private ?int $monthlyPrice = null;
+
+    #[ORM\Column(length: 10, options: ['default' => self::PLAN_MONTHLY])]
+    #[Assert\Choice(choices: self::PLANS)]
+    private string $billingPlan = self::PLAN_MONTHLY;
+
+    /** Yearly plan: the charge date the "payment coming up" email was sent for */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $renewalNoticeSentFor = null;
 
     /** First day the client is charged; everything before is free. Null: derived from createdAt */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
@@ -796,6 +809,35 @@ class Tenant
     public function setMonthlyPrice(?int $monthlyPrice): static
     {
         $this->monthlyPrice = $monthlyPrice;
+
+        return $this;
+    }
+
+    public function getBillingPlan(): string
+    {
+        return $this->billingPlan;
+    }
+
+    public function setBillingPlan(?string $billingPlan): static
+    {
+        $this->billingPlan = $billingPlan ?? self::PLAN_MONTHLY;
+
+        return $this;
+    }
+
+    public function isYearly(): bool
+    {
+        return self::PLAN_YEARLY === $this->billingPlan;
+    }
+
+    public function getRenewalNoticeSentFor(): ?\DateTimeImmutable
+    {
+        return $this->renewalNoticeSentFor;
+    }
+
+    public function setRenewalNoticeSentFor(?\DateTimeImmutable $chargeDate): static
+    {
+        $this->renewalNoticeSentFor = $chargeDate;
 
         return $this;
     }

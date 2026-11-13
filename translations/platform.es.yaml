@@ -83,7 +83,7 @@ search:
 
 pros:
     title: '%brand% | Webs para profesionales en España que Google y los asistentes de IA encuentran'
-    description: Webs para manitas y profesionales de la construcción en España. Aparece en Google Maps, en Google y en asistentes de IA como ChatGPT, y en el buscador de %brand%. Un precio mensual.
+    description: Webs para manitas y profesionales de la construcción en España. Aparece en Google Maps, en Google y en asistentes de IA como ChatGPT, y en el buscador de %brand%. Paga cada mes, o al año con dos meses gratis.
     og_title: '%brand%: que te encuentren en Google y los asistentes de IA'
     eyebrow: Webs para profesionales en España
     h1_start: 'Más trabajo en '
@@ -101,6 +101,8 @@ pros:
     reason3_text: Apareces en el buscador de %brand%, con datos estructurados y una página por idioma, para que Google, Google Maps y los asistentes de IA sepan qué haces y dónde.
     reason4_title: Nosotros hacemos lo técnico
     reason4_text: Alojamiento, HTTPS, copias de seguridad, configuración de Google y actualizaciones incluidos. Tú actualizas tus proyectos desde el móvil.
+    testimonials_eyebrow: Testimonios
+    testimonials_title: Los profesionales de %brand%, en sus propias palabras.
     how_eyebrow: Cómo funciona
     how_title: En marcha en pocos días
     step1_title: Cuéntanos sobre tu negocio
@@ -110,9 +112,17 @@ pros:
     step3_title: Los clientes te encuentran
     step3_text: En Google, en Maps, en nuestro buscador y a través de los asistentes de IA. Tú recibes las llamadas; nosotros lo mantenemos todo en marcha.
     price_title: Un plan. Todo incluido.
-    price_text: Sin cuota de alta y sin comisiones por trabajo. Normalmente un solo trabajo nuevo desde la web paga el año entero.
+    price_text: Sin comisiones por trabajo. Paga cada mes y cancela cuando quieras, o paga el año y llévate dos meses gratis.
     plan_name: '%brand% completo'
+    plan_name_yearly: '%brand% completo · Anual'
+    billing: Periodo de pago
+    monthly: Mensual
+    yearly: Anual
+    free2: 2 meses gratis
     per_month: / mes
+    per_year: / año
+    month_note: Pago mensual. Sin permanencia, cancela cuando quieras.
+    year_note: Sale a %per_month% € al mes. Tienes 12 meses por el precio de 10, pagados por adelantado.
     plan_note: IVA no incluido · sin cuota de alta
     included: Qué incluye
     inc1_title: Optimización SEO
@@ -142,7 +152,7 @@ pros:
     faq1_q: ¿Qué significa que te encuentren los asistentes de IA?
     faq1_a: 'Cada vez más gente pregunta a ChatGPT, Gemini, Claude o Perplexity cosas como «busca un fontanero cerca de Jávea». Esos asistentes leen webs para responder. Tu web les da datos claros y estructurados —qué haces, dónde trabajas, cómo contactarte— para que te recomienden con confianza en lugar de adivinar.'
     faq2_q: ¿Hay cuota de alta o permanencia?
-    faq2_a: No hay cuota de alta. Pagas un precio mensual que incluye la web, el alojamiento, la configuración de Google y el SEO continuo.
+    faq2_a: No hay cuota de alta ni permanencia. Un solo precio incluye la web, el alojamiento, la configuración de Google y el SEO continuo. Paga cada mes y cancela cuando quieras, o paga el año por adelantado y llévate dos meses gratis. Te avisamos por email dos semanas antes de cada pago anual.
     faq3_q: ¿Tengo que saber algo de webs?
     faq3_a: No. Creamos la web, conectamos tu dominio y configuramos Google por ti. Después puedes actualizar tus servicios y añadir fotos de trabajos recientes desde un panel sencillo, o simplemente enviárnoslas.
     faq4_q: ¿Puedo usar mi propio dominio?
@@ -152,7 +162,7 @@ pros:
     faq6_q: ¿Es legal para un negocio en España?
     faq6_a: Cada web incluye un aviso legal y una política de privacidad (LSSI y RGPD) generados con los datos de tu negocio, y no necesita banner de cookies. Aun así, te recomendamos que tu gestor revise los textos.
     final_title: Cuando tú quieras.
-    final_text: El registro lleva unos cinco minutos. Revisamos tus datos y tu web suele estar publicada en dos días laborables. %price% € al mes, todo incluido.
+    final_text: El registro lleva unos cinco minutos. Revisamos tus datos y tu web suele estar publicada en dos días laborables. %price% € al mes, o dos meses gratis con el plan anual.
 
 signup:
     page_title: Consigue tu web
@@ -183,6 +193,11 @@ signup:
     domain_help: Solo si ya tienes uno, p. ej. mimanitas.es. ¿Aún no tienes dominio? Te ayudamos a elegirlo.
     locales: Idiomas de tu web
     default_locale: Idioma principal
+    legend_plan: Tu plan
+    plan: ¿Cómo quieres pagar?
+    plan_monthly: Mensual, cancela cuando quieras
+    plan_yearly: Anual, 12 meses por el precio de 10
+    plan_help: En los dos casos tu web es gratis hasta el día 1 del mes que viene. Con el plan anual te avisamos por email dos semanas antes de cada pago anual.
     tax_id: NIF / NIE / CIF
     tax_id_help: Para el aviso legal de tu web. Puedes añadirlo más tarde.
     message: ¿A qué te dedicas? ¿Algo más que debamos saber?
