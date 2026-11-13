@@ -16,7 +16,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
-- Monthly billing through Mollie with automatic reminders, see [Billing](#billing)
+- Monthly or yearly billing through Mollie with automatic reminders, see [Billing](#billing)
 
 ## Getting started
 
@@ -192,15 +192,26 @@ no setup: it uses OpenStreetMap.)
 
 ## Billing
 
-Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
-charged automatically on the **1st of each month**. A card payment is usually decided
-straight away; a SEPA direct debit takes a few working days to come through.
+Clients pay through [Mollie](https://www.mollie.com) on one of two plans:
+
+- **Monthly**: charged automatically on the **1st of each month**.
+- **Yearly**: 12 months for the price of 10 (10 × the monthly price), charged once a
+  year up front. Two weeks before every yearly payment the client gets a "your payment
+  is coming up" email (also when no payment method is set up yet).
+
+Clients pick a plan on the sign-up form (the Monthly/Yearly toggle on the pricing page
+preselects it); super admins can change it in the client's Billing tab. A change applies
+from the next payment, once the period already paid for has ended.
+
+A card payment is usually decided straight away; a SEPA direct debit takes a few
+working days to come through.
 
 ```
 Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
              └► "set up payment" email: card (€0.00 verification) or bank (€0.01 → SEPA mandate)
 
-1st of the month ─► automatic payment with the mandate
+1st of the month ─► automatic payment with the mandate (yearly plan: once the paid year ends,
+                     announced by email 2 weeks before)
                      ├─ paid    → done
                      └─ failed  → reminder 1 with payment link (right away)
                                   + 2 weeks  → reminder 2
@@ -219,7 +230,7 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
   paid* for bank transfers), a **Billing** tab per client and a *Send payment
   setup email* action. The setup email also goes out when a client is onboarded.
 - Free accounts: tick *Free account* in the client's Billing tab. Per-client prices
-  override `BILLING_MONTHLY_PRICE`.
+  override `BILLING_MONTHLY_PRICE`; the yearly plan is always 10 × the monthly price.
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
   then try a later date with `ddev console app:billing:run --date=2026-12-01`.
 

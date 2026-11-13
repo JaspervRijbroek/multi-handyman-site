@@ -169,6 +169,12 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 1.125rem; color: #fde3d6; }
 .p-price strong { font-family: var(--p-serif); font-weight: 400; font-size: clamp(4rem, 8vw, 6rem); line-height: 1; letter-spacing: -.04em; color: #fff; }
 .p-plan-sub { font-size: .875rem; color: #fde3d6; }
+.p-plan-note { font-size: 1rem; color: #fff; max-width: 34ch; }
+.p-plan-price[hidden] { display: none; }
+.p-toggle { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0; margin-top: 12px; padding: 4px; border: 1.5px solid var(--p-border); border-radius: 999px; background: #fff; }
+.p-toggle button { display: flex; align-items: center; gap: 10px; border: 0; border-radius: 999px; padding: 10px 22px; font: inherit; font-weight: 700; cursor: pointer; background: transparent; color: var(--p-ink); }
+.p-toggle button[aria-pressed="true"] { background: var(--p-ink); color: #fff; }
+.p-toggle-badge { background: #4d6b2a; color: #fff; border-radius: 999px; padding: 3px 10px; font-size: .75rem; letter-spacing: .02em; }
 .p-plan-price .p-btn { position: relative; z-index: 1; margin-top: 12px; }
 .p-plan-body { padding: clamp(28px, 4vw, 48px); display: grid; gap: 26px; align-content: start; }
 .p-plan-body .p-eyebrow { margin: 0; }

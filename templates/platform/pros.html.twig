@@ -1,12 +1,15 @@
 {#
     Page for tradespeople (/{locale}/for-professionals) on PLATFORM_HOST.
     Change the price and contact details here; the texts are in translations/platform.*.yaml.
+    The yearly plan is 10 times the monthly price (App\Billing\BillingService::YEARLY_PRICE_IN_MONTHS).
     The brand name comes from BILLING_BRAND.
 #}
 {% extends 'platform/base.html.twig' %}
 {% trans_default_domain 'platform' %}
 
 {% set price = 59 %}
+{% set yearly_price = price * constant('App\\Billing\\BillingService::YEARLY_PRICE_IN_MONTHS') %}
+{% set yearly_per_month = (yearly_price / 12)|number_format(2, locale == 'es' ? ',' : '.') %}
 {% set currency = 'EUR' %}
 {% set contact_email = 'hello@example.com' %}
 {% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
@@ -43,18 +46,34 @@
                 'provider': { '@type': 'Organization', 'name': brand },
                 'areaServed': 'ES',
                 'availableLanguage': ['en', 'es', 'nl', 'de', 'fr'],
-                'offers': {
-                    '@type': 'Offer',
-                    'priceCurrency': currency,
-                    'price': price,
-                    'priceSpecification': {
-                        '@type': 'UnitPriceSpecification',
-                        'price': price,
+                'offers': [
+                    {
+                        '@type': 'Offer',
+                        'name': 'pros.monthly'|trans,
                         'priceCurrency': currency,
-                        'unitCode': 'MON',
-                        'referenceQuantity': { '@type': 'QuantitativeValue', 'value': 1, 'unitCode': 'MON' },
+                        'price': price,
+                        'priceSpecification': {
+                            '@type': 'UnitPriceSpecification',
+                            'price': price,
+                            'priceCurrency': currency,
+                            'unitCode': 'MON',
+                            'referenceQuantity': { '@type': 'QuantitativeValue', 'value': 1, 'unitCode': 'MON' },
+                        },
                     },
-                },
+                    {
+                        '@type': 'Offer',
+                        'name': 'pros.yearly'|trans,
+                        'priceCurrency': currency,
+                        'price': yearly_price,
+                        'priceSpecification': {
+                            '@type': 'UnitPriceSpecification',
+                            'price': yearly_price,
+                            'priceCurrency': currency,
+                            'unitCode': 'ANN',
+                            'referenceQuantity': { '@type': 'QuantitativeValue', 'value': 1, 'unitCode': 'ANN' },
+                        },
+                    },
+                ],
             },
             {
                 '@type': 'FAQPage',
@@ -140,14 +159,27 @@
                 <div class="p-head p-center">
                     <h2>{{ 'pros.price_title'|trans }}</h2>
                     <p class="p-text p-center">{{ 'pros.price_text'|trans }}</p>
+                    <div class="p-toggle" role="group" aria-label="{{ 'pros.billing'|trans }}">
+                        <button type="button" data-plan="monthly" aria-pressed="true">{{ 'pros.monthly'|trans }}</button>
+                        <button type="button" data-plan="yearly" aria-pressed="false">{{ 'pros.yearly'|trans }} <span class="p-toggle-badge">{{ 'pros.free2'|trans }}</span></button>
+                    </div>
                 </div>
                 <div class="p-plan">
-                    <div class="p-plan-price">
-                        <span class="p-plan-name">{{ 'pros.plan_name'|trans({'%brand%': brand}) }}</span>
-                        <p class="p-price"><strong>€{{ price }}</strong> {{ 'pros.per_month'|trans }}</p>
-                        <span class="p-plan-sub">{{ 'pros.plan_note'|trans }}</span>
-                        <a class="p-btn p-btn-light" href="{{ path('app_register', {_locale: locale}) }}">{{ 'pros.cta'|trans }} →</a>
-                    </div>
+                    {% for plan in ['monthly', 'yearly'] %}
+                        <div class="p-plan-price" data-plan="{{ plan }}"{% if plan == 'yearly' %} hidden{% endif %}>
+                            {% if plan == 'monthly' %}
+                                <span class="p-plan-name">{{ 'pros.plan_name'|trans({'%brand%': brand}) }}</span>
+                                <p class="p-price"><strong>€{{ price }}</strong> {{ 'pros.per_month'|trans }}</p>
+                                <span class="p-plan-note">{{ 'pros.month_note'|trans }}</span>
+                            {% else %}
+                                <span class="p-plan-name">{{ 'pros.plan_name_yearly'|trans({'%brand%': brand}) }}</span>
+                                <p class="p-price"><strong>€{{ yearly_price }}</strong> {{ 'pros.per_year'|trans }}</p>
+                                <span class="p-plan-note">{{ 'pros.year_note'|trans({'%per_month%': yearly_per_month}) }}</span>
+                            {% endif %}
+                            <span class="p-plan-sub">{{ 'pros.plan_note'|trans }}</span>
+                            <a class="p-btn p-btn-light" href="{{ path('app_register', {_locale: locale, plan: plan == 'yearly' ? 'yearly' : null}) }}">{{ 'pros.cta'|trans }} →</a>
+                        </div>
+                    {% endfor %}
                     <div class="p-plan-body">
                         <p class="p-eyebrow">{{ 'pros.included'|trans }}</p>
                         <ul class="p-included">
@@ -170,6 +202,19 @@
                 </div>
             </div>
         </section>
+        <script>
+            // Monthly / yearly toggle: shows the matching price card
+            document.querySelectorAll('.p-toggle button').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    document.querySelectorAll('.p-toggle button').forEach(function (b) {
+                        b.setAttribute('aria-pressed', String(b === button));
+                    });
+                    document.querySelectorAll('.p-plan-price[data-plan]').forEach(function (card) {
+                        card.hidden = card.dataset.plan !== button.dataset.plan;
+                    });
+                });
+            });
+        </script>
 
         <section id="faq" class="p-section">
             <div class="p-container p-narrow">

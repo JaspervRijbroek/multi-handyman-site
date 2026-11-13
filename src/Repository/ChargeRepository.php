@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Entity\Charge;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,12 +20,20 @@ class ChargeRepository extends ServiceEntityRepository
         parent::__construct($registry, Charge::class);
     }
 
-    public function findForPeriod(Tenant $tenant, \DateTimeImmutable $period): ?Charge
+    /** The charge that covers $day (a monthly one for that month, or a yearly one that includes it) */
+    public function findCovering(Tenant $tenant, \DateTimeImmutable $day): ?Charge
     {
-        return $this->findOneBy([
-            'tenant' => $tenant,
-            'period' => $period->modify('first day of this month')->setTime(0, 0),
-        ]);
+        $latest = $this->createQueryBuilder('c')
+            ->where('c.tenant = :tenant')
+            ->andWhere('c.period <= :day')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('day', $day->setTime(0, 0), Types::DATE_IMMUTABLE)
+            ->orderBy('c.period', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $latest?->covers($day->setTime(0, 0)) ? $latest : null;
     }
 
     /**

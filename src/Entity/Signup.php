@@ -101,6 +101,10 @@ class Signup
     #[Assert\Choice(choices: Tenant::SUPPORTED_LOCALES)]
     private string $defaultLocale = 'en';
 
+    #[ORM\Column(length: 10, options: ['default' => Tenant::PLAN_MONTHLY])]
+    #[Assert\Choice(choices: Tenant::PLANS)]
+    private string $billingPlan = Tenant::PLAN_MONTHLY;
+
     /** What the business does, anything else we should know */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 3000)]
@@ -331,6 +335,18 @@ class Signup
     public function setLocales(array $locales): static
     {
         $this->locales = array_values(array_unique($locales));
+
+        return $this;
+    }
+
+    public function getBillingPlan(): string
+    {
+        return $this->billingPlan;
+    }
+
+    public function setBillingPlan(?string $billingPlan): static
+    {
+        $this->billingPlan = $billingPlan ?? Tenant::PLAN_MONTHLY;
 
         return $this;
     }

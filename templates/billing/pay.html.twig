@@ -64,7 +64,7 @@
                 <input type="hidden" name="_token" value="{{ csrf_token('billing-' ~ tenant.id) }}">
                 <button class="b-btn" type="submit">Pay {{ total|money(outstanding[0].currency) }}</button>
             </form>
-            <p class="b-muted" style="margin: 12px 0 0">Paying with a card or your bank also sets up automatic payment for the next months.</p>
+            <p class="b-muted" style="margin: 12px 0 0">Paying with a card or your bank also sets up automatic payment from now on.</p>
 
         {% elseif tenant.billingExempt %}
             <h1>Nothing to pay</h1>
@@ -78,9 +78,9 @@
             <p>
                 {% if tenant.billingStartsOn > date() %}
                     Your website is free until <strong>{{ tenant.billingStartsOn|date('l j F Y') }}</strong>.
-                    From then on it is charged automatically on the 1st of every month.
+                    From then on it is charged automatically {{ tenant.yearly ? 'once a year' : 'on the 1st of every month' }}.
                 {% else %}
-                    Your website is charged automatically on the 1st of every month.
+                    Your website is charged automatically {{ tenant.yearly ? 'once a year' : 'on the 1st of every month' }}.
                 {% endif %}
                 Choose how you want to pay:
             </p>
@@ -93,7 +93,7 @@
             <h1>You're all set</h1>
             <p>
                 Your website is paid automatically with <strong>{{ tenant.mandateDescription }}</strong>
-                on the 1st of every month{% if tenant.billingStartsOn > date() %}, starting {{ tenant.billingStartsOn|date('j F Y') }}{% endif %}.
+                {{ tenant.yearly ? 'once a year' : 'on the 1st of every month' }}{% if tenant.billingStartsOn > date() %}, starting {{ tenant.billingStartsOn|date('j F Y') }}{% endif %}.
             </p>
             <details>
                 <summary class="b-muted">Use a different card or bank account</summary>

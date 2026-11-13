@@ -83,7 +83,7 @@ search:
 
 pros:
     title: '%brand% | Websites for trades in Spain that Google and AI assistants can find'
-    description: Websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT, and listed in the %brand% search. One monthly price.
+    description: Websites for handymen and builders in Spain. Found on Google Maps, Google Search and by AI assistants like ChatGPT, and listed in the %brand% search. Pay monthly, or yearly with two months free.
     og_title: '%brand%: get found on Google and by AI assistants'
     eyebrow: Websites for trades in Spain
     h1_start: 'More work from '
@@ -110,9 +110,17 @@ pros:
     step3_title: Customers find you
     step3_text: On Google, on Maps, in our search and through AI assistants. You get the calls; we keep it all running.
     price_title: One plan. Everything included.
-    price_text: No setup fee and no commission on jobs. One new job from the site usually pays for the year.
+    price_text: No commission on jobs. Pay monthly and cancel any month, or pay for the year and get two months free.
     plan_name: '%brand% complete'
+    plan_name_yearly: '%brand% complete · Yearly'
+    billing: Billing period
+    monthly: Monthly
+    yearly: Yearly
+    free2: 2 months free
     per_month: / month
+    per_year: / year
+    month_note: Billed every month. No contract, cancel any month.
+    year_note: That’s €%per_month% a month. You get 12 months for the price of 10, paid up front.
     plan_note: excl. VAT · no setup fee
     included: What’s included
     inc1_title: SEO optimisation
@@ -142,7 +150,7 @@ pros:
     faq1_q: What does “findable by AI assistants” actually mean?
     faq1_a: 'More and more people ask ChatGPT, Gemini, Claude or Perplexity things like “find me an English-speaking plumber near Jávea”. Those assistants read websites to answer. Your site gives them clean, structured facts — what you do, where you work, how to reach you — so they can recommend you with confidence instead of guessing.'
     faq2_q: Is there a setup fee or a long contract?
-    faq2_a: No setup fee. You pay one monthly price that covers the website, hosting, the Google setup and ongoing SEO.
+    faq2_a: No setup fee and no contract. One price covers the website, hosting, the Google setup and ongoing SEO. Pay monthly and cancel any month, or pay a year up front and get two months free. We email you two weeks before every yearly payment.
     faq3_q: Do I need to know anything about websites?
     faq3_a: No. We build the site, connect your domain and set up Google for you. Afterwards you can update your services and add photos of recent work from a simple admin — or just send them to us.
     faq4_q: Can I use my own domain name?
@@ -152,7 +160,7 @@ pros:
     faq6_q: Is it legal for a business in Spain?
     faq6_a: Every site comes with a legal notice and privacy page (LSSI and GDPR) generated from your business details, and no tracking cookie banner is needed. We still recommend having your gestor check the texts.
     final_title: Ready when you are.
-    final_text: Sign-up takes about five minutes. We check your details and your website usually goes live within two working days. €%price% per month, everything included.
+    final_text: Sign-up takes about five minutes. We check your details and your website usually goes live within two working days. €%price% per month, or two months free with the yearly plan.
 
 signup:
     page_title: Get your website
@@ -183,6 +191,11 @@ signup:
     domain_help: Only if you already have one, e.g. myhandyman.es. No domain yet? We help you choose one.
     locales: Languages for your website
     default_locale: Main language
+    legend_plan: Your plan
+    plan: How do you want to pay?
+    plan_monthly: Monthly, cancel any month
+    plan_yearly: Yearly, 12 months for the price of 10
+    plan_help: Either way your website is free until the 1st of next month. With the yearly plan we email you two weeks before each yearly payment.
     tax_id: NIF / NIE / CIF
     tax_id_help: For the legal notice on your website. You can add it later.
     message: What do you do? Anything else we should know?
