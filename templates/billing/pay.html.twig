@@ -52,7 +52,7 @@
                 {% for charge in outstanding %}
                     <tr>
                         <td>
-                            {{ charge.periodLabel }}
+                            {{ charge.label }}
                             {% if charge.failureReason %}<div class="b-reason">{{ charge.failureReason }}</div>{% endif %}
                         </td>
                         <td>{{ charge.totalAmount|money(charge.currency) }}</td>
