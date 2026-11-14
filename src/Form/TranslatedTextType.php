@@ -22,6 +22,8 @@ final class TranslatedTextType extends AbstractType
                 'label' => strtoupper($locale),
                 'required' => false,
                 'attr' => $options['multiline'] ? ['rows' => 4] : [],
+                // Used by public/js/admin-locales.js to show one language at a time
+                'row_attr' => ['data-locale' => $locale],
             ]);
         }
     }

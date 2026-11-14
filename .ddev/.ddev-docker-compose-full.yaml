@@ -15,13 +15,13 @@ services:
     container_name: ddev-multi-handyman-site-db
     environment:
       BITNAMI_VOLUME_DIR: ""
-      COLUMNS: "80"
+      COLUMNS: "427"
       DDEV_DATABASE: mariadb:11.4
       DDEV_DATABASE_FAMILY: mysql
       DDEV_GID: "20"
       DDEV_GOARCH: arm64
       DDEV_GOOS: darwin
-      DDEV_HOSTNAME: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site
+      DDEV_HOSTNAME: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site,pieters-tegelwerk.ddev.site
       DDEV_PHP_VERSION: "8.4"
       DDEV_PRIMARY_URL: https://multi-handyman-site.ddev.site
       DDEV_PRIMARY_URL_PORT: "443"
@@ -39,7 +39,7 @@ services:
       DOCKER_IP: 127.0.0.1
       HOST_DOCKER_INTERNAL_IP: ""
       IS_DDEV_PROJECT: "true"
-      LINES: "24"
+      LINES: "21"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/multi-handyman-site-db/mysql_history
       PGDATABASE: db
       PGHOST: 127.0.0.1
@@ -73,6 +73,7 @@ services:
       - mode: ingress
         host_ip: 127.0.0.1
         target: 3306
+        published: "61615"
         protocol: tcp
     restart: "no"
     stop_grace_period: 1m0s
@@ -96,6 +97,52 @@ services:
         target: /mnt/ddev-global-cache
         volume: {}
     working_dir: /home/jaspervanrijbroek
+  opensearch:
+    container_name: ddev-multi-handyman-site-opensearch
+    environment:
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      DISABLE_SECURITY_PLUGIN: "true"
+      HOST_DOCKER_INTERNAL_IP: ""
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+      discovery.type: single-node
+    expose:
+      - "9200"
+    image: opensearchproject/opensearch:2.19.1
+    labels:
+      com.ddev.approot: /Users/jaspervanrijbroek/Personal/multi-handyman-site
+      com.ddev.site-name: multi-handyman-site
+    networks:
+      ddev_default: null
+      default: null
+    restart: "no"
+    volumes:
+      - type: volume
+        source: opensearch
+        target: /usr/share/opensearch/data
+        volume: {}
+  redis:
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+    container_name: ddev-multi-handyman-site-redis
+    environment:
+      HOST_DOCKER_INTERNAL_IP: ""
+    expose:
+      - "6379"
+    image: redis:7.4-alpine
+    labels:
+      com.ddev.approot: /Users/jaspervanrijbroek/Personal/multi-handyman-site
+      com.ddev.site-name: multi-handyman-site
+    networks:
+      ddev_default: null
+      default: null
+    restart: "no"
+    volumes:
+      - type: volume
+        source: redis
+        target: /data
+        volume: {}
   web:
     build:
       context: /Users/jaspervanrijbroek/Personal/multi-handyman-site/.ddev/.webimageBuild
@@ -113,7 +160,7 @@ services:
       - /pre-start.sh
     container_name: ddev-multi-handyman-site-web
     environment:
-      COLUMNS: "80"
+      COLUMNS: "427"
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
       COREPACK_HOME: /mnt/ddev-global-cache/corepack
       DDEV_APPROOT: /var/www/html
@@ -126,7 +173,7 @@ services:
       DDEV_GID: "20"
       DDEV_GOARCH: arm64
       DDEV_GOOS: darwin
-      DDEV_HOSTNAME: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site
+      DDEV_HOSTNAME: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site,pieters-tegelwerk.ddev.site
       DDEV_MUTAGEN_ENABLED: "true"
       DDEV_PHP_VERSION: "8.4"
       DDEV_PRIMARY_URL: https://multi-handyman-site.ddev.site
@@ -154,7 +201,7 @@ services:
       HTTP_EXPOSE: 80:80,8025:8025
       HTTPS_EXPOSE: 443:80,8026:8025
       IS_DDEV_PROJECT: "true"
-      LINES: "24"
+      LINES: "21"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/multi-handyman-site-web/mysql_history
       NODE_EXTRA_CA_CERTS: /mnt/ddev-global-cache/mkcert/rootCA.pem
       PGDATABASE: db
@@ -166,7 +213,7 @@ services:
       START_SCRIPT_TIMEOUT: "115"
       TZ: Europe/Madrid
       USER: jaspervanrijbroek
-      VIRTUAL_HOST: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site
+      VIRTUAL_HOST: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site,pieters-tegelwerk.ddev.site
       npm_config_cache: /mnt/ddev-global-cache/npm
     hostname: multi-handyman-site-web
     healthcheck:
@@ -191,10 +238,12 @@ services:
       - mode: ingress
         host_ip: 127.0.0.1
         target: 80
+        published: "61616"
         protocol: tcp
       - mode: ingress
         host_ip: 127.0.0.1
         target: 443
+        published: "61618"
         protocol: tcp
       - mode: ingress
         host_ip: 127.0.0.1
@@ -245,7 +294,7 @@ services:
       HTTP_EXPOSE: 8143:80
       HTTPS_EXPOSE: 8142:80
       TZ: Europe/Madrid
-      VIRTUAL_HOST: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site
+      VIRTUAL_HOST: multi-handyman-site.ddev.site,handyman-javea.ddev.site,jans-klusbedrijf.ddev.site,pieters-tegelwerk.ddev.site
       XHGUI_PDO_PASS: db
       XHGUI_PDO_USER: db
       XHGUI_SAVE_HANDLER: pdo
@@ -286,6 +335,10 @@ volumes:
   ddev-ssh-agent_socket_dir:
     name: ddev-ssh-agent_socket_dir
     external: true
+  opensearch:
+    name: ddev-multi-handyman-site_opensearch
   project_mutagen:
     name: multi-handyman-site_project_mutagen
     external: true
+  redis:
+    name: ddev-multi-handyman-site_redis

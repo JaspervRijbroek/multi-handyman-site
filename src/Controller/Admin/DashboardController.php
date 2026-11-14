@@ -15,6 +15,7 @@ use App\Repository\TenantRepository;
 use App\Tenant\TenantContext;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -100,6 +101,12 @@ class DashboardController extends AbstractDashboardController
         return Dashboard::new()
             ->setTitle($title)
             ->setFaviconPath('favicon.svg');
+    }
+
+    public function configureAssets(): Assets
+    {
+        // One EN | ES | ... bar per form instead of every language under each other
+        return Assets::new()->addJsFile('js/admin-locales.js');
     }
 
     public function configureMenuItems(): iterable

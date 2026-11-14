@@ -24,6 +24,11 @@ RUN (groupadd --gid "$gid" "$username" || groupadd "$username" || true) && \
 ### DDEV-injected extra content
 
 RUN mkdir -p /home/$username && chown $username /home/$username && chmod 600 /home/$username/.pgpass
+ADD messenger.conf /etc/supervisor/conf.d
+RUN chmod 644 /etc/supervisor/conf.d/messenger.conf
+ADD webextradaemons.conf /etc/supervisor/conf.d
+RUN chmod 644 /etc/supervisor/conf.d/webextradaemons.conf
+
 RUN log-stderr.sh mariadb-client-install.sh || true
 
 RUN log-stderr.sh mariadb-compat-install.sh || true

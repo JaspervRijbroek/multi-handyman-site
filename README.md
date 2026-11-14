@@ -73,7 +73,9 @@ Adding a new kind of client content? Implement `TenantOwnedInterface` (use
 `TenantOwnedTrait`) and extend `AbstractTenantCrudController`. Isolation then works automatically.
 
 Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
-`TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig.
+`TranslatedField` in the admin and shown with `{{ text|localized }}` in Twig. In the admin
+form, one language bar (`EN | ES | ...`, `public/js/admin-locales.js`) switches all
+translated fields at once.
 
 ## Search and reviews
 
