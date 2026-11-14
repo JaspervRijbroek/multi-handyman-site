@@ -30,7 +30,9 @@ Features: multilingual client sites (EN, ES, NL, DE, FR) with hreflang/sitemap/c
 URLs, contact form, customer reviews, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
 a "find a pro" search across clients on the platform homepage (brand: CasitaFix),
 client onboarding (public `/register` + approval), Google Search Console setup,
-OpenStreetMap map/geocoding, monthly Mollie billing, and Cloudflare Turnstile spam protection.
+OpenStreetMap map/geocoding, monthly Mollie billing with FacturaDirecta invoices, Cloudflare
+Turnstile spam protection, and an MCP server (`/mcp`) so clients can let an AI assistant manage
+their own data with a personal token.
 
 ## Stack
 
@@ -53,8 +55,10 @@ src/
   Tenant/TenantContext     Holds the active tenant
   Onboarding/              Approving sign-ups / creating clients
   Billing/                 Mollie billing, reminders, suspension
+  Hosting/CustomDomains    Subdomains and clients' own domains (DNS check, going live)
   Google/, Map/, Turnstile/  External integrations
   Search/                  The platform "find a pro" search
+  Mcp/                     MCP server for AI assistants (tools, per-client token)
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
 translations/              messages.{en,es,nl}.yaml (client sites), platform.{es,en}.yaml (platform pages)
@@ -82,6 +86,7 @@ ddev console doctrine:migrations:migrate
 ddev console app:client:approve             # approve pending sign-ups
 ddev console app:billing:run                # daily billing run
 ddev console app:turnstile:sync             # sync domains to Cloudflare Turnstile
+ddev console app:domains:check              # switch sites to their own domain once DNS works
 ```
 
 ## Conventions

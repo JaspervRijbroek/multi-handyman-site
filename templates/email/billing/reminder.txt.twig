@@ -12,7 +12,7 @@ by then, your website will be taken offline automatically.
 
 
 {% for charge in charges -%}
-  {{ charge.periodLabel }}: {{ charge.totalAmount|money(charge.currency) }} (incl. {{ charge.vatRate|number_format(0) }}% VAT){% if charge.failureReason %} – {{ charge.failureReason }}{% endif %}
+  {{ charge.label }}: {{ charge.totalAmount|money(charge.currency) }} (incl. {{ charge.vatRate|number_format(0) }}% VAT){% if charge.failureReason %} – {{ charge.failureReason }}{% endif %}
 
 {% endfor %}
 {%- if charges|length > 1 %}

@@ -190,7 +190,7 @@ signup:
     service_area: Localidades y zonas donde trabajas
     service_area_placeholder: p. ej. Jávea, Dénia, Moraira y alrededores
     domain: Tu dominio
-    domain_help: Solo si ya tienes uno, p. ej. mimanitas.es. ¿Aún no tienes dominio? Te ayudamos a elegirlo.
+    domain_help: Solo si ya tienes uno, p. ej. mimanitas.es. ¿Aún no tienes dominio? Déjalo vacío, puedes añadirlo después en tu panel.
     locales: Idiomas de tu web
     default_locale: Idioma principal
     legend_plan: Tu plan

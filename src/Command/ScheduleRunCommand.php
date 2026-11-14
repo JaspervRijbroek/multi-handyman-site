@@ -15,7 +15,7 @@ use Symfony\Component\Process\Process;
 
 #[AsCommand(
     name: 'app:schedule:run',
-    description: 'Run the scheduled tasks (queue worker, billing, Google, Turnstile, search index) that are due this minute',
+    description: 'Run the scheduled tasks (queue worker, billing, domains, Google, Turnstile, search index) that are due this minute',
 )]
 final class ScheduleRunCommand extends Command
 {
@@ -32,6 +32,7 @@ final class ScheduleRunCommand extends Command
         ['*', 'messenger:consume', 'billing', 'async', '--time-limit=55', '--memory-limit=128M'],
         ['09:00', 'app:billing:run'],
         ['09:15', 'app:turnstile:sync'],
+        [':12', 'app:domains:check'],
         [':17', 'app:google:connect', '--all'],
         [':23', 'app:search:index'],
     ];

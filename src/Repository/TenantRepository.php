@@ -114,4 +114,14 @@ class TenantRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /** The active client this MCP token belongs to, or null. */
+    public function findOneByMcpToken(string $token): ?Tenant
+    {
+        if ('' === $token) {
+            return null;
+        }
+
+        return $this->findOneBy(['mcpTokenHash' => Tenant::hashMcpToken($token), 'active' => true]);
+    }
 }
