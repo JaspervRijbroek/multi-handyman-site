@@ -131,6 +131,15 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 /* Sections */
 .p-section { padding: clamp(64px, 8vw, 104px) 0; }
 .p-section-alt { background: var(--p-sand); }
+
+.p-quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.p-quote { margin: 0; display: flex; flex-direction: column; gap: 22px; background: #fff; border: 1px solid var(--p-border); border-radius: 24px; padding: clamp(26px, 3vw, 36px); box-shadow: 0 20px 50px rgba(60, 40, 20, .07); }
+.p-quote::before { content: "“"; height: 28px; font-family: var(--p-serif); font-size: 4rem; line-height: .6; color: var(--p-terracotta); }
+.p-quote blockquote { flex-grow: 1; margin: 0; font-family: var(--p-serif); font-size: 1.3125rem; line-height: 1.35; color: var(--p-ink); text-wrap: pretty; }
+.p-quote figcaption { display: flex; align-items: center; gap: 14px; border-top: 1px solid #f0e6d4; padding-top: 18px; }
+.p-quote figcaption > span:last-child { display: grid; gap: 1px; }
+.p-quote figcaption span span { color: var(--p-muted); font-size: .875rem; }
+.p-quote-initial { flex: none; display: grid; place-items: center; width: 46px; height: 52px; border-radius: 999px 999px 8px 8px; background: var(--p-blue); color: #fff; font-family: var(--p-serif); font-size: 1.25rem; }
 .p-section-end { padding-top: 0; }
 .p-section-blue { position: relative; background: var(--p-blue); color: #fff; }
 .p-section-blue::before {
@@ -169,6 +178,12 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 1.125rem; color: #fde3d6; }
 .p-price strong { font-family: var(--p-serif); font-weight: 400; font-size: clamp(4rem, 8vw, 6rem); line-height: 1; letter-spacing: -.04em; color: #fff; }
 .p-plan-sub { font-size: .875rem; color: #fde3d6; }
+.p-plan-note { font-size: 1rem; color: #fff; max-width: 34ch; }
+.p-plan-price[hidden] { display: none; }
+.p-toggle { display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 0; margin-top: 12px; padding: 4px; border: 1.5px solid var(--p-border); border-radius: 999px; background: #fff; }
+.p-toggle button { display: flex; align-items: center; gap: 10px; border: 0; border-radius: 999px; padding: 10px 22px; font: inherit; font-weight: 700; cursor: pointer; background: transparent; color: var(--p-ink); }
+.p-toggle button[aria-pressed="true"] { background: var(--p-ink); color: #fff; }
+.p-toggle-badge { background: #4d6b2a; color: #fff; border-radius: 999px; padding: 3px 10px; font-size: .75rem; letter-spacing: .02em; }
 .p-plan-price .p-btn { position: relative; z-index: 1; margin-top: 12px; }
 .p-plan-body { padding: clamp(28px, 4vw, 48px); display: grid; gap: 26px; align-content: start; }
 .p-plan-body .p-eyebrow { margin: 0; }

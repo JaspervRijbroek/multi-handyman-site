@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Signup;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\SignupType;
 use App\Onboarding\OnboardingMailer;
@@ -48,8 +49,9 @@ final class RegistrationController extends AbstractController
             return $this->redirectToRoute('admin');
         }
 
-        // A new Signup, so its defaults (English and Spanish) are ticked
-        $form = $this->createForm(SignupType::class, new Signup());
+        // A new Signup, so its defaults (English and Spanish) are ticked; ?plan=yearly comes from the pricing toggle
+        $signup = (new Signup())->setBillingPlan(Tenant::PLAN_YEARLY === $request->query->get('plan') ? Tenant::PLAN_YEARLY : Tenant::PLAN_MONTHLY);
+        $form = $this->createForm(SignupType::class, $signup);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {

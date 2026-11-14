@@ -16,7 +16,8 @@ which client's site is shown; clients edit their own content in a simple admin.
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
-- Monthly billing through Mollie with automatic reminders, invoices made in FacturaDirecta, see [Billing](#billing)
+- Monthly or yearly billing through Mollie with automatic reminders, invoices made in FacturaDirecta, see [Billing](#billing)
+- **MCP server** so clients can let an AI assistant manage their own site, see [AI assistants (MCP)](#ai-assistants-mcp)
 
 ## Getting started
 
@@ -81,7 +82,7 @@ The platform brand (**CasitaFix** by default) comes from `BILLING_BRAND`.
 
 **Platform pages** on `PLATFORM_HOST` are in Spanish and English (`/es`, `/en`; `/` and
 `/register` redirect to the visitor's language): the "find a pro" homepage, `/{locale}/search`,
-`/{locale}/for-professionals` (price in `templates/platform/pros.html.twig`) and the sign-up form.
+`/{locale}/for-professionals` (price and testimonials in `templates/platform/pros.html.twig`) and the sign-up form.
 Their texts are in `translations/platform.{es,en}.yaml`. These paths return 404 on client sites.
 
 **Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain.
@@ -192,9 +193,19 @@ no setup: it uses OpenStreetMap.)
 
 ## Billing
 
-Clients pay a monthly subscription through [Mollie](https://www.mollie.com),
-charged automatically on the **1st of each month**. A card payment is usually decided
-straight away; a SEPA direct debit takes a few working days to come through.
+Clients pay through [Mollie](https://www.mollie.com) on one of two plans:
+
+- **Monthly**: charged automatically on the **1st of each month**.
+- **Yearly**: 12 months for the price of 10 (10 × the monthly price), charged once a
+  year up front. Two weeks before every yearly payment the client gets a "your payment
+  is coming up" email (also when no payment method is set up yet).
+
+Clients pick a plan on the sign-up form (the Monthly/Yearly toggle on the pricing page
+preselects it); super admins can change it in the client's Billing tab. A change applies
+from the next payment, once the period already paid for has ended.
+
+A card payment is usually decided straight away; a SEPA direct debit takes a few
+working days to come through.
 
 ```
 Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
@@ -202,6 +213,7 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
 
 1st of the month ─► invoice (factura) in FacturaDirecta
                  ─► automatic payment with the mandate, invoice number in the description
+                     (yearly plan: once the paid year ends, announced by email 2 weeks before)
                      ├─ paid    → done
                      └─ failed  → reminder 1 with payment link (right away)
                                   + 2 weeks  → reminder 2
@@ -220,7 +232,7 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
   paid* for bank transfers), a **Billing** tab per client and a *Send payment
   setup email* action. The setup email also goes out when a client is onboarded.
 - Free accounts: tick *Free account* in the client's Billing tab. Per-client prices
-  override `BILLING_MONTHLY_PRICE`.
+  override `BILLING_MONTHLY_PRICE`; the yearly plan is always 10 × the monthly price.
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
   then try a later date with `ddev console app:billing:run --date=2026-12-01`.
 
@@ -313,6 +325,31 @@ anything that happens to Redis: see it with `messenger:failed:show`, retry with 
 In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
 needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
 after `ddev restart`); its output is in `ddev logs`.
+
+## AI assistants (MCP)
+
+Clients can connect an AI assistant (Claude, ChatGPT, ...) to their own data through
+[MCP](https://modelcontextprotocol.io) at `https://PLATFORM_HOST/mcp`.
+
+- **No token, no access.** A client has no token until they click *Generate MCP token* under
+  **Settings → AI assistant**. The token is shown once; only its hash is stored. Lost it?
+  *Reset MCP token* creates a new one and the old one stops working right away.
+  *Remove MCP token* switches MCP access off again.
+- The assistant sends the token as `Authorization: Bearer <token>`. The token decides the client:
+  the tenant filter and guards then limit everything to that client's data, just like in the admin.
+- Tools (`App\Mcp\McpTools`): read and change the business details and website texts, add, change
+  and delete services and finished jobs (with a photo: JPG, PNG or WebP, base64-encoded, max 5 MB,
+  saved in `public/uploads/projects/` like admin uploads), list enquiries and mark them
+  handled, list reviews and show, hide or delete them (not write or edit them).
+- The server (`App\Mcp\McpServer`) is a small hand-written JSON-RPC handler: tools only,
+  stateless, plain JSON answers (no sessions or event streams). `/mcp` returns 404 on client sites.
+
+Try it:
+
+```bash
+curl -s https://multi-handyman-site.ddev.site/mcp -H 'Authorization: Bearer mcp_...' \
+  -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
 
 ## Useful commands
 

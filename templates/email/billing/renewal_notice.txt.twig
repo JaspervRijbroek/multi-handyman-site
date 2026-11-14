@@ -1,0 +1,19 @@
+Hello {{ tenant.name }},
+
+You are on the yearly plan of {{ brand }}: 12 months for the price of 10.
+On {{ charge_date|date('l j F Y') }} we will collect the payment for the next 12 months:
+
+  {{ amount|money(currency) }} (incl. VAT)
+
+{% if tenant.hasMandate -%}
+This is paid automatically with {{ tenant.mandateDescription }}. You don't need to do anything.
+Want to use a different card or bank account? You can change it here:
+{%- else -%}
+There is no payment method set up yet. Please set one up before that date, so
+your website stays online. It takes a minute:
+{%- endif %}
+
+
+{{ pay_url }}
+
+{% include 'email/billing/_footer.txt.twig' %}

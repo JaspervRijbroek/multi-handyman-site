@@ -165,6 +165,8 @@ class SignupCrudController extends AbstractCrudController
             ->renderExpanded()
             ->hideOnIndex();
         yield ChoiceField::new('defaultLocale', 'Main language')->setChoices($localeChoices)->hideOnIndex();
+        yield ChoiceField::new('billingPlan', 'Plan')
+            ->setChoices(['Monthly' => Tenant::PLAN_MONTHLY, 'Yearly' => Tenant::PLAN_YEARLY]);
         yield TextareaField::new('message', 'Message from the client')->hideOnIndex();
 
         yield AssociationField::new('tenant', 'Client')->hideOnForm();

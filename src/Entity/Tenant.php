@@ -21,6 +21,11 @@ class Tenant
 {
     public const array SUPPORTED_LOCALES = ['en', 'es', 'nl', 'de', 'fr'];
 
+    /** Billing plans: pay every month, or pay a year up front (12 months for the price of 10) */
+    public const string PLAN_MONTHLY = 'monthly';
+    public const string PLAN_YEARLY = 'yearly';
+    public const array PLANS = [self::PLAN_MONTHLY, self::PLAN_YEARLY];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -188,6 +193,14 @@ class Tenant
     #[Assert\PositiveOrZero]
     private ?int $monthlyPrice = null;
 
+    #[ORM\Column(length: 10, options: ['default' => self::PLAN_MONTHLY])]
+    #[Assert\Choice(choices: self::PLANS)]
+    private string $billingPlan = self::PLAN_MONTHLY;
+
+    /** Yearly plan: the charge date the "payment coming up" email was sent for */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $renewalNoticeSentFor = null;
+
     /** First day the client is charged; everything before is free. Null: derived from createdAt */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $billingStartsOn = null;
@@ -218,6 +231,16 @@ class Tenant
     /** Set when the site is taken offline for non-payment */
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $suspendedAt = null;
+
+    /**
+     * sha256 of the client's MCP access token (AI assistants, see App\Mcp).
+     * Only the hash is stored: the token is shown once. No token, no MCP access.
+     */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    private ?string $mcpTokenHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $mcpTokenCreatedAt = null;
 
     /** @var Collection<int, Domain> */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'tenant', cascade: ['persist'], orphanRemoval: true)]
@@ -804,6 +827,35 @@ class Tenant
         return $this;
     }
 
+    public function getBillingPlan(): string
+    {
+        return $this->billingPlan;
+    }
+
+    public function setBillingPlan(?string $billingPlan): static
+    {
+        $this->billingPlan = $billingPlan ?? self::PLAN_MONTHLY;
+
+        return $this;
+    }
+
+    public function isYearly(): bool
+    {
+        return self::PLAN_YEARLY === $this->billingPlan;
+    }
+
+    public function getRenewalNoticeSentFor(): ?\DateTimeImmutable
+    {
+        return $this->renewalNoticeSentFor;
+    }
+
+    public function setRenewalNoticeSentFor(?\DateTimeImmutable $chargeDate): static
+    {
+        $this->renewalNoticeSentFor = $chargeDate;
+
+        return $this;
+    }
+
     public function getBillingStartsOn(): \DateTimeImmutable
     {
         return $this->billingStartsOn ?? self::firstBillingDay($this->createdAt);
@@ -909,6 +961,40 @@ class Tenant
         $this->suspendedAt = null;
 
         return $this;
+    }
+
+    public function hasMcpToken(): bool
+    {
+        return null !== $this->mcpTokenHash;
+    }
+
+    public function getMcpTokenCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->mcpTokenCreatedAt;
+    }
+
+    /** Creates a new MCP token (an older one stops working) and returns it. */
+    public function createMcpToken(): string
+    {
+        $token = 'mcp_'.bin2hex(random_bytes(32));
+        $this->mcpTokenHash = self::hashMcpToken($token);
+        $this->mcpTokenCreatedAt = new \DateTimeImmutable();
+
+        return $token;
+    }
+
+    /** Switches MCP access off: the current token stops working. */
+    public function removeMcpToken(): static
+    {
+        $this->mcpTokenHash = null;
+        $this->mcpTokenCreatedAt = null;
+
+        return $this;
+    }
+
+    public static function hashMcpToken(string $token): string
+    {
+        return hash('sha256', $token);
     }
 
     private static function newBillingToken(): string

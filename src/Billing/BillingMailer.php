@@ -55,6 +55,17 @@ final readonly class BillingMailer
         ]);
     }
 
+    /** Yearly plan: sent 2 weeks before the yearly payment is collected */
+    public function sendRenewalNotice(Tenant $tenant, \DateTimeImmutable $chargeDate, int $amount, string $currency, string $payUrl): bool
+    {
+        return $this->send($tenant, \sprintf('Your yearly payment for %s is coming up on %s', $this->brand, $chargeDate->format('j F Y')), 'renewal_notice', [
+            'charge_date' => $chargeDate,
+            'amount' => $amount,
+            'currency' => $currency,
+            'pay_url' => $payUrl,
+        ]);
+    }
+
     /** @param list<Charge> $outstanding */
     public function sendSuspended(Tenant $tenant, array $outstanding, string $payUrl): bool
     {

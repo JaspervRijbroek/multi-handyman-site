@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Billing\BillingService;
 use App\Entity\User;
 use App\Repository\ChargeRepository;
 use App\Tenant\TenantContext;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -23,6 +25,9 @@ final class BillingAdminController extends AbstractController
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly ChargeRepository $charges,
+        private readonly BillingService $billing,
+        #[Autowire(env: 'BILLING_CURRENCY')]
+        private readonly string $currency,
     ) {
     }
 
@@ -40,6 +45,9 @@ final class BillingAdminController extends AbstractController
         return $this->render('admin/billing/index.html.twig', [
             'tenant' => $tenant,
             'outstanding' => $outstanding,
+            'price' => $this->billing->totalPrice($tenant),
+            'currency' => $this->currency,
+            'next_charge' => $this->billing->nextChargeDate($tenant, new \DateTimeImmutable()),
             'total' => array_sum(array_map(static fn ($c) => $c->getTotalAmount(), $outstanding)),
             // The tenant filter limits this to the client's own charges
             'history' => $this->charges->findBy(['tenant' => $tenant], ['period' => 'DESC'], 24),

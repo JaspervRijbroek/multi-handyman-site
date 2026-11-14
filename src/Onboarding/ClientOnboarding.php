@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  *  - client (Tenant) with the details from the sign-up
  *  - domain(s): their own domain + www., or <slug>.CLIENT_SUBDOMAIN_BASE
  *  - client login (with the password they chose, or a "set your password" link)
- *  - welcome email, and the email to set up automatic monthly payment (Mollie)
+ *  - welcome email, and the email to set up automatic payment (Mollie)
  *  - map position of the address (OpenStreetMap) and the Google Search Console property
  *
  * Used by the admin (Sign-ups → Approve, Clients → Connect Google) and the
@@ -107,7 +107,7 @@ final readonly class ClientOnboarding
         return $result;
     }
 
-    /** Asks the client to set up automatic monthly payment (Mollie); the first charge is next month. */
+    /** Asks the client to set up automatic payment (Mollie); the first charge is next month. */
     private function sendPaymentSetup(Tenant $tenant, OnboardingResult $result): void
     {
         if ($tenant->isBillingExempt()) {
@@ -238,6 +238,7 @@ final readonly class ClientOnboarding
             ->setCity($signup->getCity())
             ->setCountry($signup->getCountry())
             ->setServiceArea($signup->getServiceArea() ?? $signup->getCity())
+            ->setBillingPlan($signup->getBillingPlan())
             // Sensible defaults for the legal notice; the client can change them in Settings
             ->setLegalName($signup->getContactName())
             ->setTaxId($signup->getTaxId())

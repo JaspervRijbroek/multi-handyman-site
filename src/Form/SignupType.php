@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Signup;
+use App\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -96,6 +97,15 @@ final class SignupType extends AbstractType
                 'label' => 'signup.default_locale',
                 'choices' => self::LANGUAGES,
                 'choice_translation_domain' => false,
+            ])
+            ->add('billingPlan', ChoiceType::class, [
+                'label' => 'signup.plan',
+                'choices' => [
+                    'signup.plan_monthly' => Tenant::PLAN_MONTHLY,
+                    'signup.plan_yearly' => Tenant::PLAN_YEARLY,
+                ],
+                'expanded' => true,
+                'help' => 'signup.plan_help',
             ])
             ->add('taxId', TextType::class, [
                 'label' => 'signup.tax_id',
