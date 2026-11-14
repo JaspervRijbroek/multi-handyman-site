@@ -20,7 +20,8 @@ use Twig\Environment;
 /**
  * Decides, per request, which tenant is active.
  *
- * PLATFORM_HOST          → admin, login, the pro search and the platform pages (no tenant from the URL)
+ * PLATFORM_HOST          → admin, login, the pro search, the platform pages and /mcp (no tenant from the URL;
+ *                          /mcp gets it from the token, see McpController)
  * any known client host  → that client's website ("temporarily offline" if suspended for non-payment)
  * anything else          → 404
  */
@@ -63,9 +64,9 @@ final readonly class TenantRequestListener
             throw new NotFoundHttpException(\sprintf('No site is configured for "%s".', $host));
         }
 
-        // The admin, sign-up, password, payment and search pages only live on the platform host
+        // The admin, sign-up, password, payment, search and MCP pages only live on the platform host
         // (some of them behind a language, e.g. /es/search)
-        if (preg_match('#^/([a-z]{2}/)?(admin|login|logout|register|set-password|billing|search|for-professionals)(/|$)#', $path)) {
+        if (preg_match('#^/([a-z]{2}/)?(admin|login|logout|register|set-password|billing|search|for-professionals|mcp)(/|$)#', $path)) {
             throw new NotFoundHttpException();
         }
 
