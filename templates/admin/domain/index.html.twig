@@ -1,0 +1,87 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Your domain{% endblock %}
+
+{% block main %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5">Your website address</h2>
+            {% if primary %}
+                <p class="mb-0"><a href="https://{{ primary.hostname }}" target="_blank" rel="noopener">https://{{ primary.hostname }}</a></p>
+            {% else %}
+                <p class="mb-0 text-muted">Your website has no address yet. Add your domain below.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if own_domains is empty %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Use your own domain</h2>
+                <p>Do you have a domain name, like <code>myhandyman.es</code>? Enter it here. Your website keeps working on its current address until the domain is ready, then it moves over by itself.</p>
+                <form method="post" action="{{ path('admin_own_domain_add') }}" class="d-flex flex-wrap gap-2">
+                    <input type="hidden" name="_token" value="{{ csrf_token('domain-' ~ tenant.id) }}">
+                    <input type="text" name="hostname" class="form-control" style="max-width: 320px" placeholder="myhandyman.es" required autocomplete="off">
+                    <button class="btn btn-primary" type="submit">Add domain</button>
+                </form>
+                <p class="text-muted small mt-2 mb-0">No domain yet? Buy one at any domain registrar (for example for about €10 a year), then come back here.</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Status</h2>
+                <table class="table mb-3">
+                    {% for domain in own_domains %}
+                        <tr>
+                            <td><strong>{{ domain.hostname }}</strong></td>
+                            <td>
+                                {% if domain.primary %}
+                                    <span class="badge bg-success">Live</span> your website runs here
+                                {% elseif domain.points_here %}
+                                    <span class="badge bg-success">Ready</span> forwards to your website
+                                {% elseif domain.found is empty %}
+                                    <span class="badge bg-warning text-dark">Waiting</span> no DNS record found yet
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Waiting</span> still points to {{ domain.found|join(', ') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <a class="btn btn-sm btn-secondary" href="{{ path('admin_own_domain_index') }}">Check again</a>
+                <span class="text-muted small ms-2">We also check every hour. DNS changes can take a few hours.</span>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Set these DNS records</h2>
+                <p>Log in where you bought your domain (your domain registrar), open the DNS settings of <strong>{{ own_domains[0].hostname }}</strong> and set:</p>
+                {% if dns_records is empty %}
+                    <p class="text-danger">We could not look up our server address right now. Please try again later.</p>
+                {% else %}
+                    <table class="table table-sm" style="max-width: 520px">
+                        <thead><tr><th>Type</th><th>Name</th><th>Value</th></tr></thead>
+                        {% for record in dns_records %}
+                            <tr><td>{{ record.type }}</td><td><code>{{ record.name }}</code></td><td><code>{{ record.value }}</code></td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+                <ul class="small text-muted mb-0">
+                    <li>Remove any other <em>A</em>, <em>AAAA</em> or <em>CNAME</em> records for <code>@</code> and <code>www</code> (often a "parking page" from the registrar).</li>
+                    <li>Uses Cloudflare? Set these records to <em>DNS only</em> (grey cloud).</li>
+                    <li>Email on this domain keeps working: don't change the <em>MX</em> records.</li>
+                    <li>HTTPS is set up automatically.</li>
+                </ul>
+            </div>
+        </div>
+
+        {% if can_remove %}
+            <form method="post" action="{{ path('admin_own_domain_remove') }}" onsubmit="return confirm('Remove {{ own_domains[0].hostname|e('js') }}? Your website goes back to its previous address.')">
+                <input type="hidden" name="_token" value="{{ csrf_token('domain-' ~ tenant.id) }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Remove this domain</button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}

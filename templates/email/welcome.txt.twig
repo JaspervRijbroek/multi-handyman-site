@@ -20,7 +20,24 @@ First choose your password with this link (valid for 7 days):
   Password: the one you chose when you signed up
 {% endif %}
 
+{% if own_domain %}
+To use your own domain {{ own_domain }}, log in where you bought it (your
+domain registrar) and set these DNS records. Remove any other A and AAAA
+records for "@" and "www".
+
+{% for record in dns_records %}
+  {{ '%-6s %-5s %s'|format(record.type, record.name, record.value) }}
+{% else %}
+  Point "@" and "www" to the same address as {{ login_url|split('/')[2] }}.
+{% endfor %}
+
+As soon as that works (usually within a few hours), your website moves to
+https://{{ own_domain }} by itself, with HTTPS. Your current address keeps
+working and forwards visitors there. You can check the progress in your admin
+under "Your domain".
+
+{% endif %}
 We are also connecting your website to Google Search Console. That happens
-automatically as soon as your domain points to our server.
+automatically as soon as your website is online.
 
 Questions? Just reply to this email.
