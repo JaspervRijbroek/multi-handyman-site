@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Hosting\CustomDomains;
 use App\Repository\ChargeRepository;
 use App\Repository\EnquiryRepository;
 use App\Repository\ProjectRepository;
@@ -32,6 +33,7 @@ class DashboardController extends AbstractDashboardController
         private readonly TenantRepository $tenants,
         private readonly SignupRepository $signups,
         private readonly ChargeRepository $charges,
+        private readonly CustomDomains $customDomains,
     ) {
     }
 
@@ -80,6 +82,10 @@ class DashboardController extends AbstractDashboardController
             'missing_settings' => $missing,
             'stats' => $stats,
             'site_url' => $primaryDomain ? 'https://'.$primaryDomain->getHostname() : null,
+            // Their own domain, added but not live yet (no DNS lookups here: the domain page does those)
+            'pending_domain' => $tenant && $primaryDomain && $this->customDomains->isPlatformSubdomain($primaryDomain)
+                ? ($this->customDomains->ownDomains($tenant)[0] ?? null)
+                : null,
         ]);
     }
 
@@ -124,6 +130,7 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkTo(TenantCrudController::class, 'Settings', 'fa fa-gear')
                 ->setAction(Action::EDIT)
                 ->setEntityId($tenant->getId());
+            yield MenuItem::linkToRoute('Your domain', 'fa fa-globe', 'admin_own_domain_index');
             if (!$tenant->isBillingExempt()) {
                 yield MenuItem::linkToRoute('Billing', 'fa fa-credit-card', 'admin_billing_index');
             }
