@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:billing:run',
-    description: 'Daily billing: charge clients on the 1st of the month, send payment reminders, take unpaid sites offline',
+    description: 'Daily billing: charge clients (monthly or yearly), announce yearly payments, send payment reminders, take unpaid sites offline',
 )]
 final class BillingRunCommand extends Command
 {
@@ -31,8 +31,9 @@ final class BillingRunCommand extends Command
             ->setHelp(<<<'HELP'
                 Runs daily at 09:00 through app:schedule:run.
 
-                Safe to run more than once a day: every client is charged at most once a month
-                and every reminder is sent once.
+                Safe to run more than once a day: a client is only charged when no charge covers
+                today yet (monthly: once a month; yearly: once a year), and every email is sent once.
+                Clients on the yearly plan get an email 2 weeks before their yearly payment.
 
                 Charges and payment checks are queued and handled one client at a time by
                 the queue worker (messenger:consume billing), which app:schedule:run starts.
@@ -53,14 +54,13 @@ final class BillingRunCommand extends Command
         $io->writeln(\sprintf('Queued a Mollie check for %d open automatic payment(s).', $synced));
 
         $tenants = $this->billing->chargeDueClients($now);
-        $io->writeln(\sprintf(
-            '%d client(s) queued to be charged for %s.',
-            \count($tenants),
-            $now->format('F Y'),
-        ));
+        $io->writeln(\sprintf('%d client(s) queued to be charged.', \count($tenants)));
         foreach ($tenants as $tenant) {
             $io->writeln('  '.$tenant->getName());
         }
+
+        $notices = $this->billing->sendRenewalNotices($now);
+        $io->writeln(\sprintf('%d "yearly payment coming up" email(s) sent.', $notices));
 
         $overdue = $this->billing->processOverdue($now);
         $io->writeln(\sprintf('%d payment reminder(s) sent.', $overdue['reminders']));

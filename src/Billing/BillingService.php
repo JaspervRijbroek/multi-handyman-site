@@ -20,7 +20,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 1. Onboarding: the platform is free until the 1st of the next month
  *    (Tenant::$billingStartsOn). The client authorises automatic payments once:
  *    a €0.00 card verification or a €0.01 bank payment (gives a SEPA mandate).
- * 2. On the 1st of every month the client is charged automatically.
+ * 2. Monthly plan: the client is charged automatically on the 1st of every month.
+ *    Yearly plan: charged once a year for 12 months at the price of 10 (YEARLY_PRICE_IN_MONTHS),
+ *    with an email 2 weeks before each yearly payment (sendRenewalNotices()).
  * 3. If that payment does not come through, a reminder with a payment link is sent
  *    right away, a second one after 2 weeks, and a final one after a month
  *    (payment required within a week). A week after the final reminder the site
@@ -37,11 +39,16 @@ final readonly class BillingService
     public const string METHOD_BANK = 'bank';
 
     private const string PURPOSE_MANDATE = 'mandate';
+    /** A monthly or yearly charge ('monthly' for historic reasons: older payments carry it) */
     private const string PURPOSE_MONTHLY = 'monthly';
     private const string PURPOSE_OUTSTANDING = 'outstanding';
 
     /** Card authorisations can be €0.00; a bank payment needs a real (tiny) amount */
     private const array SETUP_AMOUNTS = [self::METHOD_CARD => 0, self::METHOD_BANK => 1];
+
+    /** The yearly plan costs 10 months and covers 12 */
+    public const int YEARLY_PRICE_IN_MONTHS = 10;
+    public const string RENEWAL_NOTICE_BEFORE = '-14 days';
 
     public const string SECOND_REMINDER_AFTER = '+14 days';
     public const string FINAL_REMINDER_AFTER = '+1 month';
@@ -258,11 +265,12 @@ final readonly class BillingService
         return $queued;
     }
 
-    // Monthly charges
+    // Monthly and yearly charges
 
     /**
-     * Queues a charge for every client that is due for the month of $today. Safe to
-     * run every day: a client is charged at most once per month, from the 1st on.
+     * Queues a charge for every client that is due on $today. Safe to run every day:
+     * a client is only charged when no charge covers today yet (monthly: from the 1st
+     * of the month on; yearly: when the paid year has ended).
      *
      * @return list<Tenant> the clients queued
      */
@@ -288,7 +296,7 @@ final readonly class BillingService
             return null;
         }
 
-        $charge = new Charge($tenant, $today, $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice, $this->vatRate, $this->currency);
+        $charge = new Charge($tenant, $today, $this->netPrice($tenant), $this->vatRate, $this->currency, $tenant->isYearly() ? 12 : 1);
         $this->entityManager->persist($charge);
         $this->entityManager->flush(); // the unique (tenant, period) key stops double charges
 
@@ -333,7 +341,67 @@ final readonly class BillingService
 
         return !$tenant->isBillingExempt() && !$tenant->isSuspended() && $tenant->isActive()
             && $today >= $tenant->getBillingStartsOn()
-            && null === $this->charges->findForPeriod($tenant, $today);
+            && null === $this->charges->findCovering($tenant, $today);
+    }
+
+    /** Price excl. VAT in cents of one charge on the client's plan */
+    public function netPrice(Tenant $tenant): int
+    {
+        $monthly = $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice;
+
+        return $tenant->isYearly() ? $monthly * self::YEARLY_PRICE_IN_MONTHS : $monthly;
+    }
+
+    /** Price incl. VAT in cents of one charge on the client's plan */
+    public function totalPrice(Tenant $tenant): int
+    {
+        return Charge::totalWithVat($this->netPrice($tenant), $this->vatRate);
+    }
+
+    /**
+     * When the client is charged next: the 1st billing day, or the day the paid period ends.
+     * Null when a charge is due now (or was not paid yet).
+     */
+    public function nextChargeDate(Tenant $tenant, \DateTimeImmutable $today): ?\DateTimeImmutable
+    {
+        $today = $today->setTime(0, 0);
+        if ($today < $tenant->getBillingStartsOn()) {
+            return $tenant->getBillingStartsOn();
+        }
+
+        return $this->charges->findCovering($tenant, $today)?->getPaidUntil();
+    }
+
+    // Yearly plan: "your payment is coming up" emails
+
+    /**
+     * Emails clients on the yearly plan 2 weeks before they are charged. Safe to run
+     * every day: one email per yearly payment, and a failed send is retried the next day.
+     *
+     * @return int the number of emails sent
+     */
+    public function sendRenewalNotices(\DateTimeImmutable $today): int
+    {
+        $today = $today->setTime(0, 0);
+        $sent = 0;
+
+        foreach ($this->tenants->findBy(['active' => true, 'billingExempt' => false, 'billingPlan' => Tenant::PLAN_YEARLY]) as $tenant) {
+            $chargeDate = $this->nextChargeDate($tenant, $today);
+            if ($tenant->isSuspended() || null === $chargeDate
+                || $today < $chargeDate->modify(self::RENEWAL_NOTICE_BEFORE)
+                || $tenant->getRenewalNoticeSentFor() == $chargeDate) {
+                continue;
+            }
+
+            if ($this->mailer->sendRenewalNotice($tenant, $chargeDate, $this->totalPrice($tenant), $this->currency, $this->payUrl($tenant))) {
+                $tenant->setRenewalNoticeSentFor($chargeDate);
+                ++$sent;
+            }
+        }
+
+        $this->entityManager->flush(); // the billing token may have just been generated
+
+        return $sent;
     }
 
     // Reminders and taking sites offline

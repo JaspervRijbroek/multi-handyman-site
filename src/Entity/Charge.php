@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * What a client owes for one month of the platform.
+ * What a client owes for one month (monthly plan) or twelve months (yearly plan).
  *
  * pending → the automatic (recurring) payment is on its way
  * paid    → done
@@ -38,9 +38,13 @@ class Charge implements TenantOwnedInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    /** First day of the month this charge is for */
+    /** First day of the (first) month this charge is for */
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $period;
+
+    /** How many months it covers: 1, or 12 for the yearly plan */
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 1])]
+    private int $months = 1;
 
     /** Amounts in cents */
     #[ORM\Column]
@@ -81,13 +85,14 @@ class Charge implements TenantOwnedInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(Tenant $tenant, \DateTimeImmutable $period, int $netAmount, string $vatRate, string $currency)
+    public function __construct(Tenant $tenant, \DateTimeImmutable $period, int $netAmount, string $vatRate, string $currency, int $months = 1)
     {
         $this->tenant = $tenant;
         $this->period = $period->modify('first day of this month')->setTime(0, 0);
+        $this->months = $months;
         $this->netAmount = $netAmount;
         $this->vatRate = $vatRate;
-        $this->totalAmount = (int) round($netAmount * (1 + (float) $vatRate / 100));
+        $this->totalAmount = self::totalWithVat($netAmount, $vatRate);
         $this->currency = $currency;
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -107,10 +112,35 @@ class Charge implements TenantOwnedInterface
         return $this->period;
     }
 
-    /** e.g. "December 2026" */
+    public function getMonths(): int
+    {
+        return $this->months;
+    }
+
+    /** The day after the last day this charge covers, e.g. 2027-12-01 for a yearly charge from 2026-12-01 */
+    public function getPaidUntil(): \DateTimeImmutable
+    {
+        return $this->period->modify(\sprintf('+%d months', $this->months));
+    }
+
+    public function covers(\DateTimeImmutable $day): bool
+    {
+        return $day >= $this->period && $day < $this->getPaidUntil();
+    }
+
+    /** e.g. "December 2026", or "December 2026 – November 2027" for a year */
     public function getPeriodLabel(): string
     {
-        return $this->period->format('F Y');
+        if (1 === $this->months) {
+            return $this->period->format('F Y');
+        }
+
+        return $this->period->format('F Y').' – '.$this->getPaidUntil()->modify('-1 month')->format('F Y');
+    }
+
+    public static function totalWithVat(int $netAmount, string $vatRate): int
+    {
+        return (int) round($netAmount * (1 + (float) $vatRate / 100));
     }
 
     public function getNetAmount(): int

@@ -44,6 +44,11 @@
         </fieldset>
 
         <fieldset>
+            <legend>{{ 'signup.legend_plan'|trans }}</legend>
+            {{ form_row(form.billingPlan) }}
+        </fieldset>
+
+        <fieldset>
             <legend>{{ 'signup.legend_login'|trans }}</legend>
             {{ form_row(form.email) }}
             {{ form_row(form.plainPassword.first) }}

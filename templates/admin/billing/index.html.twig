@@ -34,17 +34,23 @@
     <div class="card mb-3">
         <div class="card-body">
             <h2 class="h5">Payment method</h2>
+            {% set schedule = tenant.yearly ? 'once a year' : 'on the 1st of every month' %}
             {% if tenant.billingExempt %}
                 <p class="mb-0">Your website is free of charge.</p>
             {% else %}
+                <p>
+                    Plan: <strong>{{ tenant.yearly ? 'Yearly' : 'Monthly' }}</strong>, {{ price|money(currency) }} incl. VAT {{ tenant.yearly ? 'per year (12 months for the price of 10)' : 'per month' }}.
+                    {% if next_charge %}Next payment: <strong>{{ next_charge|date('j F Y') }}</strong>.{% endif %}
+                    {% if tenant.yearly %}We email you 2 weeks before every yearly payment.{% endif %}
+                </p>
                 {% if tenant.hasMandate %}
-                    <p>Paid automatically with <strong>{{ tenant.mandateDescription }}</strong> on the 1st of every month.</p>
+                    <p>Paid automatically with <strong>{{ tenant.mandateDescription }}</strong> {{ schedule }}.</p>
                 {% else %}
                     <p>
                         {% if tenant.billingStartsOn > date() %}
                             Your website is free until <strong>{{ tenant.billingStartsOn|date('l j F Y') }}</strong>.
                         {% endif %}
-                        Set up a payment method so your website is paid automatically on the 1st of every month.
+                        Set up a payment method so your website is paid automatically {{ schedule }}.
                     </p>
                 {% endif %}
                 <div class="d-flex flex-wrap gap-2">
@@ -68,7 +74,7 @@
             <div class="card-body">
                 <h2 class="h5">Payments</h2>
                 <table class="table mb-0">
-                    <thead><tr><th>Month</th><th class="text-end">Amount</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Period</th><th class="text-end">Amount</th><th>Status</th></tr></thead>
                     {% for charge in history %}
                         <tr>
                             <td>{{ charge.periodLabel }}</td>
