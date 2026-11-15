@@ -116,6 +116,10 @@ class Signup
     #[ORM\Column(nullable: true)]
     private ?string $passwordHash = null;
 
+    /** When the client agreed to the terms and privacy policy on /register (null when added by an admin) */
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $termsAcceptedAt = null;
+
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
@@ -387,6 +391,18 @@ class Signup
     public function hasPassword(): bool
     {
         return null !== $this->passwordHash;
+    }
+
+    public function getTermsAcceptedAt(): ?\DateTimeImmutable
+    {
+        return $this->termsAcceptedAt;
+    }
+
+    public function acceptTerms(): static
+    {
+        $this->termsAcceptedAt = new \DateTimeImmutable();
+
+        return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

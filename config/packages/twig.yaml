@@ -2,6 +2,12 @@ twig:
     file_name_pattern: '*.twig'
     globals:
         billing_brand: '%env(BILLING_BRAND)%'
+        # Who runs the platform: terms and privacy policy on PLATFORM_HOST
+        platform_legal:
+            name: '%env(PLATFORM_LEGAL_NAME)%'
+            tax_id: '%env(PLATFORM_LEGAL_TAX_ID)%'
+            address: '%env(PLATFORM_LEGAL_ADDRESS)%'
+            email: '%env(PLATFORM_LEGAL_EMAIL)%'
 
 when@test:
     twig:

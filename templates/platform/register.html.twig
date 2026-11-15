@@ -55,7 +55,11 @@
             {{ form_row(form.plainPassword.second) }}
         </fieldset>
 
-        {{ form_row(form.consent) }}
+        {# The label links to the terms and privacy policy, opened in a new tab so the form keeps what was typed #}
+        {{ form_row(form.consent, {label_html: true, label_translation_parameters: {
+            '%terms_url%': path('platform_terms', {_locale: app.request.locale}),
+            '%privacy_url%': path('platform_privacy', {_locale: app.request.locale}),
+        }}) }}
         {{ form_row(form.website) }}
 
         {% if turnstile_site_key() %}

@@ -79,6 +79,21 @@ final class PlatformController extends AbstractController
         ]);
     }
 
+    /** Date of the current terms and privacy policy, shown on both pages. Change it when the texts change. */
+    public const string LEGAL_UPDATED = '2026-11-15';
+
+    #[Route('/{_locale}/terms', name: 'platform_terms', requirements: ['_locale' => self::LOCALE_REQUIREMENT], methods: ['GET'])]
+    public function terms(): Response
+    {
+        return $this->render('platform/terms.html.twig');
+    }
+
+    #[Route('/{_locale}/privacy', name: 'platform_privacy', requirements: ['_locale' => self::LOCALE_REQUIREMENT], methods: ['GET'])]
+    public function privacy(): Response
+    {
+        return $this->render('platform/privacy.html.twig');
+    }
+
     #[Route('/{_locale}/for-professionals', name: 'platform_pros', requirements: ['_locale' => self::LOCALE_REQUIREMENT], methods: ['GET'])]
     public function pros(): Response
     {

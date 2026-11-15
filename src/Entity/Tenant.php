@@ -246,6 +246,10 @@ class Tenant
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'tenant', cascade: ['persist'], orphanRemoval: true)]
     private Collection $domains;
 
+    /** When the client agreed to the platform terms and privacy policy (copied from the sign-up) */
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $termsAcceptedAt = null;
+
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
@@ -1034,6 +1038,18 @@ class Tenant
         }
 
         return $this->domains->first() ?: null;
+    }
+
+    public function getTermsAcceptedAt(): ?\DateTimeImmutable
+    {
+        return $this->termsAcceptedAt;
+    }
+
+    public function setTermsAcceptedAt(?\DateTimeImmutable $termsAcceptedAt): static
+    {
+        $this->termsAcceptedAt = $termsAcceptedAt;
+
+        return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

@@ -171,6 +171,7 @@ class SignupCrudController extends AbstractCrudController
 
         yield AssociationField::new('tenant', 'Client')->hideOnForm();
         yield DateTimeField::new('decidedAt', 'Decided')->onlyOnDetail();
+        yield DateTimeField::new('termsAcceptedAt', 'Accepted terms and privacy policy')->onlyOnDetail()->setFormat('dd-MM-yyyy HH:mm');
     }
 
     /** Sign-ups waiting for approval always come first. */

@@ -129,7 +129,7 @@ final class SignupType extends AbstractType
                 'label' => 'signup.consent',
                 'mapped' => false,
                 'row_attr' => ['class' => 'p-check'],
-                'constraints' => [new Assert\IsTrue(message: 'Please agree, otherwise we cannot set up your website.')],
+                'constraints' => [new Assert\IsTrue(message: 'Please agree to the terms and privacy policy, otherwise we cannot set up your website.')],
             ])
             // Honeypot: hidden for people, bots fill it in
             ->add(self::HONEYPOT, TextType::class, [

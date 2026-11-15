@@ -243,6 +243,7 @@ final readonly class ClientOnboarding
             ->setCountry($signup->getCountry())
             ->setServiceArea($signup->getServiceArea() ?? $signup->getCity())
             ->setBillingPlan($signup->getBillingPlan())
+            ->setTermsAcceptedAt($signup->getTermsAcceptedAt())
             // Sensible defaults for the legal notice; the client can change them in Settings
             ->setLegalName($signup->getContactName())
             ->setTaxId($signup->getTaxId())
