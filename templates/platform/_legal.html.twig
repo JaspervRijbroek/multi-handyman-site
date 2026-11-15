@@ -1,0 +1,35 @@
+{#
+    Shared body of the terms and privacy pages. Each section is a title and a text in
+    translations/platform.*.yaml (<prefix>.<section>_title / _text); a blank line in a
+    text starts a new paragraph. Template text: have it checked by a lawyer or gestor.
+#}
+{% trans_default_domain 'platform' %}
+{% set params = {
+    '%brand%': brand,
+    '%name%': platform_legal.name,
+    '%tax_id%': platform_legal.tax_id,
+    '%address%': platform_legal.address ?: '–',
+    '%email%': platform_legal.email ?: '–',
+    '%terms_url%': url('platform_terms', {_locale: app.request.locale}),
+    '%privacy_url%': url('platform_privacy', {_locale: app.request.locale}),
+} %}
+<div class="p-legal">
+    <p class="p-eyebrow">{{ brand }}</p>
+    <h1>{{ (prefix ~ '.title')|trans }}</h1>
+    <p class="p-legal-meta">{{ 'legal.updated'|trans({'%date%': constant('App\\Controller\\PlatformController::LEGAL_UPDATED')|date('d-m-Y')}) }}</p>
+
+    <h2>{{ 'legal.provider_title'|trans }}</h2>
+    <ul>
+        <li>{{ 'legal.provider_name'|trans }}: {{ platform_legal.name }}</li>
+        <li>{{ 'legal.provider_tax_id'|trans }}: {{ platform_legal.tax_id }}</li>
+        {% if platform_legal.address %}<li>{{ 'legal.provider_address'|trans }}: {{ platform_legal.address }}</li>{% endif %}
+        {% if platform_legal.email %}<li>{{ 'legal.provider_email'|trans }}: <a href="mailto:{{ platform_legal.email }}">{{ platform_legal.email }}</a></li>{% endif %}
+    </ul>
+
+    {% for section in sections %}
+        <h2>{{ (prefix ~ '.' ~ section ~ '_title')|trans(params) }}</h2>
+        {% for paragraph in (prefix ~ '.' ~ section ~ '_text')|trans(params)|split("\n\n") %}
+            <p>{{ paragraph|nl2br }}</p>
+        {% endfor %}
+    {% endfor %}
+</div>

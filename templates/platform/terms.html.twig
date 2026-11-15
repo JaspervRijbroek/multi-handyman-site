@@ -1,0 +1,11 @@
+{% extends 'platform/layout.html.twig' %}
+{% trans_default_domain 'platform' %}
+
+{% block title %}{{ 'terms.title'|trans }} | {{ brand }}{% endblock %}
+
+{% block body %}
+    {% include 'platform/_legal.html.twig' with {
+        prefix: 'terms',
+        sections: ['scope', 'service', 'account', 'price', 'cancel', 'content', 'availability', 'liability', 'processing', 'end', 'changes', 'law'],
+    } %}
+{% endblock %}

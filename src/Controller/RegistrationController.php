@@ -72,6 +72,8 @@ final class RegistrationController extends AbstractController
                     $signup = $form->getData();
                     // Hashed the same way as logins, so the hash can be used as-is on approval
                     $signup->setPasswordHash($hasherFactory->getPasswordHasher(User::class)->hash($form->get('plainPassword')->getData()));
+                    // The consent checkbox is required, so ticked here: keep when, as proof
+                    $signup->acceptTerms();
 
                     $entityManager->persist($signup);
                     $entityManager->flush();

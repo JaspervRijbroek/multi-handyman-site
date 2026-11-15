@@ -6,6 +6,11 @@ parameters:
     env(BILLING_CURRENCY): 'EUR'
     env(BILLING_BRAND): 'CasitaFix'
     env(BILLING_WEBHOOKS): '0'
+    # The person or company running the platform, shown in the terms and privacy policy
+    env(PLATFORM_LEGAL_NAME): 'Casper Wilhelmus Petrus van Rijbroek'
+    env(PLATFORM_LEGAL_TAX_ID): 'Z0881872B'
+    env(PLATFORM_LEGAL_ADDRESS): ''
+    env(PLATFORM_LEGAL_EMAIL): ''
     env(FACTURADIRECTA_API_KEY): ''
     env(FACTURADIRECTA_COMPANY_ID): ''
     env(FACTURADIRECTA_SERIES): 'F-##-'

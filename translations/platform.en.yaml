@@ -8,6 +8,8 @@ nav:
     login: Client login
     list: List your business
     language: Language
+    terms: Terms
+    privacy: Privacy
 
 footer:
     tagline: Local professionals across Spain
@@ -203,7 +205,7 @@ signup:
     message: What do you do? Anything else we should know?
     password: Choose a password
     password_repeat: Repeat password
-    consent: I agree that these details are stored to set up my website and to contact me about it.
+    consent: 'I have read and agree to the <a href="%terms_url%" target="_blank">terms and conditions</a> and the <a href="%privacy_url%" target="_blank">privacy policy</a>.'
     honeypot: Leave this field empty
     thanks_title: Thank you!
     thanks_eyebrow: Sign-up received
@@ -219,3 +221,162 @@ password:
     expired_title: This link has expired
     expired_text: Links to set a password work once and for 7 days. Reply to your welcome email and we send you a new one.
     to_login: Go to login
+
+# Terms and privacy policy of the platform (templates/platform/_legal.html.twig).
+# Template text: have it checked by a lawyer or gestor. A blank line starts a new paragraph.
+legal:
+    updated: 'Last updated: %date%'
+    provider_title: Who we are
+    provider_name: Name
+    provider_tax_id: NIE
+    provider_address: Address
+    provider_email: Email
+
+terms:
+    title: Terms and conditions
+    scope_title: 1. Scope
+    scope_text: |-
+        These terms apply to the website service %brand%, provided by %name% ("we", "us") to businesses and self-employed professionals ("you").
+
+        %brand% is for professionals only. By signing up you confirm that you act for your business or trade, not as a consumer. Consumer protection rules, such as the right of withdrawal, therefore do not apply.
+    service_title: 2. The service
+    service_text: |-
+        We build and host a website for your business, on a %brand% subdomain or on your own domain. The service includes hosting, HTTPS, a simple admin to edit your site, a contact form, customer reviews, a legal notice and privacy page, the Google Search Console setup, and a listing in the %brand% search for professionals.
+
+        We may improve or change features over time. We will not remove a main feature without telling you first.
+
+        We cannot guarantee a ranking in Google or other search engines, or a number of enquiries or jobs.
+    account_title: 3. Sign-up and your account
+    account_text: |-
+        After you sign up we check your details. We may refuse a sign-up without giving a reason. The contract starts when we approve your sign-up and send you the welcome email.
+
+        Make sure your details are correct and keep them up to date. Keep your password and any AI assistant token secret: you are responsible for everything done with your login or token.
+    price_title: 4. Price and payment
+    price_text: |-
+        The price is the one shown on our website when you signed up, unless we agreed another price with you. Prices exclude VAT, which is added at the current rate.
+
+        Your website is free until the 1st of the month after we set it up. After that:
+        - Monthly plan: paid in advance on the 1st of every month.
+        - Yearly plan: 12 months for the price of 10, paid in advance once a year. We email you two weeks before every yearly payment.
+
+        Payments are collected automatically by our payment provider Mollie (card or SEPA direct debit). You get an invoice for every payment.
+
+        If a payment fails, we send reminders with a payment link. If it is still unpaid one week after the final reminder (about five weeks after the payment date), we take your website offline until the amount is paid. Your admin stays available.
+
+        We may change the price. We tell you at least 30 days in advance by email; the new price applies from your next payment period. If you do not agree, you can cancel before then.
+    cancel_title: 5. Duration and cancellation
+    cancel_text: |-
+        There is no minimum term. You can cancel at any time by email to %email%.
+
+        Monthly plan: the service ends at the end of the month you have already paid for. You are not charged again.
+
+        Yearly plan: the service ends at the end of the year you have already paid for. Yearly payments are not refunded, also not in part, if you cancel during the year. To avoid the next yearly payment, cancel before it is due.
+
+        We can end the contract with 30 days' notice by email. If we do, we refund any months you have paid for but not used. We can end it straight away if you seriously break these terms, for example by publishing unlawful content or not paying.
+    content_title: 6. Your content
+    content_text: |-
+        You are responsible for everything on your website: texts, photos, prices, contact and business details, and the details in your legal notice (name, tax ID, address). You confirm that you are allowed to use the texts and photos, and that your website and business comply with the law.
+
+        The legal notice and privacy page we generate are templates. Have them checked by your gestor or lawyer.
+
+        Reviews must come from real customers. You may not write reviews yourself, have them written, or offer something in return for good reviews.
+
+        You stay the owner of your content. You allow us to store, copy and show it to run your website, and to show your business name, town, trades and rating in the %brand% search.
+
+        We may remove content or take your website offline if it is clearly unlawful or harms others, or if we are ordered to by an authority. Where possible we contact you first.
+
+        If you use your own domain, you stay its owner and are responsible for its registration and DNS. The %brand% subdomain stays ours.
+    availability_title: 7. Availability
+    availability_text: |-
+        We do our best to keep your website online and safe, and we make regular backups. We cannot promise that the service will always be available or free of errors. Maintenance can cause short interruptions. Keep your own copy of important texts and photos.
+    liability_title: 8. Liability
+    liability_text: |-
+        Our total liability is limited to the amount you paid us in the 12 months before the damage happened. We are not liable for indirect damage, such as lost jobs, lost profit or lost data, or for the services of other companies such as Google, Mollie or your domain registrar.
+
+        These limits do not apply to damage caused on purpose or by gross negligence.
+    processing_title: 9. Processing personal data for you (GDPR article 28)
+    processing_text: |-
+        Your website collects personal data of your customers and visitors, for example messages through the contact form, reviews, and contact details you enter to send a review link. For this data you are the controller and we are your processor. This section is the data processing agreement between us.
+
+        We process this data only to run your website and admin as described in these terms, and on your documented instructions (your use of the admin counts as such). We do not use it for anything else and do not sell it.
+
+        Everyone at %brand% who has access to the data is bound to confidentiality.
+
+        We take appropriate security measures: HTTPS, logins with a password, separation of the data of each client, regular updates and backups.
+
+        You give us general permission to use the sub-processors listed in our privacy policy (%privacy_url%). We tell you at least 30 days in advance by email before we add or replace one; if you object, you can cancel.
+
+        We help you to respond to requests from people who use their GDPR rights, and to meet your other GDPR obligations, as far as this is reasonable. You can see, change and delete most data yourself in the admin.
+
+        We inform you without undue delay after we become aware of a personal data breach affecting your data.
+
+        When the contract ends we delete the data, as described in section 10, unless the law requires us to keep it. On request we give you the information you need to show that these obligations are met.
+    end_title: 10. When the contract ends
+    end_text: |-
+        We delete your website, your admin and all its content, including your customers' data, 30 days after the contract ends. If your website is offline because of an unpaid amount, we also delete it after 30 days offline, and the contract then ends.
+
+        Before that, you can ask us by email for a copy of your texts, photos, enquiries and reviews. We keep invoices and payment records as long as tax law requires.
+    changes_title: 11. Changes to these terms
+    changes_text: |-
+        We may change these terms. We email you the new terms at least 30 days before they apply. If you do not agree, you can cancel before then; if you keep using the service, the new terms apply.
+    law_title: 12. Law and disputes
+    law_text: |-
+        These terms are governed by Spanish law. Disputes go to the courts of the place where %name% lives, unless the law says otherwise. Questions or complaints? Email %email% first; we will try to solve it together.
+
+privacy:
+    title: Privacy policy
+    scope_title: 1. What this policy covers
+    scope_text: |-
+        This policy explains how %name% ("we") handles personal data on the %brand% platform: the search for professionals, the sign-up form, and the accounts of the professionals who use %brand% for their website. We are the controller for this data. Questions about your data: %email%.
+
+        It does not cover the websites of our clients. Each professional is responsible for the data on their own website (see the legal notice on that website). We process that data on their behalf, as described in section 9 of our terms (%terms_url%).
+    data_title: 2. What data we use
+    data_text: |-
+        If you sign up as a professional: your business name, your name, email address, phone and WhatsApp number, address, tax ID, work area, languages, domain name, your message to us, your password (only stored encrypted, as a hash) and the date you accepted our terms.
+
+        If you are a client: your plan, payments and invoices. Payments go through Mollie: we never see your full card or bank details, only a short description such as the card brand and last digits or part of your IBAN.
+
+        If you search for a professional: the trade and town you search for. Your IP address is used for a short time to protect our forms and search against abuse.
+
+        If you email us: your email address and what you write.
+    purposes_title: 3. Why we use it, and on what legal basis
+    purposes_text: |-
+        - To check your sign-up, build and run your website, manage your account and send you emails about the service: to perform our contract with you (GDPR article 6(1)(b)).
+        - To bill you and keep our accounts: a legal obligation under Spanish tax and commercial law (article 6(1)(c)).
+        - To show your business in the %brand% search: part of the service, so our contract (article 6(1)(b)).
+        - To keep the platform safe and stop spam and abuse: our legitimate interest (article 6(1)(f)).
+
+        We do not sell your data, do not use it for advertising and do not make automated decisions about you.
+    recipients_title: 4. Who we share data with
+    recipients_text: |-
+        We only share data with companies that help us run the service (sub-processors), and only what they need:
+        - Hetzner Online GmbH, Germany: hosting of the platform and all websites.
+        - Mollie B.V., the Netherlands: payments.
+        - FacturaDirecta (Spain): invoices.
+        - Cloudflare, Inc., USA: the spam check (Turnstile) on forms.
+        - Google LLC, USA: setting up Google Search Console for your website.
+        - OpenStreetMap Foundation, United Kingdom: turning addresses and towns into map positions (Nominatim).
+        - Plausible Insights OÜ, Estonia: cookieless visitor statistics on client websites that use it.
+        - Our email provider, for sending emails from the platform and the websites.
+
+        If you connect an AI assistant to your admin with your own token, the data the assistant reads goes to the company behind that assistant. That is your choice and covered by your agreement with them.
+
+        We also share data when the law requires it, for example with the tax authority.
+    transfers_title: 5. Data outside the EU
+    transfers_text: |-
+        Cloudflare and Google are based in the USA. They are certified under the EU-US Data Privacy Framework and also use the European Commission's standard contractual clauses. The United Kingdom has an adequacy decision from the European Commission.
+    retention_title: 6. How long we keep data
+    retention_text: |-
+        - Account and website data: as long as you are a client, plus 30 days (see section 10 of our terms).
+        - Sign-ups we do not approve: deleted within 3 months.
+        - Invoices and payment records: 6 years, as Spanish commercial law requires.
+        - IP addresses for abuse protection: at most a few hours. Server logs: at most 30 days.
+        - Emails: as long as needed to help you, at most 2 years after our last contact.
+    cookies_title: 7. Cookies
+    cookies_text: |-
+        The platform only uses one cookie that is needed to stay logged in to the admin. It is deleted when you log out or close your browser. We do not use tracking or advertising cookies, so there is no cookie banner. The spam check by Cloudflare on our forms reads technical data of your browser, but does not track you across websites.
+    rights_title: 8. Your rights
+    rights_text: |-
+        You can ask us to see, correct or delete your data, to limit its use, to receive it in a common format, or you can object to its use. Most account details you can change yourself in the admin. Email %email%; we reply within one month.
+
+        You can also complain to the Spanish data protection authority (Agencia Española de Protección de Datos, www.aepd.es).

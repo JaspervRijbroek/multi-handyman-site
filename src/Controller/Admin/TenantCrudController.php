@@ -251,6 +251,11 @@ class TenantCrudController extends AbstractCrudController
                 ->setDisabled()
                 ->hideWhenCreating();
             yield DateTimeField::new('suspendedAt', 'Offline for non-payment since')->setDisabled()->hideWhenCreating()->hideOnIndex();
+            yield DateTimeField::new('termsAcceptedAt', 'Accepted terms and privacy policy')
+                ->setHelp('Set when the client signed up on /register. Empty for clients added by an admin.')
+                ->setDisabled()
+                ->hideWhenCreating()
+                ->hideOnIndex();
 
 
             yield FormField::addTab('Look & Google', 'fab fa-google');

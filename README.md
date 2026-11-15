@@ -13,6 +13,7 @@ which client's site is shown; clients edit their own content in a simple admin.
   see [Search and reviews](#search-and-reviews)
 - Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
 - Spanish legal notice / privacy page generated from the client's details
+- Platform **terms and conditions** and **privacy policy** (`/{es,en}/terms`, `/{es,en}/privacy`), which professionals accept when signing up, see [Terms and privacy](#terms-and-privacy)
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
@@ -145,6 +146,27 @@ You add a client yourself ──────────────────
 Only super admins can create clients. The public form only stores a **sign-up**; nothing
 is created until you approve it. Sign-ups show up under **Platform → Sign-ups** (with a
 badge) and on the dashboard, and every super admin gets an email.
+
+### Terms and privacy
+
+Professionals must tick "I agree to the terms and conditions and the privacy policy" on
+`/register`. The moment they do is stored on the sign-up and copied to the client on approval
+(*Accepted terms and privacy policy*, under the sign-up details and the client's Billing tab).
+Clients you add yourself have no date.
+
+- The pages are `/{es,en}/terms` and `/{es,en}/privacy` on `PLATFORM_HOST`, linked in the footer.
+  The terms are for businesses only (no consumer right of withdrawal) and include the GDPR
+  article 28 processing agreement for the data on the client sites.
+- Who runs the platform comes from `PLATFORM_LEGAL_NAME`, `PLATFORM_LEGAL_TAX_ID`,
+  `PLATFORM_LEGAL_ADDRESS` and `PLATFORM_LEGAL_EMAIL`. **Fill in the address and email**: Spanish
+  law requires them, and the terms tell clients to cancel by email.
+- The texts are in `translations/platform.{es,en}.yaml` (`terms:` and `privacy:`); a blank line
+  starts a new paragraph. When you change them, update `PlatformController::LEGAL_UPDATED`
+  (shown as "Last updated") and email clients 30 days before, as the terms promise.
+- The terms promise to delete a site 30 days after it ends (or after 30 days offline for
+  non-payment) and the privacy policy to delete rejected sign-ups within 3 months. This is
+  not automated: delete them in the admin.
+- Template text: have it checked by a lawyer or gestor.
 
 | Where | How |
 | --- | --- |
@@ -421,7 +443,7 @@ Rough outline for a small Ubuntu VPS:
    messages survive a restart, and keep it on 127.0.0.1).
 2. Deploy the code with Deployer (see [Deployment](#deployment)).
 3. Create `/var/www/multi-handyman-site/shared/.env.local` with `APP_ENV=prod`, a random `APP_SECRET`, `DATABASE_URL`,
-   `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, plus
+   `MAILER_DSN` (e.g. Brevo or Postmark), `MAILER_FROM` and `PLATFORM_HOST`, `PLATFORM_LEGAL_ADDRESS` and `PLATFORM_LEGAL_EMAIL`, plus
    the live `MOLLIE_API_KEY` and `BILLING_WEBHOOKS=1`, `FACTURADIRECTA_API_KEY` /
    `FACTURADIRECTA_COMPANY_ID`, `CLOUDFLARE_ACCOUNT_ID` /
    `CLOUDFLARE_API_TOKEN`, `REDIS_URL=redis://127.0.0.1:6379` and `OPENSEARCH_URL` (empty

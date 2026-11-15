@@ -8,6 +8,8 @@ nav:
     login: Acceso clientes
     list: Registra tu negocio
     language: Idioma
+    terms: Condiciones
+    privacy: Privacidad
 
 footer:
     tagline: Profesionales locales en toda España
@@ -203,7 +205,7 @@ signup:
     message: ¿A qué te dedicas? ¿Algo más que debamos saber?
     password: Elige una contraseña
     password_repeat: Repite la contraseña
-    consent: Acepto que se guarden estos datos para crear mi web y contactarme sobre ella.
+    consent: 'He leído y acepto las <a href="%terms_url%" target="_blank">condiciones generales</a> y la <a href="%privacy_url%" target="_blank">política de privacidad</a>.'
     honeypot: Deja este campo vacío
     thanks_title: ¡Gracias!
     thanks_eyebrow: Registro recibido
@@ -219,3 +221,162 @@ password:
     expired_title: Este enlace ha caducado
     expired_text: Los enlaces para elegir la contraseña funcionan una vez y durante 7 días. Responde a tu email de bienvenida y te enviamos uno nuevo.
     to_login: Ir al acceso
+
+# Condiciones y política de privacidad de la plataforma (templates/platform/_legal.html.twig).
+# Texto de plantilla: que lo revise un abogado o gestor. Una línea vacía empieza un párrafo nuevo.
+legal:
+    updated: 'Última actualización: %date%'
+    provider_title: Quiénes somos
+    provider_name: Nombre
+    provider_tax_id: NIE
+    provider_address: Dirección
+    provider_email: Email
+
+terms:
+    title: Condiciones generales
+    scope_title: 1. Ámbito
+    scope_text: |-
+        Estas condiciones se aplican al servicio de páginas web %brand%, prestado por %name% ("nosotros") a empresas y autónomos ("tú").
+
+        %brand% es solo para profesionales. Al registrarte confirmas que actúas para tu negocio u oficio, no como consumidor. Por eso no se aplica la normativa de protección de consumidores, como el derecho de desistimiento.
+    service_title: 2. El servicio
+    service_text: |-
+        Creamos y alojamos una web para tu negocio, en un subdominio de %brand% o en tu propio dominio. El servicio incluye alojamiento, HTTPS, un panel sencillo para editar tu web, formulario de contacto, opiniones de clientes, aviso legal y política de privacidad, la configuración de Google Search Console y tu ficha en el buscador de profesionales de %brand%.
+
+        Podemos mejorar o cambiar funciones con el tiempo. No quitaremos una función principal sin avisarte antes.
+
+        No podemos garantizar una posición en Google u otros buscadores, ni un número de solicitudes o trabajos.
+    account_title: 3. Registro y tu cuenta
+    account_text: |-
+        Después de tu registro revisamos tus datos. Podemos rechazar un registro sin dar motivos. El contrato empieza cuando aprobamos tu registro y te enviamos el email de bienvenida.
+
+        Asegúrate de que tus datos son correctos y mantenlos al día. Guarda en secreto tu contraseña y cualquier token de asistente de IA: eres responsable de todo lo que se haga con tu acceso o tu token.
+    price_title: 4. Precio y pago
+    price_text: |-
+        El precio es el que aparecía en nuestra web cuando te registraste, salvo que acordemos otro contigo. Los precios no incluyen el IVA, que se añade al tipo vigente.
+
+        Tu web es gratis hasta el día 1 del mes siguiente a su creación. Después:
+        - Plan mensual: se paga por adelantado el día 1 de cada mes.
+        - Plan anual: 12 meses por el precio de 10, pagados por adelantado una vez al año. Te avisamos por email dos semanas antes de cada pago anual.
+
+        Los pagos se cobran automáticamente a través de nuestro proveedor de pagos Mollie (tarjeta o domiciliación SEPA). Recibes una factura por cada pago.
+
+        Si un pago falla, te enviamos recordatorios con un enlace de pago. Si sigue sin pagarse una semana después del último recordatorio (unas cinco semanas después de la fecha de pago), desconectamos tu web hasta que se pague el importe. Tu panel sigue disponible.
+
+        Podemos cambiar el precio. Te avisamos por email con al menos 30 días de antelación; el nuevo precio se aplica a partir de tu siguiente periodo de pago. Si no estás de acuerdo, puedes darte de baja antes.
+    cancel_title: 5. Duración y baja
+    cancel_text: |-
+        No hay permanencia. Puedes darte de baja en cualquier momento por email a %email%.
+
+        Plan mensual: el servicio termina al final del mes que ya has pagado. No se te cobra nada más.
+
+        Plan anual: el servicio termina al final del año que ya has pagado. Los pagos anuales no se devuelven, ni en parte, si te das de baja durante el año. Para evitar el siguiente pago anual, date de baja antes de que venza.
+
+        Podemos terminar el contrato avisándote por email con 30 días de antelación. En ese caso te devolvemos los meses pagados y no disfrutados. Podemos terminarlo de inmediato si incumples gravemente estas condiciones, por ejemplo publicando contenido ilegal o no pagando.
+    content_title: 6. Tu contenido
+    content_text: |-
+        Eres responsable de todo lo que hay en tu web: textos, fotos, precios, datos de contacto y de tu negocio, y los datos de tu aviso legal (nombre, NIF, dirección). Confirmas que puedes usar los textos y fotos, y que tu web y tu negocio cumplen la ley.
+
+        El aviso legal y la política de privacidad que generamos son plantillas. Haz que los revise tu gestor o abogado.
+
+        Las opiniones deben ser de clientes reales. No puedes escribir opiniones tú mismo, encargarlas ni ofrecer nada a cambio de opiniones buenas.
+
+        Sigues siendo el propietario de tu contenido. Nos permites guardarlo, copiarlo y mostrarlo para hacer funcionar tu web, y mostrar el nombre de tu negocio, tu localidad, tus oficios y tu valoración en el buscador de %brand%.
+
+        Podemos retirar contenido o desconectar tu web si es claramente ilegal o perjudica a otros, o si nos lo ordena una autoridad. Siempre que sea posible te contactamos antes.
+
+        Si usas tu propio dominio, sigues siendo su propietario y eres responsable de su registro y DNS. El subdominio de %brand% sigue siendo nuestro.
+    availability_title: 7. Disponibilidad
+    availability_text: |-
+        Hacemos todo lo posible para que tu web esté en línea y segura, y hacemos copias de seguridad periódicas. No podemos prometer que el servicio esté siempre disponible o sin errores. El mantenimiento puede causar breves interrupciones. Guarda tu propia copia de los textos y fotos importantes.
+    liability_title: 8. Responsabilidad
+    liability_text: |-
+        Nuestra responsabilidad total se limita al importe que nos pagaste en los 12 meses anteriores al daño. No respondemos de daños indirectos, como trabajos o beneficios perdidos o pérdida de datos, ni de los servicios de otras empresas como Google, Mollie o tu registrador de dominios.
+
+        Estos límites no se aplican a daños causados con dolo o culpa grave.
+    processing_title: 9. Tratamiento de datos personales por tu cuenta (artículo 28 del RGPD)
+    processing_text: |-
+        Tu web recoge datos personales de tus clientes y visitantes, por ejemplo mensajes del formulario de contacto, opiniones y los datos de contacto que introduces para enviar un enlace de opinión. De esos datos tú eres el responsable del tratamiento y nosotros el encargado. Este apartado es el contrato de encargo del tratamiento entre nosotros.
+
+        Tratamos esos datos solo para hacer funcionar tu web y tu panel como se describe en estas condiciones, y según tus instrucciones documentadas (el uso que haces del panel cuenta como tales). No los usamos para nada más y no los vendemos.
+
+        Todas las personas de %brand% con acceso a los datos están obligadas a guardar confidencialidad.
+
+        Aplicamos medidas de seguridad adecuadas: HTTPS, acceso con contraseña, separación de los datos de cada cliente, actualizaciones y copias de seguridad periódicas.
+
+        Nos das una autorización general para usar los subencargados que figuran en nuestra política de privacidad (%privacy_url%). Te avisamos por email con al menos 30 días de antelación antes de añadir o sustituir uno; si te opones, puedes darte de baja.
+
+        Te ayudamos a responder a las personas que ejercen sus derechos del RGPD y a cumplir tus demás obligaciones del RGPD, en la medida razonable. La mayoría de los datos puedes verlos, cambiarlos y borrarlos tú mismo en el panel.
+
+        Te informamos sin dilación indebida cuando tengamos conocimiento de una violación de la seguridad que afecte a tus datos.
+
+        Cuando termina el contrato borramos los datos, como se describe en el apartado 10, salvo que la ley nos obligue a conservarlos. Si nos lo pides, te damos la información necesaria para demostrar que cumplimos estas obligaciones.
+    end_title: 10. Cuando termina el contrato
+    end_text: |-
+        Borramos tu web, tu panel y todo su contenido, incluidos los datos de tus clientes, 30 días después de que termine el contrato. Si tu web está desconectada por un importe impagado, también la borramos tras 30 días desconectada, y el contrato termina entonces.
+
+        Antes de eso, puedes pedirnos por email una copia de tus textos, fotos, solicitudes y opiniones. Conservamos las facturas y los registros de pago durante el tiempo que exige la ley tributaria.
+    changes_title: 11. Cambios en estas condiciones
+    changes_text: |-
+        Podemos cambiar estas condiciones. Te enviamos por email las nuevas condiciones al menos 30 días antes de que se apliquen. Si no estás de acuerdo, puedes darte de baja antes; si sigues usando el servicio, se aplican las nuevas condiciones.
+    law_title: 12. Ley aplicable y conflictos
+    law_text: |-
+        Estas condiciones se rigen por la ley española. Los conflictos se someten a los juzgados y tribunales del domicilio de %name%, salvo que la ley disponga otra cosa. ¿Preguntas o quejas? Escribe primero a %email%; intentaremos resolverlo juntos.
+
+privacy:
+    title: Política de privacidad
+    scope_title: 1. A qué se aplica esta política
+    scope_text: |-
+        Esta política explica cómo %name% ("nosotros") trata los datos personales en la plataforma %brand%: el buscador de profesionales, el formulario de registro y las cuentas de los profesionales que usan %brand% para su web. Somos el responsable del tratamiento de estos datos. Preguntas sobre tus datos: %email%.
+
+        No se aplica a las webs de nuestros clientes. Cada profesional es responsable de los datos de su propia web (consulta el aviso legal de esa web). Nosotros tratamos esos datos por su cuenta, como se describe en el apartado 9 de nuestras condiciones (%terms_url%).
+    data_title: 2. Qué datos usamos
+    data_text: |-
+        Si te registras como profesional: el nombre de tu negocio, tu nombre, email, teléfono y número de WhatsApp, dirección, NIF, zona de trabajo, idiomas, dominio, tu mensaje, tu contraseña (solo se guarda cifrada, como hash) y la fecha en que aceptaste nuestras condiciones.
+
+        Si eres cliente: tu plan, pagos y facturas. Los pagos se hacen a través de Mollie: nunca vemos los datos completos de tu tarjeta o cuenta, solo una descripción corta como la marca y los últimos dígitos de la tarjeta o parte de tu IBAN.
+
+        Si buscas un profesional: el oficio y la localidad que buscas. Tu dirección IP se usa durante poco tiempo para proteger nuestros formularios y el buscador contra abusos.
+
+        Si nos escribes un email: tu dirección de email y lo que escribes.
+    purposes_title: 3. Para qué los usamos y con qué base legal
+    purposes_text: |-
+        - Para revisar tu registro, crear y mantener tu web, gestionar tu cuenta y enviarte emails sobre el servicio: para cumplir nuestro contrato contigo (artículo 6.1.b del RGPD).
+        - Para facturarte y llevar nuestra contabilidad: una obligación legal según la normativa tributaria y mercantil española (artículo 6.1.c).
+        - Para mostrar tu negocio en el buscador de %brand%: forma parte del servicio, por tanto de nuestro contrato (artículo 6.1.b).
+        - Para mantener la plataforma segura y evitar spam y abusos: nuestro interés legítimo (artículo 6.1.f).
+
+        No vendemos tus datos, no los usamos para publicidad y no tomamos decisiones automatizadas sobre ti.
+    recipients_title: 4. Con quién compartimos datos
+    recipients_text: |-
+        Solo compartimos datos con empresas que nos ayudan a prestar el servicio (subencargados), y solo lo que necesitan:
+        - Hetzner Online GmbH, Alemania: alojamiento de la plataforma y de todas las webs.
+        - Mollie B.V., Países Bajos: pagos.
+        - FacturaDirecta (España): facturas.
+        - Cloudflare, Inc., EE. UU.: el control antispam (Turnstile) de los formularios.
+        - Google LLC, EE. UU.: la configuración de Google Search Console para tu web.
+        - OpenStreetMap Foundation, Reino Unido: convertir direcciones y localidades en posiciones en el mapa (Nominatim).
+        - Plausible Insights OÜ, Estonia: estadísticas de visitas sin cookies en las webs de clientes que las usan.
+        - Nuestro proveedor de email, para enviar los emails de la plataforma y de las webs.
+
+        Si conectas un asistente de IA a tu panel con tu propio token, los datos que lee el asistente van a la empresa de ese asistente. Es tu elección y se rige por tu acuerdo con ella.
+
+        También compartimos datos cuando la ley lo exige, por ejemplo con la Agencia Tributaria.
+    transfers_title: 5. Datos fuera de la UE
+    transfers_text: |-
+        Cloudflare y Google tienen su sede en EE. UU. Están certificadas en el Marco de Privacidad de Datos UE-EE. UU. y usan además las cláusulas contractuales tipo de la Comisión Europea. El Reino Unido cuenta con una decisión de adecuación de la Comisión Europea.
+    retention_title: 6. Cuánto tiempo guardamos los datos
+    retention_text: |-
+        - Datos de la cuenta y de la web: mientras seas cliente, más 30 días (ver el apartado 10 de nuestras condiciones).
+        - Registros que no aprobamos: se borran en un plazo de 3 meses.
+        - Facturas y registros de pago: 6 años, como exige el Código de Comercio.
+        - Direcciones IP para la protección contra abusos: como mucho unas horas. Registros del servidor: como mucho 30 días.
+        - Emails: mientras sea necesario para ayudarte, como mucho 2 años después de nuestro último contacto.
+    cookies_title: 7. Cookies
+    cookies_text: |-
+        La plataforma solo usa una cookie, necesaria para mantener tu sesión en el panel. Se borra al cerrar sesión o el navegador. No usamos cookies de seguimiento ni de publicidad, por eso no hay banner de cookies. El control antispam de Cloudflare en nuestros formularios lee datos técnicos de tu navegador, pero no te sigue por otras webs.
+    rights_title: 8. Tus derechos
+    rights_text: |-
+        Puedes pedirnos ver, corregir o borrar tus datos, limitar su uso, recibirlos en un formato común, u oponerte a su uso. La mayoría de los datos de tu cuenta puedes cambiarlos tú mismo en el panel. Escribe a %email%; respondemos en un plazo de un mes.
+
+        También puedes reclamar ante la Agencia Española de Protección de Datos (www.aepd.es).

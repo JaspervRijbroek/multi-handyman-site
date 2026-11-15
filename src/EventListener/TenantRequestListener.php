@@ -64,9 +64,9 @@ final readonly class TenantRequestListener
             throw new NotFoundHttpException(\sprintf('No site is configured for "%s".', $host));
         }
 
-        // The admin, sign-up, password, payment, search and MCP pages only live on the platform host
+        // The admin, sign-up, password, payment, search, terms, privacy and MCP pages only live on the platform host
         // (some of them behind a language, e.g. /es/search)
-        if (preg_match('#^/([a-z]{2}/)?(admin|login|logout|register|set-password|billing|search|for-professionals|mcp)(/|$)#', $path)) {
+        if (preg_match('#^/([a-z]{2}/)?(admin|login|logout|register|set-password|billing|search|for-professionals|terms|privacy|mcp)(/|$)#', $path)) {
             throw new NotFoundHttpException();
         }
 

@@ -315,3 +315,8 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-form .p-check > input { grid-column: 1; grid-row: 1; margin: 4px 0 0; }
 .p-form .p-check > label { grid-column: 2; grid-row: 1; }
 .p-form .p-check > ul { grid-column: 1 / -1; }
+
+/* Terms and privacy policy */
+.p-legal h2 { font-size: 1.6rem; margin-top: 1.6em; }
+.p-legal p, .p-legal li { color: var(--p-text); max-width: 70ch; }
+.p-legal-meta { color: var(--p-muted); font-size: .9375rem; }
