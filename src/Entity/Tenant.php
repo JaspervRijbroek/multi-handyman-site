@@ -58,6 +58,10 @@ class Tenant
     #[Assert\Regex('/^#[0-9a-fA-F]{6}$/')]
     private string $primaryColor = '#d9480f';
 
+    /** Use this client's own templates from templates/tenants/<slug>/ (off by default) */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $customTemplates = false;
+
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $phone = null;
 
@@ -347,6 +351,18 @@ class Tenant
     public function getPrimaryColor(): string
     {
         return $this->primaryColor;
+    }
+
+    public function hasCustomTemplates(): bool
+    {
+        return $this->customTemplates;
+    }
+
+    public function setCustomTemplates(bool $customTemplates): static
+    {
+        $this->customTemplates = $customTemplates;
+
+        return $this;
     }
 
     public function setPrimaryColor(?string $primaryColor): static

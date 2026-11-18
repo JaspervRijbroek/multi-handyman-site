@@ -107,7 +107,7 @@ final class SiteController extends AbstractController
             }
         }
 
-        return $this->render('site/home.html.twig', [
+        return $this->render('@site/home.html.twig', [
             'tenant' => $tenant,
             'services' => $services->findBy(['tenant' => $tenant], ['position' => 'ASC', 'id' => 'ASC']),
             'projects' => $projects->findBy(['tenant' => $tenant, 'published' => true], ['completedAt' => 'DESC', 'id' => 'DESC'], 12),
@@ -156,7 +156,7 @@ final class SiteController extends AbstractController
             }
         }
 
-        return $this->render('site/review.html.twig', [
+        return $this->render('@site/review.html.twig', [
             'tenant' => $tenant,
             'form' => $form,
         ]);
@@ -178,7 +178,7 @@ final class SiteController extends AbstractController
 
         // Unknown, used or older than a week
         if (!$project?->isReviewLinkValid()) {
-            return $this->render('site/review_invite.html.twig', ['tenant' => $tenant, 'project' => null, 'form' => null], new Response('', Response::HTTP_GONE));
+            return $this->render('@site/review_invite.html.twig', ['tenant' => $tenant, 'project' => null, 'form' => null], new Response('', Response::HTTP_GONE));
         }
 
         $review = (new Review())->setTenant($tenant)->setLocale($request->getLocale())->setProject($project);
@@ -203,7 +203,7 @@ final class SiteController extends AbstractController
             return $this->redirectToRoute('site_review', ['_locale' => $request->getLocale()]);
         }
 
-        return $this->render('site/review_invite.html.twig', [
+        return $this->render('@site/review_invite.html.twig', [
             'tenant' => $tenant,
             'project' => $project,
             'form' => $form,
@@ -213,7 +213,7 @@ final class SiteController extends AbstractController
     #[Route('/{_locale}/legal', name: 'site_legal', requirements: ['_locale' => '[a-z]{2}'], methods: ['GET'])]
     public function legal(Request $request): Response
     {
-        return $this->render('site/legal.html.twig', [
+        return $this->render('@site/legal.html.twig', [
             'tenant' => $this->siteTenant($request),
         ]);
     }
@@ -235,7 +235,7 @@ final class SiteController extends AbstractController
     {
         $tenant = $this->tenantContext->get() ?? throw new NotFoundHttpException();
 
-        $response = $this->render('site/sitemap.xml.twig', ['tenant' => $tenant]);
+        $response = $this->render('@site/sitemap.xml.twig', ['tenant' => $tenant]);
         $response->headers->set('Content-Type', 'application/xml; charset=UTF-8');
 
         return $response;

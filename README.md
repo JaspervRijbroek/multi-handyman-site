@@ -81,6 +81,14 @@ Translatable texts are JSON maps (`{"en": "...", "es": "..."}`), edited with
 form, one language bar (`EN | ES | ...`, `public/js/admin-locales.js`) switches all
 translated fields at once.
 
+### Custom templates for one client
+
+The client sites use the Twig namespace `@site` (`templates/site/`). For a client that needs
+something special, add templates in `templates/tenants/<slug>/` and switch on **Use custom
+templates** (Clients → Look & Google, off by default). Their files then replace the standard ones
+with the same name; they can extend the standard template as `site/...` and override only some
+blocks. See `templates/tenants/README.md`.
+
 ## Search and reviews
 
 The platform brand (**CasitaFix** by default) comes from `BILLING_BRAND`.
