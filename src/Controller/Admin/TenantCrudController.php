@@ -260,6 +260,10 @@ class TenantCrudController extends AbstractCrudController
 
             yield FormField::addTab('Look & Google', 'fab fa-google');
             yield ColorField::new('primaryColor', 'Brand colour')->hideOnIndex();
+            yield BooleanField::new('customTemplates', 'Use custom templates')
+                ->setHelp('Shows this client\'s own templates from templates/tenants/<slug>/ instead of the standard ones. Only switch on once that folder is deployed.')
+                ->renderAsSwitch(false)
+                ->hideOnIndex();
 
             yield FormField::addFieldset('Google Search Console')
                 ->setHelp('Set up automatically with "Connect Google" (and retried by app:google:connect --all) once the domain points to the server.');

@@ -1,5 +1,10 @@
 twig:
     file_name_pattern: '*.twig'
+    paths:
+        # Client-site templates. A client with "custom templates" switched on gets
+        # templates/tenants/<slug>/ in front of this, see TenantRequestListener.
+        # The defaults always stay reachable as 'site/...' (Twig's main namespace).
+        '%kernel.project_dir%/templates/site': site
     globals:
         billing_brand: '%env(BILLING_BRAND)%'
         # Who runs the platform: terms and privacy policy on PLATFORM_HOST

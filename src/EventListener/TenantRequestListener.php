@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\DomainRepository;
 use App\Tenant\TenantContext;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Decides, per request, which tenant is active.
@@ -34,6 +36,10 @@ final readonly class TenantRequestListener
         private DomainRepository $domains,
         private Security $security,
         private Environment $twig,
+        #[Autowire(service: 'twig.loader.native_filesystem')]
+        private FilesystemLoader $twigLoader,
+        #[Autowire('%kernel.project_dir%/templates/tenants')]
+        private string $tenantTemplatesDir,
         #[Autowire(env: 'PLATFORM_HOST')]
         string $platformHost,
     ) {
@@ -94,6 +100,20 @@ final readonly class TenantRequestListener
         }
 
         $this->tenantContext->set($tenant);
+        $this->useCustomTemplates($tenant);
+    }
+
+    /**
+     * Client sites render '@site/...' templates. With "custom templates" switched on, the client's
+     * own folder goes in front, so any template found there replaces the standard one. Those
+     * templates can extend the standard ones as 'site/...' and only override some blocks.
+     */
+    private function useCustomTemplates(Tenant $tenant): void
+    {
+        $dir = $this->tenantTemplatesDir.'/'.$tenant->getSlug();
+        if ($tenant->hasCustomTemplates() && is_dir($dir)) {
+            $this->twigLoader->prependPath($dir, 'site');
+        }
     }
 
     /** Runs right after the firewall (8), so the logged-in user is known. */
