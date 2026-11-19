@@ -38,6 +38,15 @@ task('deploy:update_code', function () {
     ]);
 });
 
+// Production must run with APP_ENV=prod (see README "Production", step 3). Without it,
+// cache:clear boots in dev and fails with "DebugBundle not found" (dev packages are skipped).
+task('deploy:check_env', function () {
+    if (!test('grep -qE "^APP_ENV=\"?prod\"?\\s*$" {{deploy_path}}/shared/.env.local')) {
+        throw error('shared/.env.local must contain APP_ENV=prod (see README "Production").');
+    }
+});
+before('deploy:vendors', 'deploy:check_env');
+
 // Composer (run by the recipe) also clears and warms the cache.
 after('deploy:vendors', 'database:migrate');
 

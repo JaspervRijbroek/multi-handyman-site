@@ -500,6 +500,9 @@ One-time setup:
 To deploy by hand: `DEPLOY_HOST=<server> dep deploy` (uploads your local working copy).
 Roll back to the previous release with `DEPLOY_HOST=<server> dep rollback`.
 
+The deploy stops early if `shared/.env.local` has no `APP_ENV=prod` line. Without it the
+app runs in dev mode and `cache:clear` fails with "DebugBundle not found".
+
 For a new client: approve their sign-up (or add them, see *Onboarding a new client*). The
 welcome email and the admin page *Your domain* tell them which DNS records to set; once they
 do, the site moves to their domain by itself (see [Domains](#domains)). HTTPS works on the first
