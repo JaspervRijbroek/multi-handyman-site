@@ -104,6 +104,10 @@ final readonly class ClientOnboarding
             $result->add(OnboardingResult::OK, 'Own domain', \sprintf('%s becomes the main address by itself once its DNS points to the server; the welcome email explains how.', $own));
         }
 
+        if ($inviter = $tenant->getInvitedBy()) {
+            $result->add(OnboardingResult::OK, 'Invitation', \sprintf('Invited by %s: second month free. %s gets a free month once payment is set up.', $inviter->getName(), $inviter->getName()));
+        }
+
         $this->mailer->sendWelcome($user, $tenant, $setupToken, $result);
         $this->sendPaymentSetup($tenant, $result);
         $this->connectGoogle($tenant, $result);
@@ -243,6 +247,10 @@ final readonly class ClientOnboarding
             ->setCountry($signup->getCountry())
             ->setServiceArea($signup->getServiceArea() ?? $signup->getCity())
             ->setBillingPlan($signup->getBillingPlan())
+            ->setFoundingMember($signup->isFoundingMember()) // after the constructor: moves "free until" a year later
+            // Invited: their first payment covers their 2nd month too (App\Invitation\Invitations)
+            ->setInvitedBy($signup->getInvitation()?->getTenant())
+            ->setFreeMonths($signup->getInvitation() ? 1 : 0)
             ->setTermsAcceptedAt($signup->getTermsAcceptedAt())
             // Sensible defaults for the legal notice; the client can change them in Settings
             ->setLegalName($signup->getContactName())

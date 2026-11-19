@@ -1,6 +1,9 @@
 Hello {{ tenant.name }},
 
 Welcome to {{ brand }}! Your website is free until {{ tenant.billingStartsOn|date('l j F Y') }}.
+{% if tenant.foundingMember -%}
+As a founding member, your first year is free and your second year is 50% off.
+{% endif -%}
 {% if tenant.yearly -%}
 From then on it is charged automatically once a year (12 months for the price of 10).
 We email you 2 weeks before every yearly payment.

@@ -58,6 +58,7 @@ final class OnboardClientCommand extends Command
                 default => null,
             });
         }
+        $this->addOption('founding', null, InputOption::VALUE_NONE, 'Add as a founding member (1st year free, 2nd year 50% off)');
 
         $this->setHelp(<<<'HELP'
             Asks for anything you did not pass as an option, then creates the client
@@ -118,7 +119,8 @@ final class OnboardClientCommand extends Command
             ->setDomain($option('domain'))
             ->setLocales($locales)
             ->setDefaultLocale(strtolower((string) ($option('main-language') ?? $locales[0] ?? 'en')))
-            ->setTaxId($option('tax-id'));
+            ->setTaxId($option('tax-id'))
+            ->setFoundingMember((bool) $input->getOption('founding'));
 
         $violations = $this->validator->validate($signup);
         if (\count($violations) > 0) {

@@ -24,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -167,8 +168,13 @@ class SignupCrudController extends AbstractCrudController
         yield ChoiceField::new('defaultLocale', 'Main language')->setChoices($localeChoices)->hideOnIndex();
         yield ChoiceField::new('billingPlan', 'Plan')
             ->setChoices(['Monthly' => Tenant::PLAN_MONTHLY, 'Yearly' => Tenant::PLAN_YEARLY]);
+        yield BooleanField::new('foundingMember', 'Founding member')
+            ->setHelp('1st year free, 2nd year 50% off. Tick before approving.')
+            ->renderAsSwitch(false)
+            ->hideOnIndex();
         yield TextareaField::new('message', 'Message from the client')->hideOnIndex();
 
+        yield AssociationField::new('invitation', 'Invitation')->hideOnForm();
         yield AssociationField::new('tenant', 'Client')->hideOnForm();
         yield DateTimeField::new('decidedAt', 'Decided')->onlyOnDetail();
         yield DateTimeField::new('termsAcceptedAt', 'Accepted terms and privacy policy')->onlyOnDetail()->setFormat('dd-MM-yyyy HH:mm');

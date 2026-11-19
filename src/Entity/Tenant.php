@@ -26,6 +26,10 @@ class Tenant
     public const string PLAN_YEARLY = 'yearly';
     public const array PLANS = [self::PLAN_MONTHLY, self::PLAN_YEARLY];
 
+    /** Founding members: free for a year longer, then a year at a discount (BillingService::FOUNDING_DISCOUNT_PERCENT) */
+    public const string FOUNDING_FREE_PERIOD = '+1 year';
+    public const string FOUNDING_DISCOUNT_PERIOD = '+1 year';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -208,6 +212,24 @@ class Tenant
     /** First day the client is charged; everything before is free. Null: derived from createdAt */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $billingStartsOn = null;
+
+    /** Early client: the first year is free, the second year is at a discount */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $foundingMember = false;
+
+    /** Invitations (App\Invitation\Invitations): extra months on the next payment, at no cost */
+    #[ORM\Column(options: ['default' => 0])]
+    #[Assert\PositiveOrZero]
+    private int $freeMonths = 0;
+
+    /** The client whose invitation this client signed up with */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $invitedBy = null;
+
+    /** When the inviter got their free month (once this client set up payment) */
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $inviterRewardedAt = null;
 
     #[ORM\Column(length: 40, nullable: true)]
     private ?string $mollieCustomerId = null;
@@ -892,6 +914,78 @@ class Tenant
         $this->billingStartsOn = $billingStartsOn;
 
         return $this;
+    }
+
+    public function isFoundingMember(): bool
+    {
+        return $this->foundingMember;
+    }
+
+    /** Switching it on or off moves the first charge a year later, or back to the standard date */
+    public function setFoundingMember(bool $foundingMember): static
+    {
+        if ($foundingMember !== $this->foundingMember) {
+            $standard = self::firstBillingDay($this->createdAt);
+            $this->billingStartsOn = $foundingMember ? $standard->modify(self::FOUNDING_FREE_PERIOD) : $standard;
+        }
+        $this->foundingMember = $foundingMember;
+
+        return $this;
+    }
+
+    public function getFreeMonths(): int
+    {
+        return $this->freeMonths;
+    }
+
+    public function setFreeMonths(?int $freeMonths): static
+    {
+        $this->freeMonths = max(0, (int) $freeMonths);
+
+        return $this;
+    }
+
+    public function addFreeMonth(): static
+    {
+        ++$this->freeMonths;
+
+        return $this;
+    }
+
+    public function getInvitedBy(): ?self
+    {
+        return $this->invitedBy;
+    }
+
+    public function setInvitedBy(?self $invitedBy): static
+    {
+        $this->invitedBy = $invitedBy;
+
+        return $this;
+    }
+
+    public function getInviterRewardedAt(): ?\DateTimeImmutable
+    {
+        return $this->inviterRewardedAt;
+    }
+
+    public function setInviterRewardedAt(?\DateTimeImmutable $inviterRewardedAt): static
+    {
+        $this->inviterRewardedAt = $inviterRewardedAt;
+
+        return $this;
+    }
+
+    /** The first day without the founding member discount; null when not a founding member */
+    public function getFoundingDiscountUntil(): ?\DateTimeImmutable
+    {
+        return $this->foundingMember ? $this->getBillingStartsOn()->modify(self::FOUNDING_DISCOUNT_PERIOD) : null;
+    }
+
+    /** Whether a charge starting on $day gets the founding member discount */
+    public function hasFoundingDiscountOn(\DateTimeInterface $day): bool
+    {
+        return $this->foundingMember && $day < $this->getFoundingDiscountUntil();
     }
 
     public function getMollieCustomerId(): ?string

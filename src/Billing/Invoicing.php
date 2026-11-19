@@ -54,6 +54,13 @@ final readonly class Invoicing
         $numbering = $this->facturaDirecta->getCompanySettings()['content']['numbering'] ?? [];
         $contactId = $this->ensureContact($charge->getTenant());
         $net = $charge->getNetAmount() / 100;
+        $text = $this->brand.' – '.$charge->getPeriodLabel();
+        if ($charge->getTenant()->hasFoundingDiscountOn($charge->getPeriod())) {
+            $text .= \sprintf(' (founding member, %d%% off)', BillingService::FOUNDING_DISCOUNT_PERCENT);
+        }
+        if ($charge->getFreeMonths() > 0) {
+            $text .= 1 === $charge->getFreeMonths() ? ' (incl. 1 free month)' : \sprintf(' (incl. %d free months)', $charge->getFreeMonths());
+        }
         $today = new \DateTimeImmutable();
 
         $invoice = $this->facturaDirecta->createInvoice([
@@ -75,7 +82,7 @@ final readonly class Invoicing
                 'discountRate' => 0,
                 'lineTotal' => $net,
                 'tax' => [$this->tax],
-                'text' => $this->brand.' – '.$charge->getPeriodLabel(),
+                'text' => $text,
             ]],
         ], 'billing-charge-'.$charge->getId().'-'.$today->format('Ymd')); // same body on a same-day retry
 

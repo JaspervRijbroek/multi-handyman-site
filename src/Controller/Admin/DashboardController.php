@@ -141,6 +141,7 @@ class DashboardController extends AbstractDashboardController
             if (!$tenant->isBillingExempt()) {
                 yield MenuItem::linkToRoute('Billing', 'fa fa-credit-card', 'admin_billing_index');
             }
+            yield MenuItem::linkToRoute('Invite a business', 'fa fa-gift', 'admin_invitations_index');
         }
 
         if ($this->isGranted(User::ROLE_SUPER_ADMIN)) {

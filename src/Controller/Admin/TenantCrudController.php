@@ -35,6 +35,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
@@ -244,7 +245,21 @@ class TenantCrudController extends AbstractCrudController
                 ->setHelp('Leave empty for the standard price. The yearly plan costs 10 times this.')
                 ->hideOnIndex();
             yield DateField::new('billingStartsOn', 'Free until (first charge on)')
-                ->setHelp('Set automatically to the 1st of the month after the client was added.')
+                ->setHelp('Set automatically to the 1st of the month after the client was added (a year later for founding members).')
+                ->hideOnIndex();
+            // After "Free until": the form writes fields in order, and switching this on moves that date
+            yield BooleanField::new('foundingMember', 'Founding member (1st year free, 2nd year 50% off)')
+                ->setHelp('Switching this on moves "Free until" one year later; switching it off moves it back. The 50% discount applies to the year after "Free until".')
+                ->renderAsSwitch(false)
+                ->hideOnIndex();
+            yield IntegerField::new('freeMonths', 'Free months on the next payment')
+                ->setHelp('Earned with invitations: the next payment covers this many extra months at no cost.')
+                ->hideOnIndex();
+            yield AssociationField::new('invitedBy', 'Invited by')->setDisabled()->hideWhenCreating()->hideOnIndex();
+            yield DateTimeField::new('inviterRewardedAt', 'Inviter got their free month')
+                ->setHelp('Set once this client has set up payment.')
+                ->setDisabled()
+                ->hideWhenCreating()
                 ->hideOnIndex();
             yield TextField::new('mandateDescription', 'Automatic payment')
                 ->formatValue(static fn (?string $value) => $value ?? 'Not set up')

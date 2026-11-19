@@ -107,6 +107,15 @@ class Signup
     #[Assert\Choice(choices: Tenant::PLANS)]
     private string $billingPlan = Tenant::PLAN_MONTHLY;
 
+    /** The invitation this sign-up was made with (its link works once) */
+    #[ORM\OneToOne(inversedBy: 'signup', targetEntity: Invitation::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Invitation $invitation = null;
+
+    /** Set by an admin, never on /register: copied to Tenant::$foundingMember on approval */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $foundingMember = false;
+
     /** What the business does, anything else we should know */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 3000)]
@@ -348,6 +357,30 @@ class Signup
     public function setBillingPlan(?string $billingPlan): static
     {
         $this->billingPlan = $billingPlan ?? Tenant::PLAN_MONTHLY;
+
+        return $this;
+    }
+
+    public function getInvitation(): ?Invitation
+    {
+        return $this->invitation;
+    }
+
+    public function setInvitation(?Invitation $invitation): static
+    {
+        $this->invitation = $invitation;
+
+        return $this;
+    }
+
+    public function isFoundingMember(): bool
+    {
+        return $this->foundingMember;
+    }
+
+    public function setFoundingMember(bool $foundingMember): static
+    {
+        $this->foundingMember = $foundingMember;
 
         return $this;
     }

@@ -9,6 +9,12 @@
     <h1>{{ 'signup.page_title'|trans }}</h1>
     <p class="p-text">{{ 'signup.intro'|trans }}</p>
 
+    {% if invitation %}
+        <p class="p-invite">{{ 'signup.invited'|trans({'%business%': invitation.tenant.name}) }}</p>
+    {% elseif invite_used %}
+        <p class="p-form-note">{{ 'signup.invite_used'|trans }}</p>
+    {% endif %}
+
     {{ form_start(form, {attr: {class: 'p-form', novalidate: 'novalidate'}}) }}
         {{ form_errors(form) }}
 

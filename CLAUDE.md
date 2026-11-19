@@ -30,6 +30,7 @@ Features: multilingual client sites (EN, ES, NL, DE, FR) with hreflang/sitemap/c
 URLs, contact form, customer reviews, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
 a "find a pro" search across clients on the platform homepage (brand: CasitaFix),
 client onboarding (public `/register` + approval, accepting the platform terms and privacy policy),
+invitations (each client invites up to 3 businesses; both get a free month),
 Google Search Console setup,
 OpenStreetMap map/geocoding, monthly Mollie billing with FacturaDirecta invoices, Cloudflare
 Turnstile spam protection, and an MCP server (`/mcp`) so clients can let an AI assistant manage

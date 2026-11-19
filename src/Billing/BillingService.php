@@ -6,6 +6,7 @@ namespace App\Billing;
 
 use App\Entity\Charge;
 use App\Entity\Tenant;
+use App\Invitation\Invitations;
 use App\Repository\ChargeRepository;
 use App\Repository\TenantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +24,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 2. Monthly plan: the client is charged automatically on the 1st of every month.
  *    Yearly plan: charged once a year for 12 months at the price of 10 (YEARLY_PRICE_IN_MONTHS),
  *    with an email 2 weeks before each yearly payment (sendRenewalNotices()).
+ *    Founding members (Tenant::$foundingMember) are free for a year longer and then pay
+ *    FOUNDING_DISCOUNT_PERCENT less for a year.
+ *    Free months earned with invitations (Tenant::$freeMonths) are added to the next charge
+ *    at no extra cost (App\Invitation\Invitations).
  *    Each charge is first invoiced in FacturaDirecta (Invoicing), then the payment
  *    with the invoice number is sent to Mollie.
  * 3. If that payment does not come through, a reminder with a payment link is sent
@@ -50,6 +55,7 @@ final readonly class BillingService
 
     /** The yearly plan costs 10 months and covers 12 */
     public const int YEARLY_PRICE_IN_MONTHS = 10;
+    public const int FOUNDING_DISCOUNT_PERCENT = 50;
     public const string RENEWAL_NOTICE_BEFORE = '-14 days';
 
     public const string SECOND_REMINDER_AFTER = '+14 days';
@@ -66,6 +72,7 @@ final readonly class BillingService
         private UrlGeneratorInterface $urlGenerator,
         private LoggerInterface $logger,
         private MessageBusInterface $bus,
+        private Invitations $invitations,
         #[Autowire(env: 'int:BILLING_MONTHLY_PRICE')]
         private int $defaultMonthlyPrice,
         #[Autowire(env: 'BILLING_VAT_RATE')]
@@ -306,7 +313,8 @@ final readonly class BillingService
         // Reuse a charge that never reached Mollie, otherwise start a new one
         $charge = $this->charges->findCovering($tenant, $today);
         if (null === $charge) {
-            $charge = new Charge($tenant, $today, $this->netPrice($tenant), $this->vatRate, $this->currency, $tenant->isYearly() ? 12 : 1);
+            $charge = new Charge($tenant, $today, $this->netPrice($tenant, $today), $this->vatRate, $this->currency, $tenant->isYearly() ? 12 : 1, $tenant->getFreeMonths());
+            $tenant->setFreeMonths(0); // used up by this charge, saved together with it
             $this->entityManager->persist($charge);
             $this->entityManager->flush(); // the unique (tenant, period) key stops double charges
         }
@@ -374,18 +382,23 @@ final readonly class BillingService
         return null === $charge || $charge->isAwaitingCollection();
     }
 
-    /** Price excl. VAT in cents of one charge on the client's plan */
-    public function netPrice(Tenant $tenant): int
+    /** Price excl. VAT in cents of one charge on the client's plan, starting on $chargeDate */
+    public function netPrice(Tenant $tenant, \DateTimeInterface $chargeDate): int
     {
         $monthly = $tenant->getMonthlyPrice() ?? $this->defaultMonthlyPrice;
+        $price = $tenant->isYearly() ? $monthly * self::YEARLY_PRICE_IN_MONTHS : $monthly;
 
-        return $tenant->isYearly() ? $monthly * self::YEARLY_PRICE_IN_MONTHS : $monthly;
+        if ($tenant->hasFoundingDiscountOn($chargeDate)) {
+            $price = (int) round($price * (100 - self::FOUNDING_DISCOUNT_PERCENT) / 100);
+        }
+
+        return $price;
     }
 
-    /** Price incl. VAT in cents of one charge on the client's plan */
-    public function totalPrice(Tenant $tenant): int
+    /** Price incl. VAT in cents of one charge on the client's plan, starting on $chargeDate */
+    public function totalPrice(Tenant $tenant, \DateTimeInterface $chargeDate): int
     {
-        return Charge::totalWithVat($this->netPrice($tenant), $this->vatRate);
+        return Charge::totalWithVat($this->netPrice($tenant, $chargeDate), $this->vatRate);
     }
 
     /**
@@ -423,7 +436,7 @@ final readonly class BillingService
                 continue;
             }
 
-            if ($this->mailer->sendRenewalNotice($tenant, $chargeDate, $this->totalPrice($tenant), $this->currency, $this->payUrl($tenant))) {
+            if ($this->mailer->sendRenewalNotice($tenant, $chargeDate, $this->totalPrice($tenant, $chargeDate), $this->currency, $this->payUrl($tenant))) {
                 $tenant->setRenewalNoticeSentFor($chargeDate);
                 ++$sent;
             }
@@ -565,6 +578,8 @@ final readonly class BillingService
         foreach ($mandates as $mandate) {
             if (\in_array($mandate['status'] ?? null, ['valid', 'pending'], true)) {
                 $tenant->setMandate($mandate['id'], self::describeMandate($mandate));
+                // Payment is set up: a client who came with an invitation now earns the inviter a free month
+                $this->invitations->rewardInviter($tenant);
 
                 return;
             }

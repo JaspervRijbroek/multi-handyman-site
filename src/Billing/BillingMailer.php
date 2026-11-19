@@ -80,6 +80,14 @@ final readonly class BillingMailer
         return $this->send($tenant, 'Thank you, your website is back online', 'restored');
     }
 
+    /** The client someone signed up with an invitation of $inviter has set up payment */
+    public function sendInviteReward(Tenant $inviter, Tenant $invitee): bool
+    {
+        return $this->send($inviter, 'You earned a free month', 'invite_reward', [
+            'invitee' => $invitee,
+        ]);
+    }
+
     private function send(Tenant $tenant, string $subject, string $template, array $context = []): bool
     {
         $to = $tenant->getBillingRecipient();

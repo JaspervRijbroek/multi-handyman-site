@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Entity\User;
 use App\Form\SignupType;
 use App\Onboarding\OnboardingMailer;
+use App\Repository\InvitationRepository;
 use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,7 +33,8 @@ final class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register_redirect', methods: ['GET'])]
     public function redirectToLocale(Request $request): Response
     {
-        return $this->redirectToRoute('app_register', ['_locale' => PlatformController::preferredLocale($request)]);
+        // Keeps ?invite= (the link in invitation emails) and ?plan=
+        return $this->redirectToRoute('app_register', [...$request->query->all(), '_locale' => PlatformController::preferredLocale($request)]);
     }
 
     #[Route('/{_locale}/register', name: 'app_register', requirements: ['_locale' => 'es|en'], methods: ['GET', 'POST'])]
@@ -44,6 +46,7 @@ final class RegistrationController extends AbstractController
         OnboardingMailer $mailer,
         #[Autowire(service: 'limiter.signup')] RateLimiterFactoryInterface $signupLimiter,
         Turnstile $turnstile,
+        InvitationRepository $invitations,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('admin');
@@ -52,6 +55,9 @@ final class RegistrationController extends AbstractController
         // A new Signup, so its defaults (English and Spanish) are ticked; ?plan=yearly comes from the pricing toggle
         $signup = (new Signup())->setBillingPlan(Tenant::PLAN_YEARLY === $request->query->get('plan') ? Tenant::PLAN_YEARLY : Tenant::PLAN_MONTHLY);
         $form = $this->createForm(SignupType::class, $signup);
+        // ?invite= stays in the URL the form posts to
+        $inviteToken = $request->query->getString('invite');
+        $invitation = $invitations->findOpenByToken($inviteToken);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -74,6 +80,7 @@ final class RegistrationController extends AbstractController
                     $signup->setPasswordHash($hasherFactory->getPasswordHasher(User::class)->hash($form->get('plainPassword')->getData()));
                     // The consent checkbox is required, so ticked here: keep when, as proof
                     $signup->acceptTerms();
+                    $signup->setInvitation($invitation);
 
                     $entityManager->persist($signup);
                     $entityManager->flush();
@@ -86,6 +93,8 @@ final class RegistrationController extends AbstractController
 
         return $this->render('platform/register.html.twig', [
             'form' => $form,
+            'invitation' => $invitation,
+            'invite_used' => '' !== $inviteToken && null === $invitation,
         ], new Response(status: $form->isSubmitted() ? 422 : 200));
     }
 

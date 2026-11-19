@@ -36,12 +36,14 @@ final class ApproveSignupCommand extends Command
         $this
             ->addArgument('id', InputArgument::OPTIONAL, 'Sign-up number; leave out to pick from the list')
             ->addOption('reject', null, InputOption::VALUE_NONE, 'Reject instead of approve')
+            ->addOption('founding', null, InputOption::VALUE_NONE, 'Approve as a founding member (1st year free, 2nd year 50% off)')
             ->setHelp(<<<'HELP'
                 Approving creates the client, its domain(s) and login (with the password
                 the client chose), sends the welcome email and connects Google.
 
                   <info>php bin/console app:client:approve</info>          list and pick
                   <info>php bin/console app:client:approve 12</info>       approve sign-up #12
+                  <info>php bin/console app:client:approve 12 --founding</info>  as a founding member
                   <info>php bin/console app:client:approve 12 --reject</info>
                 HELP);
     }
@@ -75,6 +77,10 @@ final class ApproveSignupCommand extends Command
 
         if (!$io->confirm('Approve and set up this client?', true)) {
             return Command::SUCCESS;
+        }
+
+        if ($input->getOption('founding')) {
+            $signup->setFoundingMember(true);
         }
 
         try {

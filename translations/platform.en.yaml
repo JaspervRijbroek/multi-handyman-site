@@ -178,6 +178,8 @@ signup:
     submit: Send sign-up
     too_many: Too many attempts from your connection. Please try again later, or email us.
     turnstile: Please confirm you are not a robot and send the form again.
+    invited: "%business% invited you: your second month is free."
+    invite_used: This invitation link has already been used or is no longer valid. You can still sign up.
     business_name: Business name
     contact_name: Your name
     email: Email

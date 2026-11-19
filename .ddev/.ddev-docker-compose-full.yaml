@@ -15,7 +15,7 @@ services:
     container_name: ddev-multi-handyman-site-db
     environment:
       BITNAMI_VOLUME_DIR: ""
-      COLUMNS: "427"
+      COLUMNS: "80"
       DDEV_DATABASE: mariadb:11.4
       DDEV_DATABASE_FAMILY: mysql
       DDEV_GID: "20"
@@ -39,7 +39,7 @@ services:
       DOCKER_IP: 127.0.0.1
       HOST_DOCKER_INTERNAL_IP: ""
       IS_DDEV_PROJECT: "true"
-      LINES: "31"
+      LINES: "24"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/multi-handyman-site-db/mysql_history
       PGDATABASE: db
       PGHOST: 127.0.0.1
@@ -160,7 +160,7 @@ services:
       - /pre-start.sh
     container_name: ddev-multi-handyman-site-web
     environment:
-      COLUMNS: "427"
+      COLUMNS: "80"
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
       COREPACK_HOME: /mnt/ddev-global-cache/corepack
       DDEV_APPROOT: /var/www/html
@@ -201,7 +201,7 @@ services:
       HTTP_EXPOSE: 80:80,8025:8025
       HTTPS_EXPOSE: 443:80,8026:8025
       IS_DDEV_PROJECT: "true"
-      LINES: "31"
+      LINES: "24"
       MYSQL_HISTFILE: /mnt/ddev-global-cache/mysqlhistory/multi-handyman-site-web/mysql_history
       NODE_EXTRA_CA_CERTS: /mnt/ddev-global-cache/mkcert/rootCA.pem
       PGDATABASE: db

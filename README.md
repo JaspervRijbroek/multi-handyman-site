@@ -295,8 +295,30 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
   setup email* action. The setup email also goes out when a client is onboarded.
 - Free accounts: tick *Free account* in the client's Billing tab. Per-client prices
   override `BILLING_MONTHLY_PRICE`; the yearly plan is always 10 × the monthly price.
+- Founding members: their first year is free and the second year is 50% off. Tick
+  *Founding member* on the sign-up before approving, or in the client's Billing tab, or
+  use `app:client:approve --founding` (or `app:client:onboard --founding`). This moves
+  *Free until* one year later (you can still change that date by hand). Every charge that
+  starts in the year after *Free until* is half price.
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
   then try a later date with `ddev console app:billing:run --date=2026-12-01`.
+
+### Invitations
+
+Clients can invite other businesses from **Invite a business** in their admin
+(`App\Invitation\Invitations`). Each client has 3 invitations in total, used or not.
+
+```
+Client sends an invitation ─► email with a personal sign-up link (works once, replies go to the client)
+Invitee signs up and is approved ─► invitee gets 1 free month
+Invitee sets up payment (Mollie mandate) ─► inviter gets 1 free month + an email
+```
+
+A free month means the **next payment covers one extra month at the same price**: monthly
+plan 2 months for the price of 1, yearly plan 13 months (`Tenant::$freeMonths`, stored per
+charge in `Charge::$freeMonths` and shown on the invoice). The inviter's month only counts
+once the invitee has set up payment, and only once per invitee. Super admins see *Invited by*
+and *Free months* in the client's Billing tab and can change the free months by hand.
 
 ### Invoices (FacturaDirecta)
 

@@ -42,9 +42,13 @@ class Charge implements TenantOwnedInterface
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $period;
 
-    /** How many months it covers: 1, or 12 for the yearly plan */
+    /** How many months it covers: 1, or 12 for the yearly plan, plus any free months */
     #[ORM\Column(type: Types::SMALLINT, options: ['default' => 1])]
     private int $months = 1;
+
+    /** How many of those months are free (earned with invitations) */
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
+    private int $freeMonths = 0;
 
     /** Amounts in cents */
     #[ORM\Column]
@@ -93,11 +97,13 @@ class Charge implements TenantOwnedInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(Tenant $tenant, \DateTimeImmutable $period, int $netAmount, string $vatRate, string $currency, int $months = 1)
+    /** $freeMonths are added to $months at the same price */
+    public function __construct(Tenant $tenant, \DateTimeImmutable $period, int $netAmount, string $vatRate, string $currency, int $months = 1, int $freeMonths = 0)
     {
         $this->tenant = $tenant;
         $this->period = $period->modify('first day of this month')->setTime(0, 0);
-        $this->months = $months;
+        $this->months = $months + $freeMonths;
+        $this->freeMonths = $freeMonths;
         $this->netAmount = $netAmount;
         $this->vatRate = $vatRate;
         $this->totalAmount = self::totalWithVat($netAmount, $vatRate);
@@ -123,6 +129,11 @@ class Charge implements TenantOwnedInterface
     public function getMonths(): int
     {
         return $this->months;
+    }
+
+    public function getFreeMonths(): int
+    {
+        return $this->freeMonths;
     }
 
     /** The day after the last day this charge covers, e.g. 2027-12-01 for a yearly charge from 2026-12-01 */

@@ -41,13 +41,15 @@ final class BillingAdminController extends AbstractController
         }
 
         $outstanding = $this->charges->findOutstanding($tenant);
+        $today = new \DateTimeImmutable();
+        $nextCharge = $this->billing->nextChargeDate($tenant, $today);
 
         return $this->render('admin/billing/index.html.twig', [
             'tenant' => $tenant,
             'outstanding' => $outstanding,
-            'price' => $this->billing->totalPrice($tenant),
+            'price' => $this->billing->totalPrice($tenant, $nextCharge ?? $today),
             'currency' => $this->currency,
-            'next_charge' => $this->billing->nextChargeDate($tenant, new \DateTimeImmutable()),
+            'next_charge' => $nextCharge,
             'total' => array_sum(array_map(static fn ($c) => $c->getTotalAmount(), $outstanding)),
             // The tenant filter limits this to the client's own charges
             'history' => $this->charges->findBy(['tenant' => $tenant], ['period' => 'DESC'], 24),
