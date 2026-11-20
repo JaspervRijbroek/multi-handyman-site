@@ -1,4 +1,4 @@
-{# The "what / where" search box. Needs: trades, towns, trade (selected Trade or null), near #}
+{# The "what / language / where" search box. Needs: trades, languages, towns, trade (selected Trade or null), language (code or null), near #}
 {% trans_default_domain 'platform' %}
 <form class="p-search" action="{{ path('platform_search', {_locale: app.request.locale}) }}" method="get" role="search">
     <label class="p-search-field">
@@ -7,6 +7,15 @@
             <option value="">{{ 'search_form.any'|trans }}</option>
             {% for option in trades %}
                 <option value="{{ option.value }}" {% if trade == option %}selected{% endif %}>{{ ('trade.' ~ option.value)|trans }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label class="p-search-field p-search-language">
+        <span>{{ 'search_form.language'|trans }}</span>
+        <select name="language">
+            <option value="">{{ 'search_form.any_language'|trans }}</option>
+            {% for option in languages %}
+                <option value="{{ option }}" {% if language == option %}selected{% endif %}>{{ ('language.' ~ option)|trans }}</option>
             {% endfor %}
         </select>
     </label>

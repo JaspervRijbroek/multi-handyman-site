@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\RateLimiter\LimiterInterface;
 
 /**
- * The "find a pro" search on the platform: filter clients by trade, keep the
+ * The "find a pro" search on the platform: filter clients by trade and language, keep the
  * ones near a town and sort them by distance or rating. Filtering, sorting and
  * paging all happen in the database, so only one page of clients is loaded.
  */
@@ -38,7 +38,8 @@ final readonly class ProSearch
     }
 
     /**
-     * @param LimiterInterface $lookups limits OpenStreetMap lookups for unknown towns (per visitor)
+     * @param ?string          $language only clients whose website is in this language
+     * @param LimiterInterface $lookups  limits OpenStreetMap lookups for unknown towns (per visitor)
      *
      * @return array{
      *     results: list<array{tenant: Tenant, km: ?float}>,
@@ -49,12 +50,18 @@ final readonly class ProSearch
      * } located is false when a town was given but could not be found;
      *   town is the client town it was matched to when typed with a typo
      */
-    public function search(?Trade $trade, string $near, string $sort, int $page, LimiterInterface $lookups): array
+    public function search(?Trade $trade, ?string $language, string $near, string $sort, int $page, LimiterInterface $lookups): array
     {
         $qb = $this->tenants->createListedQueryBuilder('t');
 
         if (null !== $trade) {
-            $qb->andWhere('t.trades LIKE :trade')->setParameter('trade', TenantRepository::tradePattern($trade->value));
+            $qb->andWhere('t.trades LIKE :trade')->setParameter('trade', TenantRepository::listPattern($trade->value));
+        }
+
+        if (null !== $language) {
+            $qb->andWhere('t.defaultLocale = :language OR t.locales LIKE :languagePattern')
+                ->setParameter('language', $language)
+                ->setParameter('languagePattern', TenantRepository::listPattern($language));
         }
 
         [$point, $town] = '' === $near ? [null, null] : $this->locate($near, $lookups);

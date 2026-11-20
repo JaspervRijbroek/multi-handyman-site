@@ -1,0 +1,395 @@
+# Platform pages on PLATFORM_HOST (homepage, search, for professionals, sign-up).
+# Client websites use messages.*.yaml.
+
+nav:
+    main: Hoofdmenu
+    find: Vind een vakman
+    pros: Voor vakmensen
+    login: Inloggen klanten
+    list: Meld je bedrijf aan
+    language: Taal
+    terms: Voorwaarden
+    privacy: Privacy
+    menu: Menu
+
+footer:
+    tagline: Lokale vakmensen in heel Spanje
+
+trade:
+    handyman: Klusjesman
+    plumbing: Loodgieter
+    electrical: Elektricien
+    painting: Schilder
+    carpentry: Timmerman
+    tiling: Tegelzetter
+    renovation: Bouw & renovatie
+    roofing: Dakdekker
+    air-conditioning: Airconditioning
+    garden: Tuin
+    pool: Zwembadonderhoud
+    locksmith: Slotenmaker
+
+language:
+    # Languages a pro's website is in, for the search filter
+    en: Engels
+    es: Spaans
+    nl: Nederlands
+    de: Duits
+    fr: Frans
+
+home:
+    title: '%brand% | Vind een betrouwbare klusjesman, loodgieter of aannemer in Spanje'
+    description: Vind lokale vakmensen in Spanje op vak en woonplaats. Bekijk hun werk en reviews en neem direct contact op. Geen tussenpersoon, geen commissie.
+    og_title: '%brand%: goede handen, gewoon om de hoek'
+    eyebrow: ¡Hola, vecino! · Lokale vakmensen in heel Spanje
+    h1_start: 'Goede handen, '
+    h1_highlight: gewoon
+    h1_end: ' om de hoek.'
+    lead: Vind een klusjesman, loodgieter, schilder of aannemer bij jou in de buurt. Bekijk hun werk en wat buren zeggen, en neem direct contact op.
+    popular: 'Populair:'
+    trades_title: Elk vak, dicht bij huis
+    trades_text: Kies een vak om de vakmensen bij jou in de buurt te zien.
+    trade_count: '{0} Binnenkort|{1} 1 vakman|]1,Inf[ %count% vakmensen'
+    step1_title: Zoek in je woonplaats
+    step1_text: Kies wat er moet gebeuren en waar. We tonen de vakmensen die bij jou in de buurt werken, dichtstbijzijnde eerst.
+    step2_title: Vergelijk hun werk
+    step2_text: Elke vakman heeft een eigen website met recente klussen, de plaatsen waar hij werkt en reviews van klanten.
+    step3_title: Neem direct contact op
+    step3_text: 'Bel, WhatsApp of stuur een bericht. Geen tussenpersoon en geen kosten: de afspraak is tussen jou en de vakman.'
+    cta_title: Je eigen website, en gevonden door klanten in de buurt.
+    cta_text: Een professionele website met je werk en reviews, ingesteld op Google en vermeld op deze site. Geen commissie op klussen.
+    cta_button: Zo werkt het
+
+search_form:
+    what: Wat moet er gebeuren?
+    any: Elk vak
+    language: Taal
+    any_language: Elke taal
+    where: Waar in Spanje?
+    placeholder: Plaats, bijv. Jávea
+    button: Zoeken
+
+search:
+    title_any: Lokale vakmensen
+    heading_near: '%what% bij %town%'
+    description: '%what%: bekijk hun werk en reviews en neem direct contact op.'
+    count: '{0} Geen vakmensen|{1} 1 vakman|]1,Inf[ %count% vakmensen'
+    within: 'binnen %km% km'
+    sort: Sorteren
+    nearest: Dichtstbij
+    rating: Best beoordeeld
+    not_found: 'We konden “%town%” niet vinden. Controleer de spelling of probeer een plaats in de buurt. We tonen nu alle vakmensen.'
+    corrected: 'Resultaten voor “%town%” (je typte “%typed%”).'
+    empty_title: Hier nog geen vakmensen
+    empty_text: Probeer een ander vak of een andere taal, of een grotere plaats in de buurt.
+    show_all: Toon alle vakmensen
+    reviews: '{1} 1 review|]1,Inf[ %count% reviews'
+    no_reviews: Nog geen reviews
+    view_site: Bekijk website
+    call: Bellen
+    map_show: Toon op kaart
+    map_note: De kaart wordt van OpenStreetMap geladen als je klikt.
+    pages: Pagina’s
+    page: 'Pagina %page% van %pages%'
+    previous: Vorige
+    next: Volgende
+
+pros:
+    title: '%brand% | Websites voor vakmensen in Spanje, vindbaar in Google en AI-assistenten'
+    description: Websites voor klusjesmannen en aannemers in Spanje. Gevonden op Google Maps, Google Zoeken en door AI-assistenten zoals ChatGPT, en vermeld in de zoekfunctie van %brand%. Betaal per maand, of per jaar met twee maanden gratis.
+    og_title: '%brand%: gevonden worden op Google en door AI-assistenten'
+    eyebrow: Websites voor vakmensen in Spanje
+    h1_start: 'Meer werk uit '
+    h1_highlight: je eigen
+    h1_end: ' omgeving.'
+    lead: Krijg een professionele website, verschijn op Google Maps, Google Zoeken en in AI-assistenten zoals ChatGPT, en laat klanten direct contact met je opnemen. Wij regelen de techniek, jij blijft gewoon aan het werk.
+    cta: Aan de slag
+    see_pricing: Bekijk de prijs
+    why_title: Waarom vakmensen kiezen voor %brand%
+    reason1_title: Geen commissie
+    reason1_text: Klanten bellen, WhatsAppen of mailen je direct. Elke euro van de klus is voor jou.
+    reason2_title: Je eigen website
+    reason2_text: Een echte website op je eigen domein, met je diensten, je projecten, je reviews en je werkgebied, in %count% talen.
+    reason3_title: Gevonden door klanten in de buurt
+    reason3_text: Vermeld in de zoekfunctie van %brand%, met gestructureerde gegevens en een pagina per taal, zodat Google, Google Maps en AI-assistenten weten wat je doet en waar.
+    reason4_title: Wij doen het technische werk
+    reason4_text: Hosting, HTTPS, back-ups, de Google-koppeling en updates worden voor je geregeld. Je werkt je projecten bij vanaf je telefoon.
+    testimonials_eyebrow: Ervaringen
+    testimonials_title: Vakmensen over %brand%, in hun eigen woorden.
+    how_eyebrow: Zo werkt het
+    how_title: Binnen een paar dagen online
+    step1_title: Vertel ons over je bedrijf
+    step1_text: 'Vul het aanmeldformulier in: wat je doet, waar je werkt en welke talen je nodig hebt.'
+    step2_title: Wij bouwen en koppelen alles
+    step2_text: We controleren je gegevens, zetten je website en domein op en koppelen alles aan Google.
+    step3_title: Klanten vinden jou
+    step3_text: Op Google, op Maps, in onze zoekfunctie en via AI-assistenten. Jij krijgt de telefoontjes, wij houden alles draaiende.
+    price_title: Eén abonnement. Alles inbegrepen.
+    price_text: Geen commissie op klussen. Betaal per maand en zeg elke maand op, of betaal per jaar en krijg twee maanden gratis.
+    plan_name: '%brand% compleet'
+    plan_name_yearly: '%brand% compleet · Jaarlijks'
+    billing: Betaalperiode
+    monthly: Maandelijks
+    yearly: Jaarlijks
+    free2: 2 maanden gratis
+    per_month: / maand
+    per_year: / jaar
+    month_note: Elke maand gefactureerd. Geen contract, elke maand opzegbaar.
+    year_note: Dat is €%per_month% per maand. Je krijgt 12 maanden voor de prijs van 10, vooruitbetaald.
+    plan_note: excl. btw · geen opstartkosten
+    included: Wat is inbegrepen
+    inc1_title: SEO-optimalisatie
+    inc1_text: Paginatitels, beschrijvingen en teksten zo ingesteld dat Google je toont voor klussen in jouw plaatsen, in elke taal.
+    inc2_title: Optimalisatie voor AI-zoeken
+    inc2_text: Gestructureerde informatie zodat assistenten zoals ChatGPT en Gemini je kunnen vinden en aanraden.
+    inc3_title: Google Search Console
+    inc3_text: Gekoppeld en geverifieerd met je sitemap, zodat elke pagina en elke taal wordt geïndexeerd.
+    inc4_title: Google Maps
+    inc4_text: We zetten je Google-bedrijfsprofiel op zodat je op de kaart verschijnt.
+    inc5_title: Toekomstige updates
+    inc5_text: Elke nieuwe functie en verbetering die we bouwen, komt zonder extra kosten bij je abonnement.
+    more: En meer
+    more1: Vermeld in de zoekfunctie en op de kaart van %brand%
+    more2: Klantreviews die jij goedkeurt
+    more3: Je eigen domein met HTTPS
+    more4: '%count% talen'
+    more5: Contactformulier direct naar je inbox
+    more6: WhatsApp & bellen met één klik
+    more7: Projectgalerij die je zelf bijwerkt
+    more8: Juridische pagina’s voor Spanje
+    more9: Geen cookiebanner nodig
+    more10: Hosting, back-ups & updates
+    whatsapp: Stel een vraag via WhatsApp
+    faq_eyebrow: Veelgestelde vragen
+    faq_title: Vragen die we vaak krijgen
+    faq1_q: Wat betekent “vindbaar door AI-assistenten” eigenlijk?
+    faq1_a: 'Steeds meer mensen vragen ChatGPT, Gemini, Claude of Perplexity dingen als “zoek een Nederlandstalige loodgieter bij Jávea”. Die assistenten lezen websites om te antwoorden. Jouw site geeft ze duidelijke, gestructureerde feiten — wat je doet, waar je werkt, hoe ze je bereiken — zodat ze je met vertrouwen kunnen aanraden in plaats van te gokken.'
+    faq2_q: Zijn er opstartkosten of is er een lang contract?
+    faq2_a: Geen opstartkosten en geen contract. Eén prijs voor de website, hosting, de Google-koppeling en doorlopende SEO. Betaal per maand en zeg elke maand op, of betaal een jaar vooruit en krijg twee maanden gratis. We mailen je twee weken voor elke jaarbetaling.
+    faq3_q: Moet ik iets van websites weten?
+    faq3_a: Nee. Wij bouwen de site, koppelen je domein en regelen Google voor je. Daarna kun je je diensten bijwerken en foto’s van recent werk toevoegen in een eenvoudige beheeromgeving — of je stuurt ze gewoon naar ons.
+    faq4_q: Kan ik mijn eigen domeinnaam gebruiken?
+    faq4_a: Ja. Neem het domein mee dat je al hebt, of we helpen je er een te registreren. HTTPS is inbegrepen en werkt vanaf het eerste bezoek.
+    faq5_q: Welke talen worden ondersteund?
+    faq5_a: Engels, Spaans, Nederlands, Duits en Frans. Kies de talen die je klanten spreken; elke taal krijgt eigen pagina’s, zodat Google en AI-assistenten de juiste versie aan de juiste persoon tonen.
+    faq6_q: Is het legaal voor een bedrijf in Spanje?
+    faq6_a: Elke site heeft een juridische vermelding en privacypagina (LSSI en AVG), gemaakt op basis van je bedrijfsgegevens, en er is geen cookiebanner nodig. We raden wel aan om de teksten door je gestor te laten controleren.
+    final_title: Klaar wanneer jij dat bent.
+    final_text: Aanmelden duurt ongeveer vijf minuten. We controleren je gegevens en je website staat meestal binnen twee werkdagen online. €%price% per maand, of twee maanden gratis met het jaarabonnement.
+
+signup:
+    page_title: Vraag je website aan
+    eyebrow: Aanmelden
+    intro: Vertel ons over je bedrijf. We controleren je gegevens, bouwen je site met een kaart van waar je zit, en koppelen hem aan Google Zoeken. Je krijgt een e-mail zodra hij online staat, meestal binnen twee werkdagen.
+    legend_business: Je bedrijf
+    legend_address: Adres
+    address_note: Getoond op je website en de kaart. Werk je vanuit huis? Je kunt de straat later verbergen en alleen je woonplaats tonen.
+    legend_website: Website
+    legend_login: Je login
+    submit: Aanmelding versturen
+    too_many: Te veel pogingen vanaf je verbinding. Probeer het later opnieuw, of mail ons.
+    turnstile: Bevestig dat je geen robot bent en verstuur het formulier opnieuw.
+    invited: "%business% heeft je uitgenodigd: je tweede maand is gratis."
+    invite_used: Deze uitnodigingslink is al gebruikt of is niet meer geldig. Je kunt je nog steeds aanmelden.
+    business_name: Bedrijfsnaam
+    contact_name: Je naam
+    email: E-mail
+    email_help: Dit wordt je login, en aanvragen via je website komen hier binnen.
+    phone: Telefoon
+    whatsapp: WhatsApp-nummer
+    whatsapp_help: Laat leeg als het hetzelfde is als je telefoonnummer.
+    street: Straat en huisnummer
+    postal_code: Postcode
+    town: Plaats
+    country: Land
+    service_area: Plaatsen en gebieden waar je werkt
+    service_area_placeholder: bijv. Jávea, Dénia, Moraira en omgeving
+    domain: Je domeinnaam
+    domain_help: Alleen als je er al een hebt, bijv. mijnklusjesman.es. Nog geen domein? Laat leeg, je kunt er later een toevoegen in je beheeromgeving.
+    locales: Talen voor je website
+    default_locale: Hoofdtaal
+    legend_plan: Je abonnement
+    plan: Hoe wil je betalen?
+    plan_monthly: Maandelijks, elke maand opzegbaar
+    plan_yearly: Jaarlijks, 12 maanden voor de prijs van 10
+    plan_help: Hoe dan ook is je website gratis tot de 1e van volgende maand. Bij het jaarabonnement mailen we je twee weken voor elke jaarbetaling.
+    tax_id: NIF / NIE / CIF
+    tax_id_help: Voor de juridische vermelding op je website. Je kunt het later toevoegen.
+    message: Wat doe je? Nog iets wat we moeten weten?
+    password: Kies een wachtwoord
+    password_repeat: Herhaal wachtwoord
+    consent: 'Ik heb de <a href="%terms_url%" target="_blank">algemene voorwaarden</a> en het <a href="%privacy_url%" target="_blank">privacybeleid</a> gelezen en ga ermee akkoord.'
+    honeypot: Laat dit veld leeg
+    thanks_title: Bedankt!
+    thanks_eyebrow: Aanmelding ontvangen
+    thanks_text: We hebben je gegevens ontvangen en controleren ze binnenkort. Zodra je website klaar is, krijg je een e-mail met je login. Vragen in de tussentijd? Beantwoord gewoon die e-mail.
+    thanks_back: Terug naar de homepage
+
+password:
+    title: Kies je wachtwoord
+    intro: 'Voor je login %email%. Gebruik minstens 10 tekens.'
+    new: Nieuw wachtwoord
+    repeat: Herhaal wachtwoord
+    save: Wachtwoord opslaan
+    expired_title: Deze link is verlopen
+    expired_text: Links om een wachtwoord in te stellen werken één keer en 7 dagen lang. Beantwoord je welkomstmail en we sturen je een nieuwe.
+    to_login: Naar inloggen
+
+# Terms and privacy policy of the platform (templates/platform/_legal.html.twig).
+# Template text: have it checked by a lawyer or gestor. A blank line starts a new paragraph.
+legal:
+    updated: 'Laatst bijgewerkt: %date%'
+    provider_title: Wie we zijn
+    provider_name: Naam
+    provider_tax_id: NIE
+    provider_address: Adres
+    provider_email: E-mail
+
+terms:
+    title: Algemene voorwaarden
+    scope_title: 1. Toepassing
+    scope_text: |-
+        Deze voorwaarden gelden voor de websitedienst %brand%, geleverd door %name% ("wij", "ons") aan bedrijven en zelfstandige professionals ("jij").
+
+        %brand% is alleen voor professionals. Door je aan te melden bevestig je dat je handelt voor je bedrijf of beroep, niet als consument. Regels voor consumentenbescherming, zoals het herroepingsrecht, gelden daarom niet.
+    service_title: 2. De dienst
+    service_text: |-
+        We bouwen en hosten een website voor je bedrijf, op een subdomein van %brand% of op je eigen domein. De dienst omvat hosting, HTTPS, een eenvoudige beheeromgeving om je site te bewerken, een contactformulier, klantreviews, een juridische vermelding en privacypagina, de koppeling met Google Search Console en een vermelding in de zoekfunctie van %brand% voor professionals.
+
+        We kunnen functies in de loop van de tijd verbeteren of wijzigen. We verwijderen geen belangrijke functie zonder het je eerst te laten weten.
+
+        We kunnen geen positie in Google of andere zoekmachines garanderen, en ook geen aantal aanvragen of klussen.
+    account_title: 3. Aanmelding en je account
+    account_text: |-
+        Nadat je je hebt aangemeld, controleren we je gegevens. We kunnen een aanmelding weigeren zonder reden te geven. Het contract begint wanneer we je aanmelding goedkeuren en je de welkomstmail sturen.
+
+        Zorg dat je gegevens kloppen en houd ze actueel. Houd je wachtwoord en een eventueel token voor een AI-assistent geheim: je bent verantwoordelijk voor alles wat met je login of token gebeurt.
+    price_title: 4. Prijs en betaling
+    price_text: |-
+        De prijs is de prijs die op onze website stond toen je je aanmeldde, tenzij we een andere prijs met je hebben afgesproken. Prijzen zijn exclusief btw, die tegen het geldende tarief wordt toegevoegd.
+
+        Je website is gratis tot de 1e van de maand nadat we hem hebben opgezet. Daarna:
+        - Maandabonnement: vooraf betaald op de 1e van elke maand.
+        - Jaarabonnement: 12 maanden voor de prijs van 10, eenmaal per jaar vooraf betaald. We mailen je twee weken voor elke jaarbetaling.
+
+        Betalingen worden automatisch geïnd door onze betaalprovider Mollie (kaart of SEPA-incasso). Je krijgt voor elke betaling een factuur.
+
+        Als een betaling mislukt, sturen we herinneringen met een betaallink. Is het een week na de laatste herinnering (ongeveer vijf weken na de betaaldatum) nog steeds niet betaald, dan halen we je website offline tot het bedrag is betaald. Je beheeromgeving blijft beschikbaar.
+
+        We kunnen de prijs wijzigen. We laten het je minstens 30 dagen vooraf per e-mail weten; de nieuwe prijs geldt vanaf je volgende betaalperiode. Ga je niet akkoord, dan kun je vóór die tijd opzeggen.
+    cancel_title: 5. Looptijd en opzegging
+    cancel_text: |-
+        Er is geen minimale looptijd. Je kunt op elk moment opzeggen per e-mail aan %email%.
+
+        Maandabonnement: de dienst eindigt aan het einde van de maand die je al hebt betaald. Er wordt niets meer afgeschreven.
+
+        Jaarabonnement: de dienst eindigt aan het einde van het jaar dat je al hebt betaald. Jaarbetalingen worden niet terugbetaald, ook niet gedeeltelijk, als je tijdens het jaar opzegt. Zeg op vóór de volgende jaarbetaling om die te voorkomen.
+
+        Wij kunnen het contract beëindigen met een opzegtermijn van 30 dagen per e-mail. Doen we dat, dan betalen we de maanden terug die je hebt betaald maar niet gebruikt. We kunnen het direct beëindigen als je deze voorwaarden ernstig schendt, bijvoorbeeld door onwettige inhoud te publiceren of niet te betalen.
+    content_title: 6. Je inhoud
+    content_text: |-
+        Je bent verantwoordelijk voor alles op je website: teksten, foto’s, prijzen, contact- en bedrijfsgegevens, en de gegevens in je juridische vermelding (naam, fiscaal nummer, adres). Je bevestigt dat je de teksten en foto’s mag gebruiken, en dat je website en je bedrijf aan de wet voldoen.
+
+        De juridische vermelding en privacypagina die wij maken, zijn sjablonen. Laat ze controleren door je gestor of advocaat.
+
+        Reviews moeten van echte klanten komen. Je mag geen reviews zelf schrijven, laten schrijven of iets aanbieden in ruil voor goede reviews.
+
+        Je blijft eigenaar van je inhoud. Je geeft ons toestemming om die op te slaan, te kopiëren en te tonen om je website te laten draaien, en om je bedrijfsnaam, plaats, vakken en beoordeling te tonen in de zoekfunctie van %brand%.
+
+        We kunnen inhoud verwijderen of je website offline halen als die duidelijk onwettig is of anderen schaadt, of als een overheidsinstantie ons daartoe verplicht. Waar mogelijk nemen we eerst contact met je op.
+
+        Gebruik je je eigen domein, dan blijf je daarvan eigenaar en ben je verantwoordelijk voor de registratie en DNS. Het subdomein van %brand% blijft van ons.
+    availability_title: 7. Beschikbaarheid
+    availability_text: |-
+        We doen ons best om je website online en veilig te houden, en we maken regelmatig back-ups. We kunnen niet beloven dat de dienst altijd beschikbaar of foutloos is. Onderhoud kan korte onderbrekingen veroorzaken. Bewaar zelf een kopie van belangrijke teksten en foto’s.
+    liability_title: 8. Aansprakelijkheid
+    liability_text: |-
+        Onze totale aansprakelijkheid is beperkt tot het bedrag dat je ons hebt betaald in de 12 maanden voordat de schade ontstond. We zijn niet aansprakelijk voor indirecte schade, zoals gemiste klussen, gederfde winst of verloren gegevens, of voor de diensten van andere bedrijven zoals Google, Mollie of je domeinregistrar.
+
+        Deze beperkingen gelden niet voor schade die opzettelijk of door grove nalatigheid is veroorzaakt.
+    processing_title: 9. Verwerking van persoonsgegevens voor jou (AVG artikel 28)
+    processing_text: |-
+        Je website verzamelt persoonsgegevens van je klanten en bezoekers, bijvoorbeeld berichten via het contactformulier, reviews en contactgegevens die je invoert om een reviewlink te sturen. Voor deze gegevens ben jij de verwerkingsverantwoordelijke en zijn wij je verwerker. Dit artikel is de verwerkersovereenkomst tussen ons.
+
+        We verwerken deze gegevens alleen om je website en beheeromgeving te laten draaien zoals in deze voorwaarden beschreven, en volgens je gedocumenteerde instructies (je gebruik van de beheeromgeving geldt als zodanig). We gebruiken ze nergens anders voor en verkopen ze niet.
+
+        Iedereen bij %brand% die toegang heeft tot de gegevens, is tot geheimhouding verplicht.
+
+        We nemen passende beveiligingsmaatregelen: HTTPS, logins met een wachtwoord, scheiding van de gegevens van elke klant, regelmatige updates en back-ups.
+
+        Je geeft ons algemene toestemming om de subverwerkers te gebruiken die in ons privacybeleid staan (%privacy_url%). We laten het je minstens 30 dagen vooraf per e-mail weten voordat we er een toevoegen of vervangen; heb je bezwaar, dan kun je opzeggen.
+
+        We helpen je om te reageren op verzoeken van mensen die hun AVG-rechten uitoefenen, en om aan je andere AVG-verplichtingen te voldoen, voor zover dat redelijk is. De meeste gegevens kun je zelf inzien, wijzigen en verwijderen in de beheeromgeving.
+
+        We informeren je zonder onnodige vertraging nadat we op de hoogte zijn geraakt van een datalek dat je gegevens betreft.
+
+        Wanneer het contract eindigt, verwijderen we de gegevens zoals beschreven in artikel 10, tenzij de wet ons verplicht ze te bewaren. Op verzoek geven we je de informatie die je nodig hebt om aan te tonen dat aan deze verplichtingen is voldaan.
+    end_title: 10. Wanneer het contract eindigt
+    end_text: |-
+        We verwijderen je website, je beheeromgeving en alle inhoud, inclusief de gegevens van je klanten, 30 dagen nadat het contract is geëindigd. Staat je website offline vanwege een onbetaald bedrag, dan verwijderen we hem ook na 30 dagen offline, en eindigt het contract.
+
+        Daarvoor kun je ons per e-mail om een kopie van je teksten, foto’s, aanvragen en reviews vragen. Facturen en betaalgegevens bewaren we zo lang als de belastingwet vereist.
+    changes_title: 11. Wijzigingen in deze voorwaarden
+    changes_text: |-
+        We kunnen deze voorwaarden wijzigen. We mailen je de nieuwe voorwaarden minstens 30 dagen voordat ze gelden. Ga je niet akkoord, dan kun je vóór die tijd opzeggen; blijf je de dienst gebruiken, dan gelden de nieuwe voorwaarden.
+    law_title: 12. Recht en geschillen
+    law_text: |-
+        Op deze voorwaarden is Spaans recht van toepassing. Geschillen worden voorgelegd aan de rechter van de plaats waar %name% woont, tenzij de wet anders bepaalt. Vragen of klachten? Mail eerst %email%; we proberen het samen op te lossen.
+
+privacy:
+    title: Privacybeleid
+    scope_title: 1. Waar dit beleid over gaat
+    scope_text: |-
+        Dit beleid legt uit hoe %name% ("wij") omgaat met persoonsgegevens op het platform %brand%: de zoekfunctie voor professionals, het aanmeldformulier en de accounts van de professionals die %brand% gebruiken voor hun website. Wij zijn de verwerkingsverantwoordelijke voor deze gegevens. Vragen over je gegevens: %email%.
+
+        Het gaat niet over de websites van onze klanten. Elke professional is verantwoordelijk voor de gegevens op zijn eigen website (zie de juridische vermelding op die website). Wij verwerken die gegevens namens hen, zoals beschreven in artikel 9 van onze voorwaarden (%terms_url%).
+    data_title: 2. Welke gegevens we gebruiken
+    data_text: |-
+        Als je je aanmeldt als professional: je bedrijfsnaam, je naam, e-mailadres, telefoon- en WhatsApp-nummer, adres, fiscaal nummer, werkgebied, talen, domeinnaam, je bericht aan ons, je wachtwoord (alleen versleuteld opgeslagen, als hash) en de datum waarop je onze voorwaarden hebt geaccepteerd.
+
+        Als je klant bent: je abonnement, betalingen en facturen. Betalingen lopen via Mollie: we zien nooit je volledige kaart- of bankgegevens, alleen een korte omschrijving zoals het kaartmerk en de laatste cijfers of een deel van je IBAN.
+
+        Als je een professional zoekt: het vak en de plaats waarop je zoekt. Je IP-adres wordt korte tijd gebruikt om onze formulieren en zoekfunctie tegen misbruik te beschermen.
+
+        Als je ons mailt: je e-mailadres en wat je schrijft.
+    purposes_title: 3. Waarom we ze gebruiken, en op welke rechtsgrond
+    purposes_text: |-
+        - Om je aanmelding te controleren, je website te bouwen en te laten draaien, je account te beheren en je e-mails over de dienst te sturen: om ons contract met je uit te voeren (AVG artikel 6, lid 1, onder b).
+        - Om je te factureren en onze boekhouding bij te houden: een wettelijke verplichting onder Spaans belasting- en handelsrecht (artikel 6, lid 1, onder c).
+        - Om je bedrijf te tonen in de zoekfunctie van %brand%: onderdeel van de dienst, dus ons contract (artikel 6, lid 1, onder b).
+        - Om het platform veilig te houden en spam en misbruik te stoppen: ons gerechtvaardigd belang (artikel 6, lid 1, onder f).
+
+        We verkopen je gegevens niet, gebruiken ze niet voor reclame en nemen geen geautomatiseerde besluiten over je.
+    recipients_title: 4. Met wie we gegevens delen
+    recipients_text: |-
+        We delen gegevens alleen met bedrijven die ons helpen de dienst te leveren (subverwerkers), en alleen wat zij nodig hebben:
+        - Hetzner Online GmbH, Duitsland: hosting van het platform en alle websites.
+        - Mollie B.V., Nederland: betalingen.
+        - FacturaDirecta (Spanje): facturen.
+        - Cloudflare, Inc., VS: de spamcontrole (Turnstile) op formulieren.
+        - Google LLC, VS: het instellen van Google Search Console voor je website.
+        - OpenStreetMap Foundation, Verenigd Koninkrijk: adressen en plaatsen omzetten in posities op de kaart (Nominatim).
+        - Plausible Insights OÜ, Estland: bezoekersstatistieken zonder cookies op klantwebsites die het gebruiken.
+        - Onze e-mailprovider, voor het versturen van e-mails vanaf het platform en de websites.
+
+        Als je met je eigen token een AI-assistent aan je beheeromgeving koppelt, gaan de gegevens die de assistent leest naar het bedrijf achter die assistent. Dat is jouw keuze en valt onder je afspraak met dat bedrijf.
+
+        We delen ook gegevens als de wet dat vereist, bijvoorbeeld met de belastingdienst.
+    transfers_title: 5. Gegevens buiten de EU
+    transfers_text: |-
+        Cloudflare en Google zijn gevestigd in de VS. Ze zijn gecertificeerd onder het EU-VS Data Privacy Framework en gebruiken ook de standaardcontractbepalingen van de Europese Commissie. Voor het Verenigd Koninkrijk heeft de Europese Commissie een adequaatheidsbesluit genomen.
+    retention_title: 6. Hoe lang we gegevens bewaren
+    retention_text: |-
+        - Account- en websitegegevens: zolang je klant bent, plus 30 dagen (zie artikel 10 van onze voorwaarden).
+        - Aanmeldingen die we niet goedkeuren: verwijderd binnen 3 maanden.
+        - Facturen en betaalgegevens: 6 jaar, zoals het Spaanse handelsrecht vereist.
+        - IP-adressen voor bescherming tegen misbruik: hooguit een paar uur. Serverlogs: hooguit 30 dagen.
+        - E-mails: zolang nodig om je te helpen, hooguit 2 jaar na ons laatste contact.
+    cookies_title: 7. Cookies
+    cookies_text: |-
+        Het platform gebruikt alleen één cookie die nodig is om ingelogd te blijven in de beheeromgeving. Die wordt verwijderd als je uitlogt of je browser sluit. We gebruiken geen tracking- of advertentiecookies, dus er is geen cookiebanner. De spamcontrole van Cloudflare op onze formulieren leest technische gegevens van je browser, maar volgt je niet over websites heen.
+    rights_title: 8. Je rechten
+    rights_text: |-
+        Je kunt ons vragen je gegevens in te zien, te corrigeren of te verwijderen, het gebruik ervan te beperken, of ze in een gangbaar formaat te ontvangen, en je kunt bezwaar maken tegen het gebruik ervan. De meeste accountgegevens kun je zelf wijzigen in de beheeromgeving. Mail %email%; we antwoorden binnen een maand.
+
+        Je kunt ook een klacht indienen bij de Spaanse toezichthouder voor gegevensbescherming (Agencia Española de Protección de Datos, www.aepd.es).

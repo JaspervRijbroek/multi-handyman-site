@@ -91,7 +91,7 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .menu { display: contents; }
 .menu-toggle { display: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-@media (max-width: 860px) {
+@media (max-width: 1120px) { /* below this the header (5 languages) no longer fits on one row */
     .menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--p-ink); cursor: pointer; }
     .menu-icon, .menu-icon::before, .menu-icon::after { display: block; width: 22px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .2s, background .2s; }
     .menu-icon { position: relative; }

@@ -74,7 +74,7 @@ class TenantRepository extends ServiceEntityRepository
         $qb = $this->createListedQueryBuilder()->select('COUNT(t.id) AS total');
         foreach ($trades as $i => $trade) {
             $qb->addSelect(\sprintf('SUM(CASE WHEN t.trades LIKE :trade%1$d THEN 1 ELSE 0 END) AS trade%1$d', $i))
-                ->setParameter('trade'.$i, self::tradePattern($trade));
+                ->setParameter('trade'.$i, self::listPattern($trade));
         }
         $row = $qb->getQuery()->getSingleResult();
 
@@ -87,12 +87,12 @@ class TenantRepository extends ServiceEntityRepository
     }
 
     /**
-     * Matches a trade in the JSON list in Tenant::$trades, e.g. ["handyman","pool"].
-     * Trade values are fixed slugs, so a plain LIKE is reliable.
+     * Matches a value in a JSON list such as Tenant::$trades (["handyman","pool"]) or
+     * Tenant::$locales (["en","es"]). The values are fixed slugs, so a plain LIKE is reliable.
      */
-    public static function tradePattern(string $trade): string
+    public static function listPattern(string $value): string
     {
-        return '%"'.addcslashes($trade, '%_').'"%';
+        return '%"'.addcslashes($value, '%_').'"%';
     }
 
     /**

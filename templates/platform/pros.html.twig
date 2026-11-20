@@ -9,7 +9,7 @@
 
 {% set price = 59 %}
 {% set yearly_price = price * constant('App\\Billing\\BillingService::YEARLY_PRICE_IN_MONTHS') %}
-{% set yearly_per_month = (yearly_price / 12)|number_format(2, locale == 'es' ? ',' : '.') %}
+{% set yearly_per_month = (yearly_price / 12)|number_format(2, locale == 'en' ? '.' : ',') %}
 {% set currency = 'EUR' %}
 {% set contact_email = 'hello@example.com' %}
 {% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
@@ -17,7 +17,7 @@
 {#
     Testimonials from real clients, hardcoded here (there are only a few). The section
     is hidden while the list is empty. Only add quotes the client agreed to publish.
-    The quote and trade need an English and a Spanish text:
+    The quote and trade need at least an English text; add the other languages (es, nl, de, fr) where you can:
 
     {
         quote: {en: 'Since the website went live I get two or three new jobs a month.', es: 'Desde que tengo la web me llegan dos o tres trabajos nuevos al mes.'},

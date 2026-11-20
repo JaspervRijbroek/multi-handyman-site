@@ -29,6 +29,14 @@ trade:
     pool: Piscinas
     locksmith: Cerrajería
 
+language:
+    # Languages a pro's website is in, for the search filter
+    en: Inglés
+    es: Español
+    nl: Neerlandés
+    de: Alemán
+    fr: Francés
+
 home:
     title: '%brand% | Encuentra un manitas, fontanero o albañil de confianza cerca de ti'
     description: Encuentra profesionales locales en España por oficio y localidad. Mira sus trabajos y opiniones, y contacta directamente. Sin intermediarios ni comisiones.
@@ -55,6 +63,8 @@ home:
 search_form:
     what: ¿Qué necesitas?
     any: Cualquier oficio
+    language: Idioma
+    any_language: Cualquier idioma
     where: ¿Dónde?
     placeholder: Localidad, p. ej. Jávea
     button: Buscar
@@ -71,7 +81,7 @@ search:
     not_found: 'No encontramos «%town%». Revisa cómo se escribe o prueba con una localidad cercana. De momento mostramos todos los profesionales.'
     corrected: 'Mostramos resultados para «%town%» (escribiste «%typed%»).'
     empty_title: Aún no hay profesionales aquí
-    empty_text: Prueba con otro oficio o con una localidad más grande cercana.
+    empty_text: Prueba con otro oficio o idioma, o con una localidad más grande cercana.
     show_all: Ver todos los profesionales
     reviews: '{1} 1 opinión|]1,Inf[ %count% opiniones'
     no_reviews: Aún sin opiniones
