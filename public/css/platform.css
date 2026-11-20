@@ -87,7 +87,11 @@ h3 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.01em; }
 .p-lang { display: flex; border: 1.5px solid var(--p-field); border-radius: 999px; padding: 2px; }
 .p-lang a { border-radius: 999px; padding: 3px 10px; font-size: .8125rem; font-weight: 700; color: var(--p-ink); text-decoration: none; }
 .p-lang a[aria-current] { background: var(--p-ink); color: var(--p-cream); }
-@media (max-width: 860px) { .p-nav { display: none; } }
+/* On small screens the nav and button move to a second row below the logo */
+@media (max-width: 860px) {
+    .p-nav { order: 1; margin-right: auto; flex-wrap: wrap; gap: 6px 18px; }
+    .p-header-inner > .p-btn { order: 2; }
+}
 
 /* Hero */
 .p-hero { padding: clamp(40px, 6vw, 96px) 0 clamp(56px, 7vw, 96px); }

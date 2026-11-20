@@ -229,7 +229,9 @@ h3 { font-size: 1.375rem; line-height: 1.2; }
 }
 
 @media (max-width: 640px) {
-    .nav, .header-inner > .btn { display: none; }
+    /* Nav and contact button move to a second row below the brand */
+    .nav { order: 1; margin-right: auto; flex-wrap: wrap; gap: 6px 18px; }
+    .header-inner > .btn { order: 2; }
     .hero-photo-empty { display: none; }
     .header-inner { min-height: 64px; }
     .brand { font-size: 1.15rem; }
