@@ -15,11 +15,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -71,12 +73,22 @@ class ProjectCrudController extends AbstractTenantCrudController
             ->setUploadedFileNamePattern('[randomhash].[extension]')
             ->setRequired(Crud::PAGE_NEW === $pageName)
             ->setHelp('A clear photo of the finished work. JPG or PNG.');
+        yield ImageField::new('photos', 'More photos (optional)')
+            ->setBasePath('uploads/projects')
+            ->setUploadDir('public/uploads/projects')
+            ->setUploadedFileNamePattern('[randomhash].[extension]')
+            ->setFormTypeOptions(['multiple' => true])
+            ->hideOnIndex()
+            ->setHelp('Before, during and after: shown as a gallery on the job\'s own page. New photos are added to the ones already there; "Delete" removes all of them.');
         yield TranslatedField::new('title', 'What did you do?')->setLocales($this->locales());
         yield TranslatedField::new('description', 'Details (optional)')
             ->setLocales($this->locales())
             ->multiline()
             ->hideOnIndex();
+        yield TextField::new('location', 'Where? (town)')->hideOnIndex();
+        yield AssociationField::new('service', 'Which service?')->hideOnIndex();
         yield DateField::new('completedAt', 'Finished on');
+        yield IntegerField::new('durationDays', 'How many days did it take?')->hideOnIndex();
         yield BooleanField::new('published', 'Show on website')->renderAsSwitch(false);
 
         yield FormField::addFieldset('Ask your customer for a review');

@@ -64,15 +64,15 @@ final class AppFixtures extends Fixture
             ->addDomain((new Domain())->setHostname('jans-klusbedrijf.ddev.site')->setIsPrimary(true));
         $manager->persist($jan);
 
-        $this->addServices($manager, $jan, [
+        $janServices = $this->addServices($manager, $jan, [
             ['en' => 'Repairs & maintenance', 'es' => 'Reparaciones y mantenimiento', 'nl' => 'Reparaties & onderhoud'],
             ['en' => 'Painting', 'es' => 'Pintura', 'nl' => 'Schilderwerk'],
             ['en' => 'Tiling', 'es' => 'Alicatado', 'nl' => 'Tegelwerk'],
             ['en' => 'Garden & pool', 'es' => 'Jardín y piscina', 'nl' => 'Tuin & zwembad'],
         ]);
         $this->addProjects($manager, $jan, [
-            ['en' => 'New bathroom tiles in Torrent', 'nl' => 'Nieuwe badkamertegels in Torrent'],
-            ['en' => 'Terrace painted in Paterna', 'nl' => 'Terras geschilderd in Paterna'],
+            [['en' => 'New bathroom tiles in Torrent', 'nl' => 'Nieuwe badkamertegels in Torrent'], 'Torrent', $janServices[2], 3],
+            [['en' => 'Terrace painted in Paterna', 'nl' => 'Terras geschilderd in Paterna'], 'Paterna', $janServices[1], 2],
         ]);
         $this->addReviews($manager, $jan, [
             ['Maria', 'Torrent', 5, 'Jan retiled our bathroom in three days. Tidy, on time and exactly the price he quoted.', true],
@@ -151,21 +151,31 @@ final class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    /** @param list<array<string, string>> $titles */
-    private function addServices(ObjectManager $manager, Tenant $tenant, array $titles): void
+    /**
+     * @param list<array<string, string>> $titles
+     *
+     * @return list<Service>
+     */
+    private function addServices(ObjectManager $manager, Tenant $tenant, array $titles): array
     {
+        $services = [];
         foreach ($titles as $position => $title) {
-            $manager->persist((new Service())->setTenant($tenant)->setTitle($title)->setPosition($position));
+            $manager->persist($services[] = (new Service())->setTenant($tenant)->setTitle($title)->setPosition($position));
         }
+
+        return $services;
     }
 
-    /** @param list<array<string, string>> $titles */
-    private function addProjects(ObjectManager $manager, Tenant $tenant, array $titles): void
+    /** @param list<array{array<string, string>, string, Service, int}> $projects title, town, service, days */
+    private function addProjects(ObjectManager $manager, Tenant $tenant, array $projects): void
     {
-        foreach ($titles as $i => $title) {
+        foreach ($projects as $i => [$title, $location, $service, $days]) {
             $manager->persist((new Project())
                 ->setTenant($tenant)
                 ->setTitle($title)
+                ->setLocation($location)
+                ->setService($service)
+                ->setDurationDays($days)
                 ->setCompletedAt(new \DateTimeImmutable(\sprintf('-%d weeks', ($i + 1) * 3))));
         }
     }

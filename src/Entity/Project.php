@@ -38,6 +38,23 @@ class Project implements TenantOwnedInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageName = null;
 
+    /** @var list<string> More photos of the job, file names inside public/uploads/projects/ */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $photos = [];
+
+    /** The town where the job was done */
+    #[ORM\Column(length: 120, nullable: true)]
+    #[Assert\Length(max: 120)]
+    private ?string $location = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Service $service = null;
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Assert\Range(min: 1, max: 365)]
+    private ?int $durationDays = null;
+
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $completedAt = null;
 
@@ -108,6 +125,62 @@ class Project implements TenantOwnedInterface
     public function setImageName(?string $imageName): static
     {
         $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getPhotos(): array
+    {
+        return $this->photos;
+    }
+
+    /** @param list<string>|null $photos */
+    public function setPhotos(?array $photos): static
+    {
+        $this->photos = array_values(array_filter($photos ?? []));
+
+        return $this;
+    }
+
+    /** @return list<string> The main photo first, then the others */
+    public function getAllPhotos(): array
+    {
+        return array_values(array_filter([$this->imageName, ...$this->photos]));
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): static
+    {
+        $this->location = trim((string) $location) ?: null;
+
+        return $this;
+    }
+
+    public function getService(): ?Service
+    {
+        return $this->service;
+    }
+
+    public function setService(?Service $service): static
+    {
+        $this->service = $service;
+
+        return $this;
+    }
+
+    public function getDurationDays(): ?int
+    {
+        return $this->durationDays;
+    }
+
+    public function setDurationDays(?int $durationDays): static
+    {
+        $this->durationDays = $durationDays;
 
         return $this;
     }

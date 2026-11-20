@@ -16,6 +16,21 @@ services:
 
 projects:
     title: Réalisations récentes
+    view: Voir le projet
+    all: Tous les projets
+    counter: Projet %number% / %count%
+    photo: "Photo %number% : %title%"
+    review: Avis du client
+    service: Service
+    location: Lieu
+    completed: Terminé
+    duration: Durée
+    days: "%count% jour|%count% jours"
+    photos: "%count% photo|%count% photos"
+    similar: Besoin de quelque chose de similaire ?
+    more: Autres projets
+    previous: Précédent
+    next: Suivant
 
 about:
     title: À propos de nous

@@ -117,6 +117,11 @@ of small queries however many clients there are.
 - The **map** (Leaflet, served from `public/vendor/leaflet`) only loads OpenStreetMap after a
   click and shows the pros on the current page.
 
+**Project pages**: every published finished job has its own page at `/{locale}/projects/{id}`
+(in the sitemap), linked from the cards on the homepage. It shows a photo gallery (the main photo
+plus "More photos" from the admin), the details, where and when it was done, which service and how
+many days it took, the customer's review of that job, and previous/next links.
+
 **Reviews**: customers write one at `/{locale}/review` on the client's site (honeypot +
 Turnstile, like the contact form). It is saved hidden and the client gets an email; it shows on
 the site once they switch on "Show on website" under Reviews in the admin. Clients cannot write
@@ -423,8 +428,9 @@ Clients can connect an AI assistant (Claude, ChatGPT, ...) to their own data thr
 - The assistant sends the token as `Authorization: Bearer <token>`. The token decides the client:
   the tenant filter and guards then limit everything to that client's data, just like in the admin.
 - Tools (`App\Mcp\McpTools`): read and change the business details and website texts, add, change
-  and delete services and finished jobs (with a photo: JPG, PNG or WebP, base64-encoded, max 5 MB,
-  saved in `public/uploads/projects/` like admin uploads), list enquiries and mark them
+  and delete services and finished jobs (with town, service and duration, and a main photo: JPG,
+  PNG or WebP, base64-encoded, max 5 MB, saved in `public/uploads/projects/` like admin uploads;
+  extra photos are added in the admin), list enquiries and mark them
   handled, list reviews and show, hide or delete them (not write or edit them).
 - The server (`App\Mcp\McpServer`) is a small hand-written JSON-RPC handler: tools only,
   stateless, plain JSON answers (no sessions or event streams). `/mcp` returns 404 on client sites.

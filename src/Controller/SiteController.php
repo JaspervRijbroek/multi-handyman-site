@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Enquiry;
+use App\Entity\Project;
 use App\Entity\Review;
 use App\Entity\Tenant;
 use App\Form\ContactType;
@@ -110,9 +111,37 @@ final class SiteController extends AbstractController
         return $this->render('@site/home.html.twig', [
             'tenant' => $tenant,
             'services' => $services->findBy(['tenant' => $tenant], ['position' => 'ASC', 'id' => 'ASC']),
-            'projects' => $projects->findBy(['tenant' => $tenant, 'published' => true], ['completedAt' => 'DESC', 'id' => 'DESC'], 12),
+            'projects' => $projects->findPublished($tenant, 12),
             'reviews' => $reviews->findLatestPublished($tenant, 6),
             'form' => $form,
+        ]);
+    }
+
+    /** A finished job on its own page: photo gallery, details and the customer's review. */
+    #[Route('/{_locale}/projects/{id}', name: 'site_project', requirements: ['_locale' => '[a-z]{2}', 'id' => '\\d+'], methods: ['GET'])]
+    public function project(int $id, Request $request, ProjectRepository $projects, ReviewRepository $reviews): Response
+    {
+        $tenant = $this->siteTenant($request);
+
+        // Only this client's published jobs; their order gives the previous and next links
+        $published = $projects->findPublished($tenant);
+        $ids = array_map(static fn (Project $project) => $project->getId(), $published);
+        $index = array_search($id, $ids, true);
+        if (false === $index) {
+            throw new NotFoundHttpException();
+        }
+
+        $count = \count($published);
+        $project = $published[$index];
+
+        return $this->render('@site/project.html.twig', [
+            'tenant' => $tenant,
+            'project' => $project,
+            'number' => $index + 1,
+            'count' => $count,
+            'previous' => $count > 1 ? $published[($index - 1 + $count) % $count] : null,
+            'next' => $count > 1 ? $published[($index + 1) % $count] : null,
+            'review' => $reviews->findOneBy(['project' => $project, 'published' => true], ['createdAt' => 'DESC']),
         ]);
     }
 
@@ -231,11 +260,14 @@ final class SiteController extends AbstractController
     }
 
     #[Route('/sitemap.xml', name: 'site_sitemap', methods: ['GET'])]
-    public function sitemap(): Response
+    public function sitemap(ProjectRepository $projects): Response
     {
         $tenant = $this->tenantContext->get() ?? throw new NotFoundHttpException();
 
-        $response = $this->render('@site/sitemap.xml.twig', ['tenant' => $tenant]);
+        $response = $this->render('@site/sitemap.xml.twig', [
+            'tenant' => $tenant,
+            'projects' => $projects->findPublished($tenant),
+        ]);
         $response->headers->set('Content-Type', 'application/xml; charset=UTF-8');
 
         return $response;

@@ -1,0 +1,68 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Invite a business{% endblock %}
+
+{% block main %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5">Recommend us, and you both get a free month</h2>
+            <p>
+                Know another business that needs a website? Send them an invitation.
+                They get their <strong>second month free</strong>. You get a <strong>free month</strong> too,
+                as soon as they have signed up and set up their payment.
+            </p>
+            <p class="mb-0">
+                You can send {{ total }} invitations in total. You have <strong>{{ left }} of {{ total }}</strong> left.
+                {% if tenant.freeMonths > 0 %}
+                    Free months you have earned and not used yet: <strong>{{ tenant.freeMonths }}</strong>.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    {% if left > 0 %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Send an invitation</h2>
+                <form method="post" action="{{ path('admin_invitations_send') }}" class="row g-2 align-items-end">
+                    <input type="hidden" name="_token" value="{{ csrf_token('invitations-' ~ tenant.id) }}">
+                    <div class="col-md-4">
+                        <label class="form-label" for="invite-name">Their name</label>
+                        <input class="form-control" id="invite-name" name="name" required maxlength="120">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label" for="invite-email">Their email</label>
+                        <input class="form-control" id="invite-email" name="email" type="email" required maxlength="180">
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary w-100" type="submit">Send invitation</button>
+                    </div>
+                </form>
+                <p class="form-text mb-0 mt-2">We email them a personal sign-up link that works once. Replies go to you.</p>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if invitations is not empty %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="h5">Your invitations</h2>
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Sent</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for invitation in invitations %}
+                            <tr>
+                                <td>{{ invitation.name }}</td>
+                                <td>{{ invitation.email }}</td>
+                                <td>{{ invitation.createdAt|date('j F Y') }}</td>
+                                <td>{{ invitation.statusLabel }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

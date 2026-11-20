@@ -115,19 +115,24 @@
                 <h2>{{ 'projects.title'|trans }}</h2>
                 <div class="projects">
                     {% for project in projects %}
-                        <figure class="project">
+                        <a class="project" href="{{ path('site_project', {_locale: app.request.locale, id: project.id}) }}">
                             {% if project.imageName %}
                                 <img src="{{ asset('uploads/projects/' ~ project.imageName) }}"
-                                     alt="{{ project.title|localized }}" loading="lazy" width="400" height="500">
+                                     alt="" loading="lazy" width="400" height="500">
                             {% else %}
                                 <div class="project-placeholder" aria-hidden="true"></div>
                             {% endif %}
-                            <figcaption>
+                            <span class="project-caption">
                                 <strong>{{ project.title|localized }}</strong>
-                                {% if project.description|localized %}<span>{{ project.description|localized }}</span>{% endif %}
-                                {% if project.completedAt %}<time datetime="{{ project.completedAt|date('Y-m-d') }}">{{ project.completedAt|date('m/Y') }}</time>{% endif %}
-                            </figcaption>
-                        </figure>
+                                {% set meta = [
+                                    project.location,
+                                    project.completedAt ? project.completedAt|date('m/Y') : null,
+                                    project.allPhotos|length > 1 ? 'projects.photos'|trans({'%count%': project.allPhotos|length}) : null,
+                                ]|filter(v => v) %}
+                                {% if meta is not empty %}<span>{{ meta|join(' · ') }}</span>{% endif %}
+                                <span class="project-more">{{ 'projects.view'|trans }} →</span>
+                            </span>
+                        </a>
                     {% endfor %}
                 </div>
             </div>

@@ -16,6 +16,21 @@ services:
 
 projects:
     title: Recent werk
+    view: Bekijk project
+    all: Alle projecten
+    counter: Project %number% / %count%
+    photo: "Foto %number%: %title%"
+    review: Review van de klant
+    service: Dienst
+    location: Locatie
+    completed: Opgeleverd
+    duration: Duur
+    days: "%count% dag|%count% dagen"
+    photos: "%count% foto|%count% foto’s"
+    similar: Iets vergelijkbaars nodig?
+    more: Meer projecten
+    previous: Vorige
+    next: Volgende
 
 about:
     title: Over ons

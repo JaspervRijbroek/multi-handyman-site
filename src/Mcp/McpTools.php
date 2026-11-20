@@ -114,6 +114,9 @@ final readonly class McpTools
                 'title' => $translated('What was done.'),
                 'description' => $translated('Details.'),
                 'completed_at' => ['type' => ['string', 'null'], 'format' => 'date', 'description' => 'Finished on, YYYY-MM-DD'],
+                'location' => $nullableText + ['description' => 'Town where the job was done'],
+                'service_id' => ['type' => ['integer', 'null'], 'description' => 'ID of the matching service (see list_services); null for none'],
+                'duration_days' => ['type' => ['integer', 'null'], 'minimum' => 1, 'maximum' => 365, 'description' => 'How many days the job took'],
                 'published' => ['type' => 'boolean', 'description' => 'Show on the website'],
                 'photo_base64' => ['type' => 'string', 'contentEncoding' => 'base64', 'description' => 'Photo of the finished work: a JPG, PNG or WebP file, base64-encoded, max 5 MB. Replaces the current photo.'],
             ], [], $write),
@@ -226,6 +229,15 @@ final readonly class McpTools
         $this->applyTexts($project, $args);
         if (\array_key_exists('completed_at', $args)) {
             $project->setCompletedAt(self::date($args['completed_at']));
+        }
+        if (\array_key_exists('location', $args)) {
+            $project->setLocation($args['location']);
+        }
+        if (\array_key_exists('service_id', $args)) {
+            $project->setService(null === $args['service_id'] ? null : $this->find(Service::class, ['id' => $args['service_id']]));
+        }
+        if (\array_key_exists('duration_days', $args)) {
+            $project->setDurationDays(null === $args['duration_days'] ? null : (int) $args['duration_days']);
         }
         if (\array_key_exists('published', $args)) {
             $project->setPublished((bool) $args['published']);
@@ -371,18 +383,23 @@ final readonly class McpTools
             'title' => $project->getTitle(),
             'description' => $project->getDescription(),
             'completed_at' => $project->getCompletedAt()?->format('Y-m-d'),
+            'location' => $project->getLocation(),
+            'service_id' => $project->getService()?->getId(),
+            'duration_days' => $project->getDurationDays(),
             'published' => $project->isPublished(),
             'has_photo' => null !== $project->getImageName(),
-            'photo_url' => $this->photoUrl($project),
+            'photo_url' => $this->photoUrl($project->getImageName()),
+            // Extra photos are added in the admin
+            'more_photo_urls' => array_map($this->photoUrl(...), $project->getPhotos()),
         ];
     }
 
-    private function photoUrl(Project $project): ?string
+    private function photoUrl(?string $fileName): ?string
     {
         $domain = $this->tenantContext->require()->getPrimaryDomain();
 
-        return $project->getImageName() && $domain
-            ? 'https://'.$domain->getHostname().'/uploads/projects/'.rawurlencode($project->getImageName())
+        return $fileName && $domain
+            ? 'https://'.$domain->getHostname().'/uploads/projects/'.rawurlencode($fileName)
             : null;
     }
 

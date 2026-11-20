@@ -1,0 +1,116 @@
+{% extends '@site/base.html.twig' %}
+
+{% set title = project.title|localized %}
+{% set photos = project.allPhotos %}
+
+{% block title %}{{ title }} | {{ tenant.name }}{% endblock %}
+{% block description %}{{ (project.description|localized ?: title)|slice(0, 155) }}{% endblock %}
+
+{% block head %}
+    {% if photos is not empty %}
+        <meta property="og:image" content="{{ absolute_url(asset('uploads/projects/' ~ photos|first)) }}">
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <article class="section project-page">
+        <div class="container stack">
+            <p class="project-top">
+                <a href="{{ path('site_home', {_locale: app.request.locale}) }}#projects">← {{ 'projects.all'|trans }}</a>
+                <span class="muted">{{ 'projects.counter'|trans({'%number%': number, '%count%': count}) }}</span>
+            </p>
+
+            <header>
+                {% set meta = [project.service ? project.service.title|localized : null, project.location]|filter(v => v) %}
+                {% if meta is not empty %}<p class="eyebrow">{{ meta|join(' · ') }}</p>{% endif %}
+                <h1>{{ title }}</h1>
+            </header>
+
+            {% if photos is not empty %}
+                <div class="gallery">
+                    <img class="gallery-main" src="{{ asset('uploads/projects/' ~ photos|first) }}" alt="{{ title }}" width="1160" height="653">
+                    {% if photos|length > 1 %}
+                        <ul class="gallery-thumbs">
+                            {% for photo in photos %}
+                                <li>
+                                    <a href="{{ asset('uploads/projects/' ~ photo) }}"{% if loop.first %} aria-current="true"{% endif %}>
+                                        <img src="{{ asset('uploads/projects/' ~ photo) }}" alt="{{ 'projects.photo'|trans({'%number%': loop.index, '%title%': title}) }}" loading="lazy" width="160" height="120">
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {# Show the clicked photo in the large frame; without JavaScript the link opens the photo #}
+                        <script>
+                            document.querySelector('.gallery-thumbs').addEventListener('click', function (event) {
+                                var link = event.target.closest('a');
+                                if (!link) return;
+                                event.preventDefault();
+                                var main = document.querySelector('.gallery-main');
+                                main.src = link.href;
+                                main.alt = link.querySelector('img').alt;
+                                this.querySelectorAll('a').forEach(function (a) { a.removeAttribute('aria-current'); });
+                                link.setAttribute('aria-current', 'true');
+                            });
+                        </script>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="project-body">
+                <div class="stack">
+                    {% if project.description|localized %}
+                        <p class="lead">{{ project.description|localized|nl2br }}</p>
+                    {% endif %}
+                    {% if review %}
+                        <blockquote class="review project-review">
+                            <p class="eyebrow">{{ 'projects.review'|trans }}</p>
+                            <p class="stars" role="img" aria-label="{{ review.rating }}/5">{% for star in 1..5 %}<span{% if star > review.rating %} class="star-off"{% endif %}>★</span>{% endfor %}</p>
+                            <p class="review-text">“{{ review.text }}”</p>
+                            <footer>
+                                {% set author = review.anonymous ? 'reviews.anonymous'|trans : review.authorName %}
+                                <span class="review-initial" aria-hidden="true">{{ author|first|upper }}</span>
+                                <span><b>{{ author }}</b>{% if review.town %}<br>{{ review.town }}{% endif %}</span>
+                            </footer>
+                        </blockquote>
+                    {% endif %}
+                </div>
+
+                <aside>
+                    <dl class="project-facts">
+                        {% if project.service %}
+                            <div><dt>{{ 'projects.service'|trans }}</dt><dd>{{ project.service.title|localized }}</dd></div>
+                        {% endif %}
+                        {% if project.location %}
+                            <div><dt>{{ 'projects.location'|trans }}</dt><dd>{{ project.location }}</dd></div>
+                        {% endif %}
+                        {% if project.completedAt %}
+                            <div><dt>{{ 'projects.completed'|trans }}</dt><dd><time datetime="{{ project.completedAt|date('Y-m-d') }}">{{ project.completedAt|date('m/Y') }}</time></dd></div>
+                        {% endif %}
+                        {% if project.durationDays %}
+                            <div><dt>{{ 'projects.duration'|trans }}</dt><dd>{{ 'projects.days'|trans({'%count%': project.durationDays}) }}</dd></div>
+                        {% endif %}
+                    </dl>
+                    <div class="project-cta">
+                        <p>{{ 'projects.similar'|trans }}</p>
+                        <a class="btn btn-primary" href="{{ path('site_home', {_locale: app.request.locale}) }}#contact">{{ 'hero.quote'|trans }} →</a>
+                    </div>
+                </aside>
+            </div>
+
+            {% if previous and next %}
+                <nav class="project-nav" aria-label="{{ 'projects.more'|trans }}">
+                    <a href="{{ path('site_project', {_locale: app.request.locale, id: previous.id}) }}" rel="prev">
+                        <span>← {{ 'projects.previous'|trans }}</span>
+                        {{ previous.title|localized }}
+                    </a>
+                    {% if next != previous %}
+                        <a href="{{ path('site_project', {_locale: app.request.locale, id: next.id}) }}" rel="next">
+                            <span>{{ 'projects.next'|trans }} →</span>
+                            {{ next.title|localized }}
+                        </a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    </article>
+{% endblock %}
