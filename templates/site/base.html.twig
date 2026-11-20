@@ -51,6 +51,11 @@
                 {%- endif -%}
                 <span>{{ tenant.name }}</span>
             </a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
+                <span class="menu-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">{{ 'nav.menu'|trans }}</span>
+            </button>
+            <div class="menu" id="site-menu">
             <nav class="nav" aria-label="{{ 'nav.main'|trans }}">
                 <a href="{{ home }}#services">{{ 'nav.services'|trans }}</a>
                 <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
@@ -66,8 +71,10 @@
                 </nav>
             {% endif %}
             <a class="btn btn-primary btn-small" href="{{ home }}#contact">{{ 'nav.contact'|trans }}</a>
+            </div>
         </div>
     </header>
+    {{ include('_menu_script.html.twig') }}
 
     <main>
         {% block body %}{% endblock %}

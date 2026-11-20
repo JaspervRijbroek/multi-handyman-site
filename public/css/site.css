@@ -229,9 +229,29 @@ h3 { font-size: 1.375rem; line-height: 1.2; }
 }
 
 @media (max-width: 640px) {
-    .nav, .header-inner > .btn { display: none; }
     .hero-photo-empty { display: none; }
     .header-inner { min-height: 64px; }
     .brand { font-size: 1.15rem; }
     .brand-mark { width: 38px; height: 44px; font-size: .95rem; }
+}
+
+/* Mobile menu (hamburger). On wide screens .menu is invisible to layout and the toggle is hidden. */
+.menu { display: contents; }
+.menu-toggle { display: none; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 640px) {
+    .menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--ink); cursor: pointer; }
+    .menu-icon, .menu-icon::before, .menu-icon::after { display: block; width: 22px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .2s, background .2s; }
+    .menu-icon { position: relative; }
+    .menu-icon::before, .menu-icon::after { content: ""; position: absolute; left: 0; }
+    .menu-icon::before { top: -7px; }
+    .menu-icon::after { top: 7px; }
+    .is-open .menu-icon { background: transparent; }
+    .is-open .menu-icon::before { transform: translateY(7px) rotate(45deg); }
+    .is-open .menu-icon::after { transform: translateY(-7px) rotate(-45deg); }
+
+    .menu { display: none; flex-basis: 100%; flex-direction: column; align-items: flex-start; gap: 16px; padding: 8px 0 16px; }
+    .is-open .menu { display: flex; }
+    .menu > nav:first-child { display: flex; flex-direction: column; gap: 0; width: 100%; }
+    .menu > nav:first-child a { padding: 12px 0; font-size: 1.0625rem; border-bottom: 1px solid var(--border); }
 }

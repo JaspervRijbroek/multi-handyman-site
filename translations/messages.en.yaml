@@ -5,6 +5,7 @@ nav:
     contact: Contact
     main: Main menu
     language: Language
+    menu: Menu
 
 hero:
     call: Call
