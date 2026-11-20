@@ -29,6 +29,14 @@ trade:
     pool: Pool care
     locksmith: Locksmith
 
+language:
+    # Languages a pro's website is in, for the search filter
+    en: English
+    es: Spanish
+    nl: Dutch
+    de: German
+    fr: French
+
 home:
     title: '%brand% | Find a trusted local handyman, plumber or builder in Spain'
     description: Find local tradespeople in Spain by trade and town. See their work and reviews, and contact them directly. No middleman, no commission.
@@ -55,6 +63,8 @@ home:
 search_form:
     what: What needs doing?
     any: Any trade
+    language: Language
+    any_language: Any language
     where: Where in Spain?
     placeholder: Town, e.g. Jávea
     button: Search
@@ -71,7 +81,7 @@ search:
     not_found: 'We couldn’t find “%town%”. Check the spelling or try a nearby town. Showing all pros for now.'
     corrected: 'Showing results for “%town%” (you typed “%typed%”).'
     empty_title: No pros here yet
-    empty_text: Try another trade or a bigger town nearby.
+    empty_text: Try another trade or language, or a bigger town nearby.
     show_all: Show all pros
     reviews: '{1} 1 review|]1,Inf[ %count% reviews'
     no_reviews: No reviews yet

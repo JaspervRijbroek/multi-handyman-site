@@ -14,7 +14,7 @@
 {% block robots %}noindex, follow{% endblock %}
 
 {% block main %}
-    {% set query = {_locale: locale, trade: trade ? trade.value : null, near: near ?: null, sort: sort == 'rating' ? 'rating' : null} %}
+    {% set query = {_locale: locale, trade: trade ? trade.value : null, language: language, near: near ?: null, sort: sort == 'rating' ? 'rating' : null} %}
     {% set decimal = locale == 'en' ? '.' : ',' %}
     {% set points = results|filter(r => r.tenant.hasCoordinates)|map(r => {
         lat: r.tenant.latitude,

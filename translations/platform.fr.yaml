@@ -29,6 +29,14 @@ trade:
     pool: Entretien de piscine
     locksmith: Serrurerie
 
+language:
+    # Languages a pro's website is in, for the search filter
+    en: Anglais
+    es: Espagnol
+    nl: Néerlandais
+    de: Allemand
+    fr: Français
+
 home:
     title: '%brand% | Trouvez un artisan, plombier ou maçon de confiance en Espagne'
     description: Trouvez des artisans locaux en Espagne par métier et par ville. Découvrez leurs réalisations et leurs avis, et contactez-les directement. Sans intermédiaire, sans commission.
@@ -55,6 +63,8 @@ home:
 search_form:
     what: Que faut-il faire ?
     any: Tous les métiers
+    language: Langue
+    any_language: Toutes les langues
     where: Où en Espagne ?
     placeholder: Ville, p. ex. Jávea
     button: Rechercher
@@ -71,7 +81,7 @@ search:
     not_found: 'Nous n’avons pas trouvé « %town% ». Vérifiez l’orthographe ou essayez une ville voisine. Nous affichons tous les pros pour l’instant.'
     corrected: 'Résultats pour « %town% » (vous avez tapé « %typed% »).'
     empty_title: Pas encore de pros ici
-    empty_text: Essayez un autre métier ou une ville plus grande à proximité.
+    empty_text: Essayez un autre métier ou une autre langue, ou une ville plus grande à proximité.
     show_all: Voir tous les pros
     reviews: '{1} 1 avis|]1,Inf[ %count% avis'
     no_reviews: Pas encore d’avis

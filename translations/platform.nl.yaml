@@ -29,6 +29,14 @@ trade:
     pool: Zwembadonderhoud
     locksmith: Slotenmaker
 
+language:
+    # Languages a pro's website is in, for the search filter
+    en: Engels
+    es: Spaans
+    nl: Nederlands
+    de: Duits
+    fr: Frans
+
 home:
     title: '%brand% | Vind een betrouwbare klusjesman, loodgieter of aannemer in Spanje'
     description: Vind lokale vakmensen in Spanje op vak en woonplaats. Bekijk hun werk en reviews en neem direct contact op. Geen tussenpersoon, geen commissie.
@@ -55,6 +63,8 @@ home:
 search_form:
     what: Wat moet er gebeuren?
     any: Elk vak
+    language: Taal
+    any_language: Elke taal
     where: Waar in Spanje?
     placeholder: Plaats, bijv. Jávea
     button: Zoeken
@@ -71,7 +81,7 @@ search:
     not_found: 'We konden “%town%” niet vinden. Controleer de spelling of probeer een plaats in de buurt. We tonen nu alle vakmensen.'
     corrected: 'Resultaten voor “%town%” (je typte “%typed%”).'
     empty_title: Hier nog geen vakmensen
-    empty_text: Probeer een ander vak of een grotere plaats in de buurt.
+    empty_text: Probeer een ander vak of een andere taal, of een grotere plaats in de buurt.
     show_all: Toon alle vakmensen
     reviews: '{1} 1 review|]1,Inf[ %count% reviews'
     no_reviews: Nog geen reviews

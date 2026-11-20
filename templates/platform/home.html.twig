@@ -24,7 +24,7 @@
                     <h1>{{ 'home.h1_start'|trans }}<span>{{ 'home.h1_highlight'|trans }}</span>{{ 'home.h1_end'|trans }}</h1>
                     <p class="p-lead">{{ 'home.lead'|trans }}</p>
 
-                    {% include 'platform/_search_form.html.twig' with {trade: null, near: ''} %}
+                    {% include 'platform/_search_form.html.twig' with {trade: null, language: null, near: ''} %}
 
                     {% if popular is not empty %}
                         <p class="p-popular">

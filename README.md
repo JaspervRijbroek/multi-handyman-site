@@ -104,6 +104,8 @@ Filtering, sorting and paging (20 per page) happen in the database, so a search 
 of small queries however many clients there are.
 
 - Clients pick their **trades** in Settings → Work area (fixed list in `App\Entity\Trade`).
+- The **language** filter shows only clients whose website is in that language (their main
+  language or one of their extra languages, see `Tenant::SUPPORTED_LOCALES`).
 - A **town** is matched against the clients' towns first (the database collation ignores case
   and accents, so "javea" finds "Jávea"); anything else is looked up in OpenStreetMap (Nominatim),
   at most 30 lookups per visitor per hour. Results are within 75 km, nearest first or highest

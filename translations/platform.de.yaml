@@ -29,6 +29,14 @@ trade:
     pool: Poolpflege
     locksmith: Schlüsseldienst
 
+language:
+    # Languages a pro's website is in, for the search filter
+    en: Englisch
+    es: Spanisch
+    nl: Niederländisch
+    de: Deutsch
+    fr: Französisch
+
 home:
     title: '%brand% | Zuverlässige Handwerker, Klempner und Bauunternehmer in Spanien finden'
     description: Finden Sie lokale Handwerker in Spanien nach Gewerk und Ort. Sehen Sie sich ihre Arbeiten und Bewertungen an und nehmen Sie direkt Kontakt auf. Ohne Vermittler, ohne Provision.
@@ -55,6 +63,8 @@ home:
 search_form:
     what: Was ist zu tun?
     any: Alle Gewerke
+    language: Sprache
+    any_language: Alle Sprachen
     where: Wo in Spanien?
     placeholder: Ort, z. B. Jávea
     button: Suchen
@@ -71,7 +81,7 @@ search:
     not_found: 'Wir konnten „%town%“ nicht finden. Prüfen Sie die Schreibweise oder versuchen Sie einen Ort in der Nähe. Vorerst zeigen wir alle Handwerker.'
     corrected: 'Ergebnisse für „%town%“ (Sie haben „%typed%“ eingegeben).'
     empty_title: Hier noch keine Handwerker
-    empty_text: Versuchen Sie ein anderes Gewerk oder einen größeren Ort in der Nähe.
+    empty_text: Versuchen Sie ein anderes Gewerk, eine andere Sprache oder einen größeren Ort in der Nähe.
     show_all: Alle Handwerker anzeigen
     reviews: '{1} 1 Bewertung|]1,Inf[ %count% Bewertungen'
     no_reviews: Noch keine Bewertungen
