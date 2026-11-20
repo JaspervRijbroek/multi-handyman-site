@@ -31,7 +31,7 @@ final class PasswordSetupController extends AbstractController
         ]);
     }
 
-    #[Route('/{_locale}/set-password/{token}', name: 'app_password_setup_form', requirements: ['_locale' => 'es|en', 'token' => '[a-f0-9]{64}'], methods: ['GET', 'POST'])]
+    #[Route('/{_locale}/set-password/{token}', name: 'app_password_setup_form', requirements: ['_locale' => PlatformController::LOCALE_REQUIREMENT, 'token' => '[a-f0-9]{64}'], methods: ['GET', 'POST'])]
     public function setup(
         string $token,
         Request $request,

@@ -63,7 +63,7 @@ src/
   Mcp/                     MCP server for AI assistants (tools, per-client token)
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
-translations/              messages.{en,es,nl}.yaml (client sites), platform.{es,en}.yaml (platform pages)
+translations/              messages.*.yaml (client sites), platform.*.yaml (platform pages), both in en/es/nl/de/fr
 ```
 
 ## Multi-tenancy rules (important)

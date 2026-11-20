@@ -37,7 +37,7 @@ final class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_register', [...$request->query->all(), '_locale' => PlatformController::preferredLocale($request)]);
     }
 
-    #[Route('/{_locale}/register', name: 'app_register', requirements: ['_locale' => 'es|en'], methods: ['GET', 'POST'])]
+    #[Route('/{_locale}/register', name: 'app_register', requirements: ['_locale' => PlatformController::LOCALE_REQUIREMENT], methods: ['GET', 'POST'])]
     public function register(
         Request $request,
         TranslatorInterface $translator,
@@ -98,7 +98,7 @@ final class RegistrationController extends AbstractController
         ], new Response(status: $form->isSubmitted() ? 422 : 200));
     }
 
-    #[Route('/{_locale}/register/thanks', name: 'app_register_thanks', requirements: ['_locale' => 'es|en'], methods: ['GET'])]
+    #[Route('/{_locale}/register/thanks', name: 'app_register_thanks', requirements: ['_locale' => PlatformController::LOCALE_REQUIREMENT], methods: ['GET'])]
     public function thanks(): Response
     {
         return $this->render('platform/register_thanks.html.twig');

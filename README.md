@@ -13,7 +13,7 @@ which client's site is shown; clients edit their own content in a simple admin.
   see [Search and reviews](#search-and-reviews)
 - Cloudflare Turnstile on the contact, sign-up and login forms, every client domain added automatically, see [Spam protection](#spam-protection-cloudflare-turnstile)
 - Spanish legal notice / privacy page generated from the client's details
-- Platform **terms and conditions** and **privacy policy** (`/{es,en}/terms`, `/{es,en}/privacy`), which professionals accept when signing up, see [Terms and privacy](#terms-and-privacy)
+- Platform **terms and conditions** and **privacy policy** (`/{locale}/terms`, `/{locale}/privacy`), which professionals accept when signing up, see [Terms and privacy](#terms-and-privacy)
 - Cookieless analytics (Plausible) and Search Console verification per client
 - **Onboarding**: clients sign up at `/register`, you approve in the admin or console, and the
   client, domain, login, welcome email, Google Search Console and map are set up automatically
@@ -93,10 +93,11 @@ blocks. See `templates/tenants/README.md`.
 
 The platform brand (**CasitaFix** by default) comes from `BILLING_BRAND`.
 
-**Platform pages** on `PLATFORM_HOST` are in Spanish and English (`/es`, `/en`; `/` and
+**Platform pages** on `PLATFORM_HOST` are in Spanish, English, Dutch, German and French
+(`/es`, `/en`, `/nl`, `/de`, `/fr`, set in `PlatformController::LOCALES`; `/` and
 `/register` redirect to the visitor's language): the "find a pro" homepage, `/{locale}/search`,
 `/{locale}/for-professionals` (price and testimonials in `templates/platform/pros.html.twig`) and the sign-up form.
-Their texts are in `translations/platform.{es,en}.yaml`. These paths return 404 on client sites.
+Their texts are in `translations/platform.{es,en,nl,de,fr}.yaml`. These paths return 404 on client sites.
 
 **Search** (`App\Search\ProSearch`) lists every active, non-suspended client with a domain.
 Filtering, sorting and paging (20 per page) happen in the database, so a search runs a handful
@@ -167,13 +168,13 @@ Professionals must tick "I agree to the terms and conditions and the privacy pol
 (*Accepted terms and privacy policy*, under the sign-up details and the client's Billing tab).
 Clients you add yourself have no date.
 
-- The pages are `/{es,en}/terms` and `/{es,en}/privacy` on `PLATFORM_HOST`, linked in the footer.
+- The pages are `/{locale}/terms` and `/{locale}/privacy` on `PLATFORM_HOST`, linked in the footer.
   The terms are for businesses only (no consumer right of withdrawal) and include the GDPR
   article 28 processing agreement for the data on the client sites.
 - Who runs the platform comes from `PLATFORM_LEGAL_NAME`, `PLATFORM_LEGAL_TAX_ID`,
   `PLATFORM_LEGAL_ADDRESS` and `PLATFORM_LEGAL_EMAIL`. **Fill in the address and email**: Spanish
   law requires them, and the terms tell clients to cancel by email.
-- The texts are in `translations/platform.{es,en}.yaml` (`terms:` and `privacy:`); a blank line
+- The texts are in `translations/platform.*.yaml` (`terms:` and `privacy:`), one file per language; a blank line
   starts a new paragraph. When you change them, update `PlatformController::LEGAL_UPDATED`
   (shown as "Last updated") and email clients 30 days before, as the terms promise.
 - The terms promise to delete a site 30 days after it ends (or after 30 days offline for
@@ -462,12 +463,12 @@ ddev console messenger:failed:show            # messages that failed all retries
 ```
 
 **Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
-the platform pages into Spanish and English (`platform.*.yaml`). After adding or changing a text,
+the platform pages too (`platform.*.yaml`, plus `validators.*.yaml` for the sign-up form errors). After adding or changing a text,
 check that no language misses it (no rows marked "missing" means complete):
 
 ```bash
 for l in en es nl de fr; do ddev console debug:translation $l --domain=messages --only-missing; done
-for l in es en; do ddev console debug:translation $l --domain=platform --only-missing; done
+for l in es en nl de fr; do ddev console debug:translation $l --domain=platform --only-missing; done
 ```
 
 ## Production (Hetzner)

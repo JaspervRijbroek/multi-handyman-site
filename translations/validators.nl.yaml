@@ -1,0 +1,8 @@
+# Dutch texts for the app's own validation messages on the sign-up form.
+# Symfony's standard messages ("This value should not be blank.") are translated by Symfony itself.
+'Enter a valid phone number.': Vul een geldig telefoonnummer in.
+'Choose at least one language.': Kies minstens één taal.
+'Use at least {{ limit }} characters.': Gebruik minstens {{ limit }} tekens.
+'Please agree to the terms and privacy policy, otherwise we cannot set up your website.': Ga akkoord met de voorwaarden en het privacybeleid, anders kunnen we je website niet opzetten.
+'The passwords do not match.': De wachtwoorden komen niet overeen.
+'This domain is already used by another website. Check the spelling, or leave it empty and tell us in the message.': Dit domein wordt al door een andere website gebruikt. Controleer de spelling, of laat het leeg en vertel het ons in het bericht.

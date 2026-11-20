@@ -1,0 +1,385 @@
+# Platform pages on PLATFORM_HOST (homepage, search, for professionals, sign-up).
+# Client websites use messages.*.yaml.
+
+nav:
+    main: Hauptmenü
+    find: Handwerker finden
+    pros: Für Handwerker
+    login: Kunden-Login
+    list: Betrieb eintragen
+    language: Sprache
+    terms: AGB
+    privacy: Datenschutz
+    menu: Menü
+
+footer:
+    tagline: Lokale Handwerker in ganz Spanien
+
+trade:
+    handyman: Hausmeisterservice
+    plumbing: Sanitär
+    electrical: Elektro
+    painting: Maler
+    carpentry: Tischler
+    tiling: Fliesenleger
+    renovation: Bau & Renovierung
+    roofing: Dachdecker
+    air-conditioning: Klimaanlagen
+    garden: Garten
+    pool: Poolpflege
+    locksmith: Schlüsseldienst
+
+home:
+    title: '%brand% | Zuverlässige Handwerker, Klempner und Bauunternehmer in Spanien finden'
+    description: Finden Sie lokale Handwerker in Spanien nach Gewerk und Ort. Sehen Sie sich ihre Arbeiten und Bewertungen an und nehmen Sie direkt Kontakt auf. Ohne Vermittler, ohne Provision.
+    og_title: '%brand%: gute Hände, gleich um die Ecke'
+    eyebrow: ¡Hola, vecino! · Lokale Handwerker in ganz Spanien
+    h1_start: 'Gute Hände, '
+    h1_highlight: gleich um
+    h1_end: ' die Ecke.'
+    lead: Finden Sie einen Handwerker, Klempner, Maler oder Bauunternehmer in Ihrer Nähe. Sehen Sie sich seine Arbeiten an und was die Nachbarn sagen, und nehmen Sie direkt Kontakt auf.
+    popular: 'Beliebt:'
+    trades_title: Jedes Gewerk, ganz in der Nähe
+    trades_text: Wählen Sie ein Gewerk, um die Handwerker in Ihrer Nähe zu sehen.
+    trade_count: '{0} Demnächst|{1} 1 Handwerker|]1,Inf[ %count% Handwerker'
+    step1_title: Suchen Sie in Ihrem Ort
+    step1_text: Wählen Sie, was zu tun ist und wo. Wir zeigen die Handwerker, die in Ihrer Nähe arbeiten, die nächsten zuerst.
+    step2_title: Vergleichen Sie ihre Arbeit
+    step2_text: Jeder Handwerker hat eine eigene Website mit aktuellen Aufträgen, den Orten, in denen er arbeitet, und Bewertungen von Kunden.
+    step3_title: Nehmen Sie direkt Kontakt auf
+    step3_text: 'Anrufen, WhatsApp oder eine Nachricht schicken. Kein Vermittler und keine Gebühren: Die Vereinbarung treffen Sie direkt mit dem Handwerker.'
+    cta_title: Ihre eigene Website, gefunden von Kunden in der Nähe.
+    cta_text: Eine professionelle Website mit Ihren Arbeiten und Bewertungen, bei Google eingerichtet und hier gelistet. Keine Provision auf Aufträge.
+    cta_button: So funktioniert es
+
+search_form:
+    what: Was ist zu tun?
+    any: Alle Gewerke
+    where: Wo in Spanien?
+    placeholder: Ort, z. B. Jávea
+    button: Suchen
+
+search:
+    title_any: Lokale Handwerker
+    heading_near: '%what% in der Nähe von %town%'
+    description: '%what%: Arbeiten und Bewertungen ansehen und direkt Kontakt aufnehmen.'
+    count: '{0} Keine Handwerker|{1} 1 Handwerker|]1,Inf[ %count% Handwerker'
+    within: 'im Umkreis von %km% km'
+    sort: Sortieren
+    nearest: Am nächsten
+    rating: Am besten bewertet
+    not_found: 'Wir konnten „%town%“ nicht finden. Prüfen Sie die Schreibweise oder versuchen Sie einen Ort in der Nähe. Vorerst zeigen wir alle Handwerker.'
+    corrected: 'Ergebnisse für „%town%“ (Sie haben „%typed%“ eingegeben).'
+    empty_title: Hier noch keine Handwerker
+    empty_text: Versuchen Sie ein anderes Gewerk oder einen größeren Ort in der Nähe.
+    show_all: Alle Handwerker anzeigen
+    reviews: '{1} 1 Bewertung|]1,Inf[ %count% Bewertungen'
+    no_reviews: Noch keine Bewertungen
+    view_site: Website ansehen
+    call: Anrufen
+    map_show: Auf der Karte zeigen
+    map_note: Die Karte wird erst beim Klicken von OpenStreetMap geladen.
+    pages: Seiten
+    page: 'Seite %page% von %pages%'
+    previous: Zurück
+    next: Weiter
+
+pros:
+    title: '%brand% | Websites für Handwerker in Spanien, die Google und KI-Assistenten finden'
+    description: Websites für Handwerker und Bauunternehmer in Spanien. Gefunden auf Google Maps, in der Google-Suche und von KI-Assistenten wie ChatGPT, und gelistet in der Suche von %brand%. Monatlich zahlen oder jährlich mit zwei Monaten gratis.
+    og_title: '%brand%: gefunden werden bei Google und von KI-Assistenten'
+    eyebrow: Websites für Handwerker in Spanien
+    h1_start: 'Mehr Aufträge aus '
+    h1_highlight: Ihrer eigenen
+    h1_end: ' Gegend.'
+    lead: Erhalten Sie eine professionelle Website, erscheinen Sie auf Google Maps, in der Google-Suche und in KI-Assistenten wie ChatGPT, und lassen Sie Kunden direkt Kontakt aufnehmen. Wir kümmern uns um die Technik, damit Sie weiterarbeiten können.
+    cta: Jetzt starten
+    see_pricing: Preise ansehen
+    why_title: Warum Handwerker sich für %brand% entscheiden
+    reason1_title: Keine Provision
+    reason1_text: Kunden rufen Sie direkt an, schreiben per WhatsApp oder E-Mail. Jeder Euro des Auftrags gehört Ihnen.
+    reason2_title: Ihre eigene Website
+    reason2_text: Eine echte Website unter Ihrer eigenen Domain, mit Ihren Leistungen, Ihren Projekten, Ihren Bewertungen und Ihrem Einsatzgebiet, in %count% Sprachen.
+    reason3_title: Gefunden von Kunden in der Nähe
+    reason3_text: Gelistet in der Suche von %brand%, mit strukturierten Daten und einer Seite pro Sprache, damit Google, Google Maps und KI-Assistenten wissen, was Sie tun und wo.
+    reason4_title: Wir erledigen die Technik
+    reason4_text: Hosting, HTTPS, Backups, die Einrichtung bei Google und Updates übernehmen wir. Ihre Projekte aktualisieren Sie vom Handy aus.
+    testimonials_eyebrow: Erfahrungen
+    testimonials_title: Handwerker über %brand%, in ihren eigenen Worten.
+    how_eyebrow: So funktioniert es
+    how_title: In wenigen Tagen online
+    step1_title: Erzählen Sie uns von Ihrem Betrieb
+    step1_text: 'Füllen Sie das Anmeldeformular aus: was Sie tun, wo Sie arbeiten und welche Sprachen Sie brauchen.'
+    step2_title: Wir bauen und verbinden alles
+    step2_text: Wir prüfen Ihre Angaben, richten Ihre Website und Domain ein und verbinden sie mit Google.
+    step3_title: Kunden finden Sie
+    step3_text: Bei Google, auf Maps, in unserer Suche und über KI-Assistenten. Sie bekommen die Anrufe, wir halten alles am Laufen.
+    price_title: Ein Tarif. Alles inklusive.
+    price_text: Keine Provision auf Aufträge. Monatlich zahlen und jeden Monat kündigen, oder jährlich zahlen und zwei Monate gratis bekommen.
+    plan_name: '%brand% komplett'
+    plan_name_yearly: '%brand% komplett · Jährlich'
+    billing: Abrechnungszeitraum
+    monthly: Monatlich
+    yearly: Jährlich
+    free2: 2 Monate gratis
+    per_month: / Monat
+    per_year: / Jahr
+    month_note: Monatliche Abrechnung. Kein Vertrag, jeden Monat kündbar.
+    year_note: Das sind %per_month% € pro Monat. Sie bekommen 12 Monate zum Preis von 10, im Voraus bezahlt.
+    plan_note: zzgl. MwSt. · keine Einrichtungsgebühr
+    included: Was enthalten ist
+    inc1_title: SEO-Optimierung
+    inc1_text: Seitentitel, Beschreibungen und Texte so eingerichtet, dass Google Sie für Aufträge in Ihren Orten zeigt, in jeder Sprache.
+    inc2_title: Optimierung für KI-Suche
+    inc2_text: Strukturierte Informationen, damit Assistenten wie ChatGPT und Gemini Sie finden und empfehlen können.
+    inc3_title: Google Search Console
+    inc3_text: Verbunden und verifiziert mit Ihrer Sitemap, damit jede Seite und jede Sprache indexiert wird.
+    inc4_title: Google Maps
+    inc4_text: Wir richten Ihr Google-Unternehmensprofil ein, damit Sie auf der Karte erscheinen.
+    inc5_title: Künftige Updates
+    inc5_text: Jede neue Funktion und Verbesserung, die wir entwickeln, ist ohne Aufpreis in Ihrem Tarif enthalten.
+    more: Und mehr
+    more1: Gelistet in der Suche und auf der Karte von %brand%
+    more2: Kundenbewertungen, die Sie freigeben
+    more3: Ihre eigene Domain mit HTTPS
+    more4: '%count% Sprachen'
+    more5: Kontaktformular direkt in Ihr Postfach
+    more6: WhatsApp & Anruf per Klick
+    more7: Projektgalerie, die Sie selbst pflegen
+    more8: Rechtstexte für Spanien
+    more9: Kein Cookie-Banner nötig
+    more10: Hosting, Backups & Updates
+    whatsapp: Eine Frage per WhatsApp stellen
+    faq_eyebrow: FAQ
+    faq_title: Häufige Fragen
+    faq1_q: Was bedeutet „von KI-Assistenten auffindbar“ eigentlich?
+    faq1_a: 'Immer mehr Menschen fragen ChatGPT, Gemini, Claude oder Perplexity etwa „Finde mir einen deutschsprachigen Klempner bei Jávea“. Diese Assistenten lesen Websites, um zu antworten. Ihre Website liefert ihnen klare, strukturierte Fakten — was Sie tun, wo Sie arbeiten, wie man Sie erreicht —, damit sie Sie mit Überzeugung empfehlen, statt zu raten.'
+    faq2_q: Gibt es eine Einrichtungsgebühr oder einen langen Vertrag?
+    faq2_a: Keine Einrichtungsgebühr und kein Vertrag. Ein Preis deckt die Website, das Hosting, die Einrichtung bei Google und laufende SEO ab. Monatlich zahlen und jeden Monat kündigen, oder ein Jahr im Voraus zahlen und zwei Monate gratis bekommen. Wir schicken Ihnen zwei Wochen vor jeder Jahreszahlung eine E-Mail.
+    faq3_q: Muss ich mich mit Websites auskennen?
+    faq3_a: Nein. Wir bauen die Website, verbinden Ihre Domain und richten Google für Sie ein. Danach können Sie Ihre Leistungen aktualisieren und Fotos aktueller Arbeiten in einem einfachen Verwaltungsbereich hinzufügen — oder Sie schicken sie uns einfach.
+    faq4_q: Kann ich meine eigene Domain verwenden?
+    faq4_a: Ja. Bringen Sie Ihre bestehende Domain mit, oder wir helfen Ihnen, eine zu registrieren. HTTPS ist inklusive und funktioniert ab dem ersten Besuch.
+    faq5_q: Welche Sprachen werden unterstützt?
+    faq5_a: Englisch, Spanisch, Niederländisch, Deutsch und Französisch. Wählen Sie die Sprachen Ihrer Kunden; jede bekommt eigene Seiten, damit Google und KI-Assistenten der richtigen Person die richtige Version zeigen.
+    faq6_q: Ist das für einen Betrieb in Spanien rechtlich in Ordnung?
+    faq6_a: Jede Website hat ein Impressum und eine Datenschutzseite (LSSI und DSGVO), erstellt aus Ihren Firmendaten, und es ist kein Cookie-Banner nötig. Wir empfehlen trotzdem, die Texte von Ihrem Gestor prüfen zu lassen.
+    final_title: Bereit, wenn Sie es sind.
+    final_text: Die Anmeldung dauert etwa fünf Minuten. Wir prüfen Ihre Angaben, und Ihre Website ist meist innerhalb von zwei Werktagen online. %price% € pro Monat, oder zwei Monate gratis mit dem Jahrestarif.
+
+signup:
+    page_title: Ihre Website anfragen
+    eyebrow: Anmelden
+    intro: Erzählen Sie uns von Ihrem Betrieb. Wir prüfen Ihre Angaben, bauen Ihre Website mit einer Karte Ihres Standorts und verbinden sie mit der Google-Suche. Sie erhalten eine E-Mail, sobald sie online ist, meist innerhalb von zwei Werktagen.
+    legend_business: Ihr Betrieb
+    legend_address: Adresse
+    address_note: Wird auf Ihrer Website und deren Karte angezeigt. Sie arbeiten von zu Hause? Sie können die Straße später ausblenden und nur Ihren Ort zeigen.
+    legend_website: Website
+    legend_login: Ihr Login
+    submit: Anmeldung senden
+    too_many: Zu viele Versuche von Ihrer Verbindung. Bitte versuchen Sie es später erneut oder schreiben Sie uns eine E-Mail.
+    turnstile: Bitte bestätigen Sie, dass Sie kein Roboter sind, und senden Sie das Formular erneut.
+    invited: "%business% hat Sie eingeladen: Ihr zweiter Monat ist gratis."
+    invite_used: Dieser Einladungslink wurde bereits verwendet oder ist nicht mehr gültig. Sie können sich trotzdem anmelden.
+    business_name: Firmenname
+    contact_name: Ihr Name
+    email: E-Mail
+    email_help: Das wird Ihr Login, und Anfragen über Ihre Website werden hierhin geschickt.
+    phone: Telefon
+    whatsapp: WhatsApp-Nummer
+    whatsapp_help: Leer lassen, wenn sie mit Ihrer Telefonnummer übereinstimmt.
+    street: Straße und Hausnummer
+    postal_code: Postleitzahl
+    town: Ort
+    country: Land
+    service_area: Orte und Gebiete, in denen Sie arbeiten
+    service_area_placeholder: z. B. Jávea, Dénia, Moraira und Umgebung
+    domain: Ihr Domainname
+    domain_help: Nur wenn Sie schon eine haben, z. B. meinhandwerker.es. Noch keine Domain? Leer lassen, Sie können später eine im Verwaltungsbereich hinzufügen.
+    locales: Sprachen für Ihre Website
+    default_locale: Hauptsprache
+    legend_plan: Ihr Tarif
+    plan: Wie möchten Sie zahlen?
+    plan_monthly: Monatlich, jeden Monat kündbar
+    plan_yearly: Jährlich, 12 Monate zum Preis von 10
+    plan_help: In beiden Fällen ist Ihre Website bis zum 1. des nächsten Monats gratis. Beim Jahrestarif schicken wir Ihnen zwei Wochen vor jeder Jahreszahlung eine E-Mail.
+    tax_id: NIF / NIE / CIF
+    tax_id_help: Für das Impressum auf Ihrer Website. Sie können sie später ergänzen.
+    message: Was machen Sie? Gibt es sonst noch etwas, das wir wissen sollten?
+    password: Passwort wählen
+    password_repeat: Passwort wiederholen
+    consent: 'Ich habe die <a href="%terms_url%" target="_blank">Allgemeinen Geschäftsbedingungen</a> und die <a href="%privacy_url%" target="_blank">Datenschutzerklärung</a> gelesen und stimme ihnen zu.'
+    honeypot: Dieses Feld leer lassen
+    thanks_title: Vielen Dank!
+    thanks_eyebrow: Anmeldung erhalten
+    thanks_text: Wir haben Ihre Angaben erhalten und prüfen sie in Kürze. Sobald Ihre Website eingerichtet ist, erhalten Sie eine E-Mail mit Ihrem Login. Fragen in der Zwischenzeit? Antworten Sie einfach auf diese E-Mail.
+    thanks_back: Zurück zur Startseite
+
+password:
+    title: Passwort wählen
+    intro: 'Für Ihren Login %email%. Verwenden Sie mindestens 10 Zeichen.'
+    new: Neues Passwort
+    repeat: Passwort wiederholen
+    save: Passwort speichern
+    expired_title: Dieser Link ist abgelaufen
+    expired_text: Links zum Festlegen eines Passworts funktionieren einmal und 7 Tage lang. Antworten Sie auf Ihre Willkommens-E-Mail, dann schicken wir Ihnen einen neuen.
+    to_login: Zum Login
+
+# Terms and privacy policy of the platform (templates/platform/_legal.html.twig).
+# Template text: have it checked by a lawyer or gestor. A blank line starts a new paragraph.
+legal:
+    updated: 'Zuletzt aktualisiert: %date%'
+    provider_title: Wer wir sind
+    provider_name: Name
+    provider_tax_id: NIE
+    provider_address: Adresse
+    provider_email: E-Mail
+
+terms:
+    title: Allgemeine Geschäftsbedingungen
+    scope_title: 1. Geltungsbereich
+    scope_text: |-
+        Diese Bedingungen gelten für den Website-Dienst %brand%, den %name% („wir“, „uns“) für Unternehmen und Selbstständige („Sie“) erbringt.
+
+        %brand% ist nur für Gewerbetreibende. Mit der Anmeldung bestätigen Sie, dass Sie für Ihr Unternehmen oder Gewerbe handeln und nicht als Verbraucher. Verbraucherschutzregeln, wie das Widerrufsrecht, gelten daher nicht.
+    service_title: 2. Der Dienst
+    service_text: |-
+        Wir erstellen und hosten eine Website für Ihren Betrieb, unter einer Subdomain von %brand% oder unter Ihrer eigenen Domain. Der Dienst umfasst Hosting, HTTPS, einen einfachen Verwaltungsbereich zum Bearbeiten Ihrer Website, ein Kontaktformular, Kundenbewertungen, ein Impressum und eine Datenschutzseite, die Einrichtung der Google Search Console und einen Eintrag in der Suche von %brand% für Handwerker.
+
+        Wir können Funktionen mit der Zeit verbessern oder ändern. Eine Hauptfunktion entfernen wir nicht, ohne Sie vorher zu informieren.
+
+        Wir können keine Platzierung bei Google oder anderen Suchmaschinen garantieren und auch keine bestimmte Zahl an Anfragen oder Aufträgen.
+    account_title: 3. Anmeldung und Ihr Konto
+    account_text: |-
+        Nach Ihrer Anmeldung prüfen wir Ihre Angaben. Wir können eine Anmeldung ohne Angabe von Gründen ablehnen. Der Vertrag beginnt, wenn wir Ihre Anmeldung freigeben und Ihnen die Willkommens-E-Mail schicken.
+
+        Sorgen Sie dafür, dass Ihre Angaben richtig und aktuell sind. Halten Sie Ihr Passwort und ein etwaiges Token für einen KI-Assistenten geheim: Sie sind für alles verantwortlich, was mit Ihrem Login oder Token geschieht.
+    price_title: 4. Preis und Zahlung
+    price_text: |-
+        Es gilt der Preis, der bei Ihrer Anmeldung auf unserer Website angegeben war, sofern wir nichts anderes mit Ihnen vereinbart haben. Die Preise verstehen sich zuzüglich der gesetzlichen Mehrwertsteuer.
+
+        Ihre Website ist bis zum 1. des Monats nach der Einrichtung gratis. Danach:
+        - Monatstarif: im Voraus zahlbar am 1. jedes Monats.
+        - Jahrestarif: 12 Monate zum Preis von 10, einmal jährlich im Voraus zahlbar. Wir schicken Ihnen zwei Wochen vor jeder Jahreszahlung eine E-Mail.
+
+        Die Zahlungen werden automatisch von unserem Zahlungsdienstleister Mollie eingezogen (Karte oder SEPA-Lastschrift). Für jede Zahlung erhalten Sie eine Rechnung.
+
+        Schlägt eine Zahlung fehl, schicken wir Erinnerungen mit einem Zahlungslink. Ist der Betrag eine Woche nach der letzten Erinnerung (etwa fünf Wochen nach dem Zahlungstermin) noch nicht bezahlt, nehmen wir Ihre Website offline, bis er bezahlt ist. Ihr Verwaltungsbereich bleibt verfügbar.
+
+        Wir können den Preis ändern. Wir teilen Ihnen das mindestens 30 Tage vorher per E-Mail mit; der neue Preis gilt ab Ihrem nächsten Zahlungszeitraum. Sind Sie nicht einverstanden, können Sie vorher kündigen.
+    cancel_title: 5. Laufzeit und Kündigung
+    cancel_text: |-
+        Es gibt keine Mindestlaufzeit. Sie können jederzeit per E-Mail an %email% kündigen.
+
+        Monatstarif: Der Dienst endet am Ende des Monats, den Sie bereits bezahlt haben. Es wird nichts mehr abgebucht.
+
+        Jahrestarif: Der Dienst endet am Ende des Jahres, das Sie bereits bezahlt haben. Jahreszahlungen werden bei einer Kündigung während des Jahres nicht erstattet, auch nicht anteilig. Um die nächste Jahreszahlung zu vermeiden, kündigen Sie vor deren Fälligkeit.
+
+        Wir können den Vertrag mit einer Frist von 30 Tagen per E-Mail kündigen. In diesem Fall erstatten wir bezahlte, aber nicht genutzte Monate. Wir können sofort kündigen, wenn Sie schwer gegen diese Bedingungen verstoßen, zum Beispiel durch rechtswidrige Inhalte oder Nichtzahlung.
+    content_title: 6. Ihre Inhalte
+    content_text: |-
+        Sie sind für alles auf Ihrer Website verantwortlich: Texte, Fotos, Preise, Kontakt- und Firmendaten sowie die Angaben in Ihrem Impressum (Name, Steuernummer, Adresse). Sie bestätigen, dass Sie die Texte und Fotos verwenden dürfen und dass Ihre Website und Ihr Betrieb den Gesetzen entsprechen.
+
+        Das Impressum und die Datenschutzseite, die wir erstellen, sind Vorlagen. Lassen Sie sie von Ihrem Gestor oder Anwalt prüfen.
+
+        Bewertungen müssen von echten Kunden stammen. Sie dürfen keine Bewertungen selbst schreiben, schreiben lassen oder für gute Bewertungen eine Gegenleistung anbieten.
+
+        Sie bleiben Eigentümer Ihrer Inhalte. Sie erlauben uns, sie zu speichern, zu kopieren und anzuzeigen, um Ihre Website zu betreiben, und Ihren Firmennamen, Ort, Ihre Gewerke und Ihre Bewertung in der Suche von %brand% zu zeigen.
+
+        Wir können Inhalte entfernen oder Ihre Website offline nehmen, wenn sie offensichtlich rechtswidrig sind oder anderen schaden, oder wenn eine Behörde es anordnet. Wenn möglich, kontaktieren wir Sie vorher.
+
+        Wenn Sie Ihre eigene Domain verwenden, bleiben Sie deren Inhaber und sind für Registrierung und DNS verantwortlich. Die Subdomain von %brand% bleibt unsere.
+    availability_title: 7. Verfügbarkeit
+    availability_text: |-
+        Wir tun unser Bestes, um Ihre Website online und sicher zu halten, und erstellen regelmäßig Backups. Wir können nicht versprechen, dass der Dienst immer verfügbar oder fehlerfrei ist. Wartungsarbeiten können kurze Unterbrechungen verursachen. Bewahren Sie eine eigene Kopie wichtiger Texte und Fotos auf.
+    liability_title: 8. Haftung
+    liability_text: |-
+        Unsere Haftung ist insgesamt auf den Betrag begrenzt, den Sie uns in den 12 Monaten vor dem Schadensereignis bezahlt haben. Wir haften nicht für indirekte Schäden, wie entgangene Aufträge, entgangenen Gewinn oder Datenverlust, und nicht für die Dienste anderer Unternehmen wie Google, Mollie oder Ihres Domain-Registrars.
+
+        Diese Beschränkungen gelten nicht für vorsätzlich oder grob fahrlässig verursachte Schäden.
+    processing_title: 9. Verarbeitung personenbezogener Daten in Ihrem Auftrag (Art. 28 DSGVO)
+    processing_text: |-
+        Ihre Website erfasst personenbezogene Daten Ihrer Kunden und Besucher, zum Beispiel Nachrichten über das Kontaktformular, Bewertungen und Kontaktdaten, die Sie eingeben, um einen Bewertungslink zu senden. Für diese Daten sind Sie der Verantwortliche und wir Ihr Auftragsverarbeiter. Dieser Abschnitt ist der Auftragsverarbeitungsvertrag zwischen uns.
+
+        Wir verarbeiten diese Daten nur, um Ihre Website und Ihren Verwaltungsbereich wie in diesen Bedingungen beschrieben zu betreiben, und nach Ihren dokumentierten Weisungen (Ihre Nutzung des Verwaltungsbereichs gilt als solche). Wir verwenden sie für nichts anderes und verkaufen sie nicht.
+
+        Alle bei %brand%, die Zugriff auf die Daten haben, sind zur Vertraulichkeit verpflichtet.
+
+        Wir treffen angemessene Sicherheitsmaßnahmen: HTTPS, Logins mit Passwort, Trennung der Daten jedes Kunden, regelmäßige Updates und Backups.
+
+        Sie erteilen uns die allgemeine Genehmigung, die in unserer Datenschutzerklärung (%privacy_url%) genannten Unterauftragsverarbeiter einzusetzen. Bevor wir einen hinzufügen oder ersetzen, informieren wir Sie mindestens 30 Tage vorher per E-Mail; wenn Sie widersprechen, können Sie kündigen.
+
+        Wir unterstützen Sie, soweit zumutbar, bei der Beantwortung von Anfragen von Personen, die ihre Rechte nach der DSGVO ausüben, und bei der Erfüllung Ihrer übrigen Pflichten nach der DSGVO. Die meisten Daten können Sie im Verwaltungsbereich selbst einsehen, ändern und löschen.
+
+        Wir informieren Sie unverzüglich, nachdem uns eine Verletzung des Schutzes Ihrer personenbezogenen Daten bekannt geworden ist.
+
+        Nach Vertragsende löschen wir die Daten wie in Abschnitt 10 beschrieben, sofern wir sie nicht gesetzlich aufbewahren müssen. Auf Anfrage geben wir Ihnen die Informationen, die Sie brauchen, um die Einhaltung dieser Pflichten nachzuweisen.
+    end_title: 10. Nach Vertragsende
+    end_text: |-
+        Wir löschen Ihre Website, Ihren Verwaltungsbereich und alle Inhalte, einschließlich der Daten Ihrer Kunden, 30 Tage nach Vertragsende. Ist Ihre Website wegen eines offenen Betrags offline, löschen wir sie ebenfalls nach 30 Tagen offline, und der Vertrag endet dann.
+
+        Vorher können Sie per E-Mail eine Kopie Ihrer Texte, Fotos, Anfragen und Bewertungen anfordern. Rechnungen und Zahlungsbelege bewahren wir so lange auf, wie es das Steuerrecht verlangt.
+    changes_title: 11. Änderungen dieser Bedingungen
+    changes_text: |-
+        Wir können diese Bedingungen ändern. Wir schicken Ihnen die neuen Bedingungen mindestens 30 Tage, bevor sie gelten, per E-Mail. Sind Sie nicht einverstanden, können Sie vorher kündigen; nutzen Sie den Dienst weiter, gelten die neuen Bedingungen.
+    law_title: 12. Recht und Streitigkeiten
+    law_text: |-
+        Für diese Bedingungen gilt spanisches Recht. Zuständig sind die Gerichte am Wohnort von %name%, sofern das Gesetz nichts anderes bestimmt. Fragen oder Beschwerden? Schreiben Sie zuerst an %email%; wir versuchen, gemeinsam eine Lösung zu finden.
+
+privacy:
+    title: Datenschutzerklärung
+    scope_title: 1. Worum es in dieser Erklärung geht
+    scope_text: |-
+        Diese Erklärung beschreibt, wie %name% („wir“) mit personenbezogenen Daten auf der Plattform %brand% umgeht: der Suche nach Handwerkern, dem Anmeldeformular und den Konten der Handwerker, die %brand% für ihre Website nutzen. Für diese Daten sind wir der Verantwortliche. Fragen zu Ihren Daten: %email%.
+
+        Sie gilt nicht für die Websites unserer Kunden. Jeder Handwerker ist für die Daten auf seiner eigenen Website verantwortlich (siehe das Impressum dieser Website). Wir verarbeiten diese Daten in seinem Auftrag, wie in Abschnitt 9 unserer AGB (%terms_url%) beschrieben.
+    data_title: 2. Welche Daten wir verwenden
+    data_text: |-
+        Wenn Sie sich als Handwerker anmelden: Ihr Firmenname, Ihr Name, Ihre E-Mail-Adresse, Telefon- und WhatsApp-Nummer, Adresse, Steuernummer, Ihr Einsatzgebiet, Ihre Sprachen, Ihr Domainname, Ihre Nachricht an uns, Ihr Passwort (nur verschlüsselt als Hash gespeichert) und das Datum, an dem Sie unsere AGB akzeptiert haben.
+
+        Wenn Sie Kunde sind: Ihr Tarif, Ihre Zahlungen und Rechnungen. Zahlungen laufen über Mollie: Wir sehen nie Ihre vollständigen Karten- oder Bankdaten, nur eine kurze Beschreibung wie die Kartenmarke und die letzten Ziffern oder einen Teil Ihrer IBAN.
+
+        Wenn Sie einen Handwerker suchen: das Gewerk und den Ort, nach denen Sie suchen. Ihre IP-Adresse wird kurzzeitig verwendet, um unsere Formulare und die Suche vor Missbrauch zu schützen.
+
+        Wenn Sie uns eine E-Mail schreiben: Ihre E-Mail-Adresse und was Sie schreiben.
+    purposes_title: 3. Wozu wir sie verwenden und auf welcher Rechtsgrundlage
+    purposes_text: |-
+        - Um Ihre Anmeldung zu prüfen, Ihre Website zu erstellen und zu betreiben, Ihr Konto zu verwalten und Ihnen E-Mails zum Dienst zu schicken: zur Erfüllung unseres Vertrags mit Ihnen (Art. 6 Abs. 1 lit. b DSGVO).
+        - Um Ihnen Rechnungen zu stellen und unsere Buchhaltung zu führen: eine rechtliche Pflicht nach spanischem Steuer- und Handelsrecht (Art. 6 Abs. 1 lit. c).
+        - Um Ihren Betrieb in der Suche von %brand% zu zeigen: Teil des Dienstes, also unser Vertrag (Art. 6 Abs. 1 lit. b).
+        - Um die Plattform sicher zu halten und Spam und Missbrauch zu verhindern: unser berechtigtes Interesse (Art. 6 Abs. 1 lit. f).
+
+        Wir verkaufen Ihre Daten nicht, nutzen sie nicht für Werbung und treffen keine automatisierten Entscheidungen über Sie.
+    recipients_title: 4. An wen wir Daten weitergeben
+    recipients_text: |-
+        Wir geben Daten nur an Unternehmen weiter, die uns beim Betrieb des Dienstes helfen (Unterauftragsverarbeiter), und nur, was sie brauchen:
+        - Hetzner Online GmbH, Deutschland: Hosting der Plattform und aller Websites.
+        - Mollie B.V., Niederlande: Zahlungen.
+        - FacturaDirecta (Spanien): Rechnungen.
+        - Cloudflare, Inc., USA: die Spamprüfung (Turnstile) in Formularen.
+        - Google LLC, USA: Einrichtung der Google Search Console für Ihre Website.
+        - OpenStreetMap Foundation, Vereinigtes Königreich: Umwandlung von Adressen und Orten in Kartenpositionen (Nominatim).
+        - Plausible Insights OÜ, Estland: cookielose Besucherstatistiken auf Kunden-Websites, die sie nutzen.
+        - Unser E-Mail-Anbieter, für den Versand von E-Mails der Plattform und der Websites.
+
+        Wenn Sie mit Ihrem eigenen Token einen KI-Assistenten mit Ihrem Verwaltungsbereich verbinden, gehen die Daten, die der Assistent liest, an das Unternehmen hinter diesem Assistenten. Das ist Ihre Entscheidung und fällt unter Ihre Vereinbarung mit diesem Unternehmen.
+
+        Wir geben Daten auch weiter, wenn das Gesetz es verlangt, zum Beispiel an die Steuerbehörde.
+    transfers_title: 5. Daten außerhalb der EU
+    transfers_text: |-
+        Cloudflare und Google haben ihren Sitz in den USA. Sie sind nach dem EU-US Data Privacy Framework zertifiziert und verwenden zusätzlich die Standardvertragsklauseln der Europäischen Kommission. Für das Vereinigte Königreich gibt es einen Angemessenheitsbeschluss der Europäischen Kommission.
+    retention_title: 6. Wie lange wir Daten aufbewahren
+    retention_text: |-
+        - Konto- und Website-Daten: solange Sie Kunde sind, plus 30 Tage (siehe Abschnitt 10 unserer AGB).
+        - Anmeldungen, die wir nicht freigeben: gelöscht innerhalb von 3 Monaten.
+        - Rechnungen und Zahlungsbelege: 6 Jahre, wie es das spanische Handelsrecht verlangt.
+        - IP-Adressen zum Schutz vor Missbrauch: höchstens einige Stunden. Server-Logs: höchstens 30 Tage.
+        - E-Mails: solange nötig, um Ihnen zu helfen, höchstens 2 Jahre nach unserem letzten Kontakt.
+    cookies_title: 7. Cookies
+    cookies_text: |-
+        Die Plattform verwendet nur ein Cookie, das nötig ist, um im Verwaltungsbereich angemeldet zu bleiben. Es wird gelöscht, wenn Sie sich abmelden oder Ihren Browser schließen. Wir verwenden keine Tracking- oder Werbe-Cookies, daher gibt es kein Cookie-Banner. Die Spamprüfung von Cloudflare in unseren Formularen liest technische Daten Ihres Browsers, verfolgt Sie aber nicht über Websites hinweg.
+    rights_title: 8. Ihre Rechte
+    rights_text: |-
+        Sie können verlangen, Ihre Daten einzusehen, zu berichtigen oder zu löschen, ihre Verarbeitung einzuschränken oder sie in einem gängigen Format zu erhalten, und Sie können ihrer Verarbeitung widersprechen. Die meisten Kontodaten können Sie im Verwaltungsbereich selbst ändern. Schreiben Sie an %email%; wir antworten innerhalb eines Monats.
+
+        Sie können sich auch bei der spanischen Datenschutzbehörde beschweren (Agencia Española de Protección de Datos, www.aepd.es).

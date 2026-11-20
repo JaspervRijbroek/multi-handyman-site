@@ -1,0 +1,385 @@
+# Platform pages on PLATFORM_HOST (homepage, search, for professionals, sign-up).
+# Client websites use messages.*.yaml.
+
+nav:
+    main: Menu principal
+    find: Trouver un pro
+    pros: Pour les professionnels
+    login: Espace client
+    list: Inscrire votre entreprise
+    language: Langue
+    terms: Conditions
+    privacy: Confidentialité
+    menu: Menu
+
+footer:
+    tagline: Des professionnels locaux partout en Espagne
+
+trade:
+    handyman: Homme à tout faire
+    plumbing: Plomberie
+    electrical: Électricité
+    painting: Peinture
+    carpentry: Menuiserie
+    tiling: Carrelage
+    renovation: Construction & rénovation
+    roofing: Toiture
+    air-conditioning: Climatisation
+    garden: Jardin
+    pool: Entretien de piscine
+    locksmith: Serrurerie
+
+home:
+    title: '%brand% | Trouvez un artisan, plombier ou maçon de confiance en Espagne'
+    description: Trouvez des artisans locaux en Espagne par métier et par ville. Découvrez leurs réalisations et leurs avis, et contactez-les directement. Sans intermédiaire, sans commission.
+    og_title: '%brand% : de bonnes mains, juste au coin de la rue'
+    eyebrow: ¡Hola, vecino! · Des pros locaux partout en Espagne
+    h1_start: 'De bonnes mains, '
+    h1_highlight: juste au coin
+    h1_end: ' de la rue.'
+    lead: Trouvez un homme à tout faire, un plombier, un peintre ou un maçon près de chez vous. Découvrez leurs réalisations et ce qu’en disent les voisins, puis contactez-les directement.
+    popular: 'Populaire :'
+    trades_title: Tous les métiers, près de chez vous
+    trades_text: Choisissez un métier pour voir les pros près de chez vous.
+    trade_count: '{0} Bientôt|{1} 1 pro|]1,Inf[ %count% pros'
+    step1_title: Cherchez dans votre ville
+    step1_text: Choisissez ce qu’il faut faire et où. Nous affichons les pros qui travaillent près de chez vous, les plus proches d’abord.
+    step2_title: Comparez leur travail
+    step2_text: Chaque pro a son propre site avec ses chantiers récents, les villes où il intervient et les avis de ses clients.
+    step3_title: Contactez-les directement
+    step3_text: 'Appelez, écrivez sur WhatsApp ou envoyez un message. Sans intermédiaire ni frais : l’accord se fait entre vous et le pro.'
+    cta_title: Votre propre site, et trouvé par les clients de votre région.
+    cta_text: Un site professionnel avec vos réalisations et vos avis, configuré sur Google et référencé ici. Aucune commission sur les chantiers.
+    cta_button: Voir comment ça marche
+
+search_form:
+    what: Que faut-il faire ?
+    any: Tous les métiers
+    where: Où en Espagne ?
+    placeholder: Ville, p. ex. Jávea
+    button: Rechercher
+
+search:
+    title_any: Pros locaux
+    heading_near: '%what% près de %town%'
+    description: '%what% : découvrez leurs réalisations et leurs avis, et contactez-les directement.'
+    count: '{0} Aucun pro|{1} 1 pro|]1,Inf[ %count% pros'
+    within: 'dans un rayon de %km% km'
+    sort: Trier
+    nearest: Les plus proches
+    rating: Les mieux notés
+    not_found: 'Nous n’avons pas trouvé « %town% ». Vérifiez l’orthographe ou essayez une ville voisine. Nous affichons tous les pros pour l’instant.'
+    corrected: 'Résultats pour « %town% » (vous avez tapé « %typed% »).'
+    empty_title: Pas encore de pros ici
+    empty_text: Essayez un autre métier ou une ville plus grande à proximité.
+    show_all: Voir tous les pros
+    reviews: '{1} 1 avis|]1,Inf[ %count% avis'
+    no_reviews: Pas encore d’avis
+    view_site: Voir le site
+    call: Appeler
+    map_show: Voir sur la carte
+    map_note: La carte est chargée depuis OpenStreetMap lorsque vous cliquez.
+    pages: Pages
+    page: 'Page %page% sur %pages%'
+    previous: Précédent
+    next: Suivant
+
+pros:
+    title: '%brand% | Des sites pour les artisans en Espagne, visibles sur Google et par les assistants IA'
+    description: Des sites web pour les artisans et entrepreneurs du bâtiment en Espagne. Visibles sur Google Maps, dans la recherche Google et par les assistants IA comme ChatGPT, et référencés dans la recherche %brand%. Paiement mensuel, ou annuel avec deux mois offerts.
+    og_title: '%brand% : soyez trouvé sur Google et par les assistants IA'
+    eyebrow: Des sites web pour les artisans en Espagne
+    h1_start: 'Plus de travail dans '
+    h1_highlight: votre propre
+    h1_end: ' ville.'
+    lead: Obtenez un site professionnel, apparaissez sur Google Maps, dans la recherche Google et dans les assistants IA comme ChatGPT, et laissez les clients vous contacter directement. Nous gérons la technique pour que vous puissiez continuer à travailler.
+    cta: Commencer
+    see_pricing: Voir les tarifs
+    why_title: Pourquoi les artisans choisissent %brand%
+    reason1_title: Aucune commission
+    reason1_text: Les clients vous appellent, vous écrivent sur WhatsApp ou par e-mail directement. Chaque euro du chantier est pour vous.
+    reason2_title: Votre propre site
+    reason2_text: Un vrai site sur votre propre domaine, avec vos services, vos projets, vos avis et votre zone d’intervention, en %count% langues.
+    reason3_title: Trouvé par les clients de votre région
+    reason3_text: Référencé dans la recherche %brand%, avec des données structurées et une page par langue, pour que Google, Google Maps et les assistants IA sachent ce que vous faites et où.
+    reason4_title: Nous nous occupons de la technique
+    reason4_text: Hébergement, HTTPS, sauvegardes, configuration Google et mises à jour sont pris en charge. Vous mettez à jour vos projets depuis votre téléphone.
+    testimonials_eyebrow: Témoignages
+    testimonials_title: Des artisans parlent de %brand%, avec leurs propres mots.
+    how_eyebrow: Comment ça marche
+    how_title: En ligne en quelques jours
+    step1_title: Parlez-nous de votre entreprise
+    step1_text: 'Remplissez le formulaire d’inscription : ce que vous faites, où vous travaillez et les langues dont vous avez besoin.'
+    step2_title: Nous construisons et connectons tout
+    step2_text: Nous vérifions vos informations, créons votre site et votre domaine, et les connectons à Google.
+    step3_title: Les clients vous trouvent
+    step3_text: Sur Google, sur Maps, dans notre recherche et via les assistants IA. Vous recevez les appels, nous faisons tourner le reste.
+    price_title: Une seule formule. Tout compris.
+    price_text: Aucune commission sur les chantiers. Payez au mois et résiliez quand vous voulez, ou payez à l’année et profitez de deux mois offerts.
+    plan_name: '%brand% complet'
+    plan_name_yearly: '%brand% complet · Annuel'
+    billing: Période de facturation
+    monthly: Mensuel
+    yearly: Annuel
+    free2: 2 mois offerts
+    per_month: / mois
+    per_year: / an
+    month_note: Facturé chaque mois. Sans engagement, résiliable chaque mois.
+    year_note: Soit %per_month% € par mois. Vous avez 12 mois pour le prix de 10, payés d’avance.
+    plan_note: HT · sans frais de mise en service
+    included: Ce qui est inclus
+    inc1_title: Optimisation SEO
+    inc1_text: Titres de pages, descriptions et textes configurés pour que Google vous affiche pour des chantiers dans vos villes, dans chaque langue.
+    inc2_title: Optimisation pour la recherche IA
+    inc2_text: Des informations structurées pour que des assistants comme ChatGPT et Gemini puissent vous trouver et vous recommander.
+    inc3_title: Google Search Console
+    inc3_text: Connectée et vérifiée avec votre sitemap, pour que chaque page et chaque langue soient indexées.
+    inc4_title: Google Maps
+    inc4_text: Nous configurons votre fiche d’établissement Google pour que vous apparaissiez sur la carte.
+    inc5_title: Mises à jour futures
+    inc5_text: Chaque nouvelle fonctionnalité et amélioration que nous développons est ajoutée à votre formule sans frais supplémentaires.
+    more: Et plus encore
+    more1: Référencé dans la recherche et sur la carte %brand%
+    more2: Des avis clients que vous validez
+    more3: Votre propre domaine avec HTTPS
+    more4: '%count% langues'
+    more5: Formulaire de contact directement dans votre boîte mail
+    more6: WhatsApp & appel en un clic
+    more7: Galerie de projets que vous mettez à jour vous-même
+    more8: Pages légales pour l’Espagne
+    more9: Pas besoin de bandeau cookies
+    more10: Hébergement, sauvegardes & mises à jour
+    whatsapp: Poser une question sur WhatsApp
+    faq_eyebrow: FAQ
+    faq_title: Les questions qu’on nous pose souvent
+    faq1_q: Que veut dire concrètement « trouvable par les assistants IA » ?
+    faq1_a: 'De plus en plus de gens demandent à ChatGPT, Gemini, Claude ou Perplexity des choses comme « trouve-moi un plombier francophone près de Jávea ». Ces assistants lisent les sites web pour répondre. Votre site leur donne des informations claires et structurées — ce que vous faites, où vous travaillez, comment vous joindre — pour qu’ils puissent vous recommander en toute confiance au lieu de deviner.'
+    faq2_q: Y a-t-il des frais de mise en service ou un long engagement ?
+    faq2_a: Ni frais de mise en service, ni engagement. Un seul prix couvre le site, l’hébergement, la configuration Google et le référencement continu. Payez au mois et résiliez quand vous voulez, ou payez un an d’avance et profitez de deux mois offerts. Nous vous écrivons deux semaines avant chaque paiement annuel.
+    faq3_q: Dois-je m’y connaître en sites web ?
+    faq3_a: Non. Nous créons le site, connectons votre domaine et configurons Google pour vous. Ensuite, vous pouvez mettre à jour vos services et ajouter des photos de vos chantiers récents depuis une interface simple — ou simplement nous les envoyer.
+    faq4_q: Puis-je utiliser mon propre nom de domaine ?
+    faq4_a: Oui. Apportez le domaine que vous avez déjà, ou nous vous aidons à en enregistrer un. Le HTTPS est inclus et fonctionne dès la première visite.
+    faq5_q: Quelles langues sont disponibles ?
+    faq5_a: Anglais, espagnol, néerlandais, allemand et français. Choisissez les langues de vos clients ; chacune a ses propres pages, pour que Google et les assistants IA montrent la bonne version à la bonne personne.
+    faq6_q: Est-ce légal pour une entreprise en Espagne ?
+    faq6_a: Chaque site comprend des mentions légales et une page de confidentialité (LSSI et RGPD) générées à partir des informations de votre entreprise, et aucun bandeau cookies n’est nécessaire. Nous vous conseillons tout de même de faire vérifier les textes par votre gestor.
+    final_title: Prêts quand vous l’êtes.
+    final_text: L’inscription prend environ cinq minutes. Nous vérifions vos informations et votre site est généralement en ligne sous deux jours ouvrés. %price% € par mois, ou deux mois offerts avec la formule annuelle.
+
+signup:
+    page_title: Obtenez votre site
+    eyebrow: Inscription
+    intro: Parlez-nous de votre entreprise. Nous vérifions vos informations, créons votre site avec une carte de votre emplacement et le connectons à la recherche Google. Vous recevez un e-mail dès qu’il est en ligne, généralement sous deux jours ouvrés.
+    legend_business: Votre entreprise
+    legend_address: Adresse
+    address_note: Affichée sur votre site et sa carte. Vous travaillez depuis chez vous ? Vous pourrez masquer la rue plus tard et n’afficher que votre ville.
+    legend_website: Site web
+    legend_login: Vos identifiants
+    submit: Envoyer l’inscription
+    too_many: Trop de tentatives depuis votre connexion. Réessayez plus tard ou écrivez-nous.
+    turnstile: Confirmez que vous n’êtes pas un robot et renvoyez le formulaire.
+    invited: '%business% vous a invité : votre deuxième mois est offert.'
+    invite_used: Ce lien d’invitation a déjà été utilisé ou n’est plus valable. Vous pouvez quand même vous inscrire.
+    business_name: Nom de l’entreprise
+    contact_name: Votre nom
+    email: E-mail
+    email_help: Ce sera votre identifiant, et les demandes reçues via votre site y seront envoyées.
+    phone: Téléphone
+    whatsapp: Numéro WhatsApp
+    whatsapp_help: Laissez vide s’il est identique à votre téléphone.
+    street: Rue et numéro
+    postal_code: Code postal
+    town: Ville
+    country: Pays
+    service_area: Villes et zones où vous travaillez
+    service_area_placeholder: p. ex. Jávea, Dénia, Moraira et alentours
+    domain: Votre nom de domaine
+    domain_help: Seulement si vous en avez déjà un, p. ex. monartisan.es. Pas encore de domaine ? Laissez vide, vous pourrez en ajouter un plus tard dans votre espace.
+    locales: Langues de votre site
+    default_locale: Langue principale
+    legend_plan: Votre formule
+    plan: Comment souhaitez-vous payer ?
+    plan_monthly: Mensuel, résiliable chaque mois
+    plan_yearly: Annuel, 12 mois pour le prix de 10
+    plan_help: Dans les deux cas, votre site est gratuit jusqu’au 1er du mois prochain. Avec la formule annuelle, nous vous écrivons deux semaines avant chaque paiement annuel.
+    tax_id: NIF / NIE / CIF
+    tax_id_help: Pour les mentions légales de votre site. Vous pourrez l’ajouter plus tard.
+    message: Que faites-vous ? Autre chose que nous devrions savoir ?
+    password: Choisissez un mot de passe
+    password_repeat: Répétez le mot de passe
+    consent: 'J’ai lu et j’accepte les <a href="%terms_url%" target="_blank">conditions générales</a> et la <a href="%privacy_url%" target="_blank">politique de confidentialité</a>.'
+    honeypot: Laissez ce champ vide
+    thanks_title: Merci !
+    thanks_eyebrow: Inscription reçue
+    thanks_text: Nous avons bien reçu vos informations et les vérifierons rapidement. Dès que votre site est prêt, vous recevez un e-mail avec vos identifiants. Des questions d’ici là ? Répondez simplement à cet e-mail.
+    thanks_back: Retour à l’accueil
+
+password:
+    title: Choisissez votre mot de passe
+    intro: 'Pour votre identifiant %email%. Utilisez au moins 10 caractères.'
+    new: Nouveau mot de passe
+    repeat: Répétez le mot de passe
+    save: Enregistrer le mot de passe
+    expired_title: Ce lien a expiré
+    expired_text: Les liens pour définir un mot de passe fonctionnent une seule fois et pendant 7 jours. Répondez à votre e-mail de bienvenue et nous vous en enverrons un nouveau.
+    to_login: Aller à la connexion
+
+# Terms and privacy policy of the platform (templates/platform/_legal.html.twig).
+# Template text: have it checked by a lawyer or gestor. A blank line starts a new paragraph.
+legal:
+    updated: 'Dernière mise à jour : %date%'
+    provider_title: Qui nous sommes
+    provider_name: Nom
+    provider_tax_id: NIE
+    provider_address: Adresse
+    provider_email: E-mail
+
+terms:
+    title: Conditions générales
+    scope_title: 1. Champ d’application
+    scope_text: |-
+        Ces conditions s’appliquent au service de sites web %brand%, fourni par %name% (« nous ») aux entreprises et aux professionnels indépendants (« vous »).
+
+        %brand% est réservé aux professionnels. En vous inscrivant, vous confirmez agir pour votre entreprise ou votre métier, et non en tant que consommateur. Les règles de protection des consommateurs, comme le droit de rétractation, ne s’appliquent donc pas.
+    service_title: 2. Le service
+    service_text: |-
+        Nous créons et hébergeons un site web pour votre entreprise, sur un sous-domaine %brand% ou sur votre propre domaine. Le service comprend l’hébergement, le HTTPS, une interface simple pour modifier votre site, un formulaire de contact, les avis clients, des mentions légales et une page de confidentialité, la configuration de Google Search Console et un référencement dans la recherche %brand% pour les professionnels.
+
+        Nous pouvons améliorer ou modifier les fonctionnalités au fil du temps. Nous ne supprimerons pas une fonctionnalité principale sans vous prévenir d’abord.
+
+        Nous ne pouvons garantir ni un classement dans Google ou d’autres moteurs de recherche, ni un nombre de demandes ou de chantiers.
+    account_title: 3. Inscription et votre compte
+    account_text: |-
+        Après votre inscription, nous vérifions vos informations. Nous pouvons refuser une inscription sans en donner la raison. Le contrat commence lorsque nous approuvons votre inscription et vous envoyons l’e-mail de bienvenue.
+
+        Veillez à ce que vos informations soient exactes et à jour. Gardez secrets votre mot de passe et tout jeton d’assistant IA : vous êtes responsable de tout ce qui est fait avec vos identifiants ou votre jeton.
+    price_title: 4. Prix et paiement
+    price_text: |-
+        Le prix est celui affiché sur notre site au moment de votre inscription, sauf si nous avons convenu d’un autre prix avec vous. Les prix sont hors TVA, ajoutée au taux en vigueur.
+
+        Votre site est gratuit jusqu’au 1er du mois suivant sa mise en place. Ensuite :
+        - Formule mensuelle : payée d’avance le 1er de chaque mois.
+        - Formule annuelle : 12 mois pour le prix de 10, payés d’avance une fois par an. Nous vous écrivons deux semaines avant chaque paiement annuel.
+
+        Les paiements sont prélevés automatiquement par notre prestataire de paiement Mollie (carte ou prélèvement SEPA). Vous recevez une facture pour chaque paiement.
+
+        Si un paiement échoue, nous envoyons des rappels avec un lien de paiement. S’il reste impayé une semaine après le dernier rappel (environ cinq semaines après la date de paiement), nous mettons votre site hors ligne jusqu’au paiement du montant dû. Votre espace reste accessible.
+
+        Nous pouvons modifier le prix. Nous vous prévenons au moins 30 jours à l’avance par e-mail ; le nouveau prix s’applique à partir de votre prochaine période de paiement. Si vous n’êtes pas d’accord, vous pouvez résilier avant.
+    cancel_title: 5. Durée et résiliation
+    cancel_text: |-
+        Il n’y a pas de durée minimale. Vous pouvez résilier à tout moment par e-mail à %email%.
+
+        Formule mensuelle : le service prend fin à la fin du mois déjà payé. Vous n’êtes plus prélevé.
+
+        Formule annuelle : le service prend fin à la fin de l’année déjà payée. Les paiements annuels ne sont pas remboursés, même partiellement, si vous résiliez en cours d’année. Pour éviter le prochain paiement annuel, résiliez avant son échéance.
+
+        Nous pouvons mettre fin au contrat avec un préavis de 30 jours par e-mail. Dans ce cas, nous remboursons les mois payés mais non utilisés. Nous pouvons y mettre fin immédiatement si vous enfreignez gravement ces conditions, par exemple en publiant un contenu illicite ou en ne payant pas.
+    content_title: 6. Votre contenu
+    content_text: |-
+        Vous êtes responsable de tout ce qui figure sur votre site : textes, photos, prix, coordonnées et informations sur l’entreprise, ainsi que les informations de vos mentions légales (nom, numéro fiscal, adresse). Vous confirmez avoir le droit d’utiliser les textes et les photos, et que votre site et votre activité respectent la loi.
+
+        Les mentions légales et la page de confidentialité que nous générons sont des modèles. Faites-les vérifier par votre gestor ou votre avocat.
+
+        Les avis doivent provenir de vrais clients. Vous ne pouvez pas rédiger d’avis vous-même, en faire rédiger, ni offrir quelque chose en échange de bons avis.
+
+        Vous restez propriétaire de votre contenu. Vous nous autorisez à le stocker, le copier et l’afficher pour faire fonctionner votre site, ainsi qu’à afficher le nom de votre entreprise, votre ville, vos métiers et votre note dans la recherche %brand%.
+
+        Nous pouvons supprimer un contenu ou mettre votre site hors ligne s’il est manifestement illicite ou nuit à autrui, ou si une autorité nous l’ordonne. Dans la mesure du possible, nous vous contactons d’abord.
+
+        Si vous utilisez votre propre domaine, vous en restez propriétaire et êtes responsable de son enregistrement et de son DNS. Le sous-domaine %brand% reste le nôtre.
+    availability_title: 7. Disponibilité
+    availability_text: |-
+        Nous faisons de notre mieux pour que votre site reste en ligne et sécurisé, et nous faisons des sauvegardes régulières. Nous ne pouvons pas promettre que le service sera toujours disponible ou sans erreur. La maintenance peut causer de courtes interruptions. Conservez votre propre copie des textes et photos importants.
+    liability_title: 8. Responsabilité
+    liability_text: |-
+        Notre responsabilité totale est limitée au montant que vous nous avez payé au cours des 12 mois précédant le dommage. Nous ne sommes pas responsables des dommages indirects, comme des chantiers perdus, un manque à gagner ou une perte de données, ni des services d’autres entreprises comme Google, Mollie ou votre registraire de domaine.
+
+        Ces limites ne s’appliquent pas aux dommages causés intentionnellement ou par négligence grave.
+    processing_title: 9. Traitement de données personnelles pour votre compte (article 28 du RGPD)
+    processing_text: |-
+        Votre site collecte des données personnelles de vos clients et visiteurs, par exemple les messages envoyés via le formulaire de contact, les avis et les coordonnées que vous saisissez pour envoyer un lien d’avis. Pour ces données, vous êtes le responsable du traitement et nous sommes votre sous-traitant. Cette section constitue l’accord de traitement des données entre nous.
+
+        Nous traitons ces données uniquement pour faire fonctionner votre site et votre espace comme décrit dans ces conditions, et selon vos instructions documentées (votre utilisation de l’espace vaut instruction). Nous ne les utilisons à aucune autre fin et ne les vendons pas.
+
+        Toute personne chez %brand% ayant accès aux données est tenue à la confidentialité.
+
+        Nous prenons des mesures de sécurité appropriées : HTTPS, connexions par mot de passe, séparation des données de chaque client, mises à jour et sauvegardes régulières.
+
+        Vous nous donnez une autorisation générale de faire appel aux sous-traitants ultérieurs listés dans notre politique de confidentialité (%privacy_url%). Nous vous prévenons au moins 30 jours à l’avance par e-mail avant d’en ajouter ou d’en remplacer un ; si vous vous y opposez, vous pouvez résilier.
+
+        Nous vous aidons à répondre aux demandes des personnes qui exercent leurs droits au titre du RGPD, et à respecter vos autres obligations au titre du RGPD, dans une mesure raisonnable. Vous pouvez consulter, modifier et supprimer vous-même la plupart des données dans votre espace.
+
+        Nous vous informons dans les meilleurs délais après avoir pris connaissance d’une violation de données personnelles concernant vos données.
+
+        À la fin du contrat, nous supprimons les données comme décrit à la section 10, sauf si la loi nous oblige à les conserver. Sur demande, nous vous fournissons les informations nécessaires pour démontrer le respect de ces obligations.
+    end_title: 10. À la fin du contrat
+    end_text: |-
+        Nous supprimons votre site, votre espace et tout son contenu, y compris les données de vos clients, 30 jours après la fin du contrat. Si votre site est hors ligne en raison d’un montant impayé, nous le supprimons également après 30 jours hors ligne, et le contrat prend alors fin.
+
+        Avant cela, vous pouvez nous demander par e-mail une copie de vos textes, photos, demandes et avis. Nous conservons les factures et les justificatifs de paiement aussi longtemps que la loi fiscale l’exige.
+    changes_title: 11. Modification de ces conditions
+    changes_text: |-
+        Nous pouvons modifier ces conditions. Nous vous envoyons les nouvelles conditions par e-mail au moins 30 jours avant leur entrée en vigueur. Si vous n’êtes pas d’accord, vous pouvez résilier avant ; si vous continuez à utiliser le service, les nouvelles conditions s’appliquent.
+    law_title: 12. Droit applicable et litiges
+    law_text: |-
+        Ces conditions sont régies par le droit espagnol. Les litiges relèvent des tribunaux du lieu de résidence de %name%, sauf disposition légale contraire. Des questions ou une réclamation ? Écrivez d’abord à %email% ; nous essaierons de trouver une solution ensemble.
+
+privacy:
+    title: Politique de confidentialité
+    scope_title: 1. Ce que couvre cette politique
+    scope_text: |-
+        Cette politique explique comment %name% (« nous ») traite les données personnelles sur la plateforme %brand% : la recherche de professionnels, le formulaire d’inscription et les comptes des professionnels qui utilisent %brand% pour leur site. Nous sommes le responsable du traitement de ces données. Questions sur vos données : %email%.
+
+        Elle ne couvre pas les sites de nos clients. Chaque professionnel est responsable des données de son propre site (voir les mentions légales de ce site). Nous traitons ces données pour son compte, comme décrit à la section 9 de nos conditions (%terms_url%).
+    data_title: 2. Les données que nous utilisons
+    data_text: |-
+        Si vous vous inscrivez en tant que professionnel : le nom de votre entreprise, votre nom, votre adresse e-mail, vos numéros de téléphone et WhatsApp, votre adresse, votre numéro fiscal, votre zone d’intervention, vos langues, votre nom de domaine, votre message, votre mot de passe (stocké uniquement chiffré, sous forme de hash) et la date à laquelle vous avez accepté nos conditions.
+
+        Si vous êtes client : votre formule, vos paiements et vos factures. Les paiements passent par Mollie : nous ne voyons jamais vos coordonnées bancaires ou de carte complètes, seulement une courte description comme la marque de la carte et ses derniers chiffres ou une partie de votre IBAN.
+
+        Si vous cherchez un professionnel : le métier et la ville que vous recherchez. Votre adresse IP est utilisée peu de temps pour protéger nos formulaires et notre recherche contre les abus.
+
+        Si vous nous écrivez : votre adresse e-mail et ce que vous écrivez.
+    purposes_title: 3. Pourquoi nous les utilisons, et sur quelle base légale
+    purposes_text: |-
+        - Pour vérifier votre inscription, créer et faire fonctionner votre site, gérer votre compte et vous envoyer des e-mails sur le service : l’exécution de notre contrat avec vous (article 6, paragraphe 1, point b du RGPD).
+        - Pour vous facturer et tenir notre comptabilité : une obligation légale en vertu du droit fiscal et commercial espagnol (article 6, paragraphe 1, point c).
+        - Pour afficher votre entreprise dans la recherche %brand% : une partie du service, donc notre contrat (article 6, paragraphe 1, point b).
+        - Pour sécuriser la plateforme et empêcher le spam et les abus : notre intérêt légitime (article 6, paragraphe 1, point f).
+
+        Nous ne vendons pas vos données, ne les utilisons pas à des fins publicitaires et ne prenons aucune décision automatisée à votre sujet.
+    recipients_title: 4. Avec qui nous partageons des données
+    recipients_text: |-
+        Nous ne partageons des données qu’avec les entreprises qui nous aident à fournir le service (sous-traitants ultérieurs), et uniquement ce dont elles ont besoin :
+        - Hetzner Online GmbH, Allemagne : hébergement de la plateforme et de tous les sites.
+        - Mollie B.V., Pays-Bas : paiements.
+        - FacturaDirecta (Espagne) : factures.
+        - Cloudflare, Inc., États-Unis : le contrôle anti-spam (Turnstile) des formulaires.
+        - Google LLC, États-Unis : la configuration de Google Search Console pour votre site.
+        - OpenStreetMap Foundation, Royaume-Uni : la conversion d’adresses et de villes en positions sur la carte (Nominatim).
+        - Plausible Insights OÜ, Estonie : statistiques de visite sans cookies sur les sites clients qui les utilisent.
+        - Notre fournisseur d’e-mail, pour l’envoi des e-mails de la plateforme et des sites.
+
+        Si vous connectez un assistant IA à votre espace avec votre propre jeton, les données que l’assistant lit vont à l’entreprise derrière cet assistant. C’est votre choix, et cela relève de votre accord avec cette entreprise.
+
+        Nous partageons aussi des données lorsque la loi l’exige, par exemple avec l’administration fiscale.
+    transfers_title: 5. Données hors de l’UE
+    transfers_text: |-
+        Cloudflare et Google sont établis aux États-Unis. Ils sont certifiés dans le cadre du EU-US Data Privacy Framework et utilisent également les clauses contractuelles types de la Commission européenne. Le Royaume-Uni bénéficie d’une décision d’adéquation de la Commission européenne.
+    retention_title: 6. Combien de temps nous conservons les données
+    retention_text: |-
+        - Données du compte et du site : tant que vous êtes client, plus 30 jours (voir la section 10 de nos conditions).
+        - Inscriptions que nous n’approuvons pas : supprimées sous 3 mois.
+        - Factures et justificatifs de paiement : 6 ans, comme l’exige le droit commercial espagnol.
+        - Adresses IP pour la protection contre les abus : quelques heures au maximum. Journaux du serveur : 30 jours au maximum.
+        - E-mails : le temps nécessaire pour vous aider, au maximum 2 ans après notre dernier contact.
+    cookies_title: 7. Cookies
+    cookies_text: |-
+        La plateforme n’utilise qu’un seul cookie, nécessaire pour rester connecté à votre espace. Il est supprimé lorsque vous vous déconnectez ou fermez votre navigateur. Nous n’utilisons pas de cookies de suivi ou publicitaires, il n’y a donc pas de bandeau cookies. Le contrôle anti-spam de Cloudflare sur nos formulaires lit des données techniques de votre navigateur, mais ne vous suit pas d’un site à l’autre.
+    rights_title: 8. Vos droits
+    rights_text: |-
+        Vous pouvez nous demander d’accéder à vos données, de les rectifier ou de les supprimer, d’en limiter l’utilisation ou de les recevoir dans un format courant, et vous pouvez vous opposer à leur utilisation. Vous pouvez modifier vous-même la plupart des informations de votre compte dans votre espace. Écrivez à %email% ; nous répondons sous un mois.
+
+        Vous pouvez aussi introduire une réclamation auprès de l’autorité espagnole de protection des données (Agencia Española de Protección de Datos, www.aepd.es).

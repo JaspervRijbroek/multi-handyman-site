@@ -1,0 +1,8 @@
+# German texts for the app's own validation messages on the sign-up form.
+# Symfony's standard messages ("This value should not be blank.") are translated by Symfony itself.
+'Enter a valid phone number.': Geben Sie eine gültige Telefonnummer ein.
+'Choose at least one language.': Wählen Sie mindestens eine Sprache.
+'Use at least {{ limit }} characters.': Verwenden Sie mindestens {{ limit }} Zeichen.
+'Please agree to the terms and privacy policy, otherwise we cannot set up your website.': Bitte stimmen Sie den AGB und der Datenschutzerklärung zu, sonst können wir Ihre Website nicht einrichten.
+'The passwords do not match.': Die Passwörter stimmen nicht überein.
+'This domain is already used by another website. Check the spelling, or leave it empty and tell us in the message.': Diese Domain wird bereits von einer anderen Website verwendet. Prüfen Sie die Schreibweise, oder lassen Sie das Feld leer und schreiben Sie es uns in die Nachricht.
