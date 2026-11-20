@@ -1,0 +1,15 @@
+{# Opens and closes the mobile menu in the header; closes it again after a link is tapped. #}
+<script>
+    (function () {
+        var button = document.querySelector('.menu-toggle');
+        var header = button.closest('header');
+        function toggle(open) {
+            header.classList.toggle('is-open', open);
+            button.setAttribute('aria-expanded', open);
+        }
+        button.addEventListener('click', function () { toggle(!header.classList.contains('is-open')); });
+        document.getElementById('site-menu').addEventListener('click', function (e) {
+            if (e.target.closest('a')) toggle(false);
+        });
+    })();
+</script>

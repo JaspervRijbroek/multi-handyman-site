@@ -5,6 +5,7 @@ nav:
     contact: Contact
     main: Hoofdmenu
     language: Taal
+    menu: Menu
 
 hero:
     call: Bel
