@@ -19,7 +19,10 @@ final class Version20261120160131 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE project ADD photos JSON DEFAULT \'[]\' NOT NULL, ADD location VARCHAR(120) DEFAULT NULL, ADD duration_days SMALLINT DEFAULT NULL, ADD service_id INT DEFAULT NULL');
+        // MySQL does not allow a default on a JSON column: add it empty, fill it, then make it required
+        $this->addSql('ALTER TABLE project ADD photos JSON DEFAULT NULL, ADD location VARCHAR(120) DEFAULT NULL, ADD duration_days SMALLINT DEFAULT NULL, ADD service_id INT DEFAULT NULL');
+        $this->addSql("UPDATE project SET photos = '[]'");
+        $this->addSql('ALTER TABLE project MODIFY photos JSON NOT NULL');
         $this->addSql('ALTER TABLE project ADD CONSTRAINT FK_2FB3D0EEED5CA9E6 FOREIGN KEY (service_id) REFERENCES service (id) ON DELETE SET NULL');
         $this->addSql('CREATE INDEX IDX_2FB3D0EEED5CA9E6 ON project (service_id)');
     }

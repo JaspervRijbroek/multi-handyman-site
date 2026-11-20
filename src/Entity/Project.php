@@ -39,7 +39,7 @@ class Project implements TenantOwnedInterface
     private ?string $imageName = null;
 
     /** @var list<string> More photos of the job, file names inside public/uploads/projects/ */
-    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    #[ORM\Column(type: Types::JSON)]
     private array $photos = [];
 
     /** The town where the job was done */
