@@ -189,6 +189,7 @@ signup:
     submit: Enviar registro
     too_many: Demasiados intentos desde tu conexión. Inténtalo más tarde o escríbenos un email.
     turnstile: Confirma que no eres un robot y vuelve a enviar el formulario.
+    founding: "Te registras como miembro fundador: tu primer año es gratis y el segundo año tiene un 50% de descuento."
     invited: "%business% te ha invitado: tu segundo mes es gratis."
     invite_used: Este enlace de invitación ya se ha usado o ya no es válido. Puedes registrarte igualmente.
     business_name: Nombre del negocio

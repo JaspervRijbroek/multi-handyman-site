@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Form\SignupType;
 use App\Onboarding\OnboardingMailer;
 use App\Repository\InvitationRepository;
+use App\Repository\SignupRepository;
 use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,11 +30,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 final class RegistrationController extends AbstractController
 {
+    /** How many sign-ups the shared founding link (?founding=FOUNDING_INVITE_CODE) accepts */
+    public const int FOUNDING_SPOTS = 40;
+
     /** Old and short link: the sign-up form in the visitor's language */
     #[Route('/register', name: 'app_register_redirect', methods: ['GET'])]
     public function redirectToLocale(Request $request): Response
     {
-        // Keeps ?invite= (the link in invitation emails) and ?plan=
+        // Keeps ?invite= (the link in invitation emails), ?founding= and ?plan=
         return $this->redirectToRoute('app_register', [...$request->query->all(), '_locale' => PlatformController::preferredLocale($request)]);
     }
 
@@ -47,9 +51,17 @@ final class RegistrationController extends AbstractController
         #[Autowire(service: 'limiter.signup')] RateLimiterFactoryInterface $signupLimiter,
         Turnstile $turnstile,
         InvitationRepository $invitations,
+        SignupRepository $signups,
+        #[Autowire(env: 'FOUNDING_INVITE_CODE')] string $foundingCode,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('admin');
+        }
+
+        // The shared founding link: once all spots are taken it leads to the page for professionals
+        $founding = '' !== $foundingCode && hash_equals($foundingCode, $request->query->getString('founding'));
+        if ($founding && $signups->countFounding() >= self::FOUNDING_SPOTS) {
+            return $this->redirectToRoute('platform_pros');
         }
 
         // A new Signup, so its defaults (English and Spanish) are ticked; ?plan=yearly comes from the pricing toggle
@@ -81,6 +93,7 @@ final class RegistrationController extends AbstractController
                     // The consent checkbox is required, so ticked here: keep when, as proof
                     $signup->acceptTerms();
                     $signup->setInvitation($invitation);
+                    $signup->setFoundingMember($founding);
 
                     $entityManager->persist($signup);
                     $entityManager->flush();
@@ -94,6 +107,7 @@ final class RegistrationController extends AbstractController
         return $this->render('platform/register.html.twig', [
             'form' => $form,
             'invitation' => $invitation,
+            'founding' => $founding,
             'invite_used' => '' !== $inviteToken && null === $invitation,
         ], new Response(status: $form->isSubmitted() ? 422 : 200));
     }

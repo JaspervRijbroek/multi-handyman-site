@@ -189,6 +189,7 @@ signup:
     submit: Aanmelding versturen
     too_many: Te veel pogingen vanaf je verbinding. Probeer het later opnieuw, of mail ons.
     turnstile: Bevestig dat je geen robot bent en verstuur het formulier opnieuw.
+    founding: "Je meldt je aan als founding member: je eerste jaar is gratis en het tweede jaar krijg je 50% korting."
     invited: "%business% heeft je uitgenodigd: je tweede maand is gratis."
     invite_used: Deze uitnodigingslink is al gebruikt of is niet meer geldig. Je kunt je nog steeds aanmelden.
     business_name: Bedrijfsnaam

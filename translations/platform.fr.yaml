@@ -189,6 +189,7 @@ signup:
     submit: Envoyer l’inscription
     too_many: Trop de tentatives depuis votre connexion. Réessayez plus tard ou écrivez-nous.
     turnstile: Confirmez que vous n’êtes pas un robot et renvoyez le formulaire.
+    founding: "Vous vous inscrivez comme membre fondateur : votre première année est offerte et la deuxième à moitié prix."
     invited: '%business% vous a invité : votre deuxième mois est offert.'
     invite_used: Ce lien d’invitation a déjà été utilisé ou n’est plus valable. Vous pouvez quand même vous inscrire.
     business_name: Nom de l’entreprise
