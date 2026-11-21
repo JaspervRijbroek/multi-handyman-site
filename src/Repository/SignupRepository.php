@@ -24,6 +24,18 @@ class SignupRepository extends ServiceEntityRepository
         return $this->count(['status' => SignupStatus::Pending]);
     }
 
+    /** Founding member sign-ups that still count: waiting for approval or approved */
+    public function countFounding(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->where('s.foundingMember = true')
+            ->andWhere('s.status != :rejected')
+            ->setParameter('rejected', SignupStatus::Rejected)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /** @return list<Signup> */
     public function findPending(): array
     {

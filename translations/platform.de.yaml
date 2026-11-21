@@ -189,6 +189,7 @@ signup:
     submit: Anmeldung senden
     too_many: Zu viele Versuche von Ihrer Verbindung. Bitte versuchen Sie es später erneut oder schreiben Sie uns eine E-Mail.
     turnstile: Bitte bestätigen Sie, dass Sie kein Roboter sind, und senden Sie das Formular erneut.
+    founding: "Sie melden sich als Gründungsmitglied an: Ihr erstes Jahr ist gratis, das zweite Jahr 50 % günstiger."
     invited: "%business% hat Sie eingeladen: Ihr zweiter Monat ist gratis."
     invite_used: Dieser Einladungslink wurde bereits verwendet oder ist nicht mehr gültig. Sie können sich trotzdem anmelden.
     business_name: Firmenname

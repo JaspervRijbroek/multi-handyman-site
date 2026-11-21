@@ -11,6 +11,8 @@ parameters:
     env(PLATFORM_LEGAL_TAX_ID): 'Z0881872B'
     env(PLATFORM_LEGAL_ADDRESS): ''
     env(PLATFORM_LEGAL_EMAIL): ''
+    # Code for the shared founding member sign-up link (/register?founding=...); empty: link off
+    env(FOUNDING_INVITE_CODE): ''
     env(FACTURADIRECTA_API_KEY): ''
     env(FACTURADIRECTA_COMPANY_ID): ''
     env(FACTURADIRECTA_SERIES): 'F-##-'

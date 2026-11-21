@@ -112,7 +112,7 @@ class Signup
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Invitation $invitation = null;
 
-    /** Set by an admin, never on /register: copied to Tenant::$foundingMember on approval */
+    /** Set by an admin, or on /register via the founding link (FOUNDING_INVITE_CODE): copied to Tenant::$foundingMember on approval */
     #[ORM\Column(options: ['default' => false])]
     private bool $foundingMember = false;
 

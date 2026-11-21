@@ -308,6 +308,11 @@ Client added ─► free until the 1st of next month (Tenant::billingStartsOn)
   use `app:client:approve --founding` (or `app:client:onboard --founding`). This moves
   *Free until* one year later (you can still change that date by hand). Every charge that
   starts in the year after *Free until* is half price.
+- Founding link: set `FOUNDING_INVITE_CODE` and send everyone the same link,
+  `https://<PLATFORM_HOST>/register?founding=<code>`. Sign-ups through it come in with
+  *Founding member* ticked (you still approve each one). Once 40 founding sign-ups are
+  waiting or approved (`RegistrationController::FOUNDING_SPOTS`), the link redirects to
+  the page for professionals. Rejecting one frees a spot.
 - Locally: put a Mollie **test** key in `.env.local` (`MOLLIE_API_KEY=test_...`),
   then try a later date with `ddev console app:billing:run --date=2026-12-01`.
 
