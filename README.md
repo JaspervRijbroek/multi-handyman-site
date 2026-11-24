@@ -140,9 +140,11 @@ customer's contact details are removed once they have left their review. "Send r
 the project list sends a new link (e.g. after the old one expired). The review count and average are stored on
 the tenant (`ReviewStatsListener`), so the search never reads other clients' reviews.
 
-The client's homepage passes the rating and the published reviews to Google as structured data
-(`aggregateRating` and `review`). Google decides whether to show stars: it often doesn't for
-reviews a business collects on its own website.
+The client's homepage passes the business to Google as structured data (JSON-LD): contact details,
+address, services, languages, the rating and the published reviews (`aggregateRating` and `review`).
+Each project page adds a breadcrumb and the customer's review of that job, linked to the business.
+Google decides whether to show stars: it often doesn't for reviews a business collects on its own
+website.
 
 ## Onboarding a new client
 

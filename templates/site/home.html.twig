@@ -11,13 +11,17 @@
         'addressLocality': tenant.city,
         'addressCountry': tenant.country,
     }|filter(v => v is not empty) : null %}
-    {# Includes the star rating for Google: only published reviews, the same ones shown on this page #}
+    {% set photo = projects|filter(p => p.imageName)|first %}
+    {# Structured data (JSON-LD) for search engines: the business, its services and the star rating.
+       Only published reviews, the same ones shown on this page. Project pages refer to it by '@id'. #}
     <script type="application/ld+json">{{ {
         '@context': 'https://schema.org',
         '@type': 'HomeAndConstructionBusiness',
+        '@id': url('site_root') ~ '#business',
         'name': tenant.name,
         'url': url('site_root'),
         'description': tenant.intro|localized,
+        'image': photo ? absolute_url(asset('uploads/projects/' ~ photo.imageName)) : null,
         'telephone': tenant.phone,
         'email': tenant.email,
         'address': address,
@@ -25,6 +29,15 @@
         'hasMap': tenant.mapUrl,
         'sameAs': tenant.googleBusinessUrl ? [tenant.googleBusinessUrl] : null,
         'areaServed': tenant.serviceArea,
+        'knowsLanguage': tenant.locales,
+        'makesOffer': services|map(service => {
+            '@type': 'Offer',
+            'itemOffered': {
+                '@type': 'Service',
+                'name': service.title|localized,
+                'description': service.description|localized,
+            }|filter(v => v is not empty),
+        }),
         'logo': tenant.logoName ? absolute_url(asset('uploads/logos/' ~ tenant.logoName)) : null,
         'aggregateRating': tenant.reviewCount ? {
             '@type': 'AggregateRating',
