@@ -26,7 +26,7 @@
         'email': tenant.email,
         'address': address,
         'geo': tenant.hasCoordinates and tenant.showStreetAddress ? {'@type': 'GeoCoordinates', 'latitude': tenant.latitude, 'longitude': tenant.longitude} : null,
-        'hasMap': tenant.mapUrl,
+        'hasMap': tenant.googleBusinessUrl ?: tenant.mapUrl,
         'sameAs': tenant.googleBusinessUrl ? [tenant.googleBusinessUrl] : null,
         'areaServed': tenant.serviceArea,
         'knowsLanguage': tenant.locales,

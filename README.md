@@ -207,7 +207,8 @@ the status is *Waiting for the site to be online*. The [scheduler](#scheduled-ta
 Google has no API for creating and verifying new listings: they verify by post, phone or
 video with the owner. Create or claim it at <https://business.google.com/create> with the
 client, then paste its share link under **Clients → Look & Google**. The website links to it
-and tells Google the site and listing belong together (`sameAs` in the structured data).
+and tells Google the site and listing belong together (`sameAs` and `hasMap` in the structured data;
+without a listing, `hasMap` points to the OpenStreetMap map).
 
 **Map.** The address is turned into coordinates with [Nominatim](https://nominatim.org/),
 OpenStreetMap's free geocoder (no API key; their [usage policy](https://operations.osmfoundation.org/policies/nominatim/)
