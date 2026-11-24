@@ -140,9 +140,11 @@ customer's contact details are removed once they have left their review. "Send r
 the project list sends a new link (e.g. after the old one expired). The review count and average are stored on
 the tenant (`ReviewStatsListener`), so the search never reads other clients' reviews.
 
-The client's homepage passes the rating and the published reviews to Google as structured data
-(`aggregateRating` and `review`). Google decides whether to show stars: it often doesn't for
-reviews a business collects on its own website.
+The client's homepage passes the business to Google as structured data (JSON-LD): contact details,
+address, services, languages, the rating and the published reviews (`aggregateRating` and `review`).
+Each project page adds a breadcrumb and the customer's review of that job, linked to the business.
+Google decides whether to show stars: it often doesn't for reviews a business collects on its own
+website.
 
 ## Onboarding a new client
 
@@ -205,7 +207,8 @@ the status is *Waiting for the site to be online*. The [scheduler](#scheduled-ta
 Google has no API for creating and verifying new listings: they verify by post, phone or
 video with the owner. Create or claim it at <https://business.google.com/create> with the
 client, then paste its share link under **Clients → Look & Google**. The website links to it
-and tells Google the site and listing belong together (`sameAs` in the structured data).
+and tells Google the site and listing belong together (`sameAs` and `hasMap` in the structured data;
+without a listing, `hasMap` points to the OpenStreetMap map).
 
 **Map.** The address is turned into coordinates with [Nominatim](https://nominatim.org/),
 OpenStreetMap's free geocoder (no API key; their [usage policy](https://operations.osmfoundation.org/policies/nominatim/)
