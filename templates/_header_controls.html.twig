@@ -1,7 +1,7 @@
 {# Header controls: the language dropdown (all screen sizes) and the menu button (mobile only).
    Expects: lang_links (locale => URL; fewer than 2 = no dropdown), locale, and the labels
    language_label, menu_label and close_label. Works with _menu_script.html.twig. #}
-{% set language_names = {en: 'English', es: 'Español', nl: 'Nederlands', de: 'Deutsch', fr: 'Français'} %}
+{% set language_names = {en: 'English', es: 'Español', nl: 'Nederlands', de: 'Deutsch', fr: 'Français', ru: 'Русский'} %}
 <div class="header-controls">
     {% if lang_links|length > 1 %}
         <div class="ls">

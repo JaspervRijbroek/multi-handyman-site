@@ -5,7 +5,7 @@ which client's site is shown; clients edit their own content in a simple admin.
 
 - **Symfony 7.4 LTS**, PHP 8.4, MariaDB, Doctrine
 - **EasyAdmin 5** for the client admin
-- Multilingual content per client (EN, ES, NL, DE, FR), with hreflang, sitemap and canonical URLs
+- Multilingual content per client (EN, ES, NL, DE, FR, RU), with hreflang, sitemap and canonical URLs
 - Contact form (saved in the admin + emailed to the client), WhatsApp button, click-to-call
 - **Reviews**: customers write them on the client's site (or through a 7-day review link the client
   sends after a job), the client publishes them in the admin
@@ -472,13 +472,13 @@ ddev console messenger:stats                  # messages waiting in the queue
 ddev console messenger:failed:show            # messages that failed all retries
 ```
 
-**Translations.** Client sites are translated into all five languages (`translations/messages.*.yaml`),
+**Translations.** Client sites are translated into all six languages (`translations/messages.*.yaml`),
 the platform pages too (`platform.*.yaml`, plus `validators.*.yaml` for the sign-up form errors). After adding or changing a text,
 check that no language misses it (no rows marked "missing" means complete):
 
 ```bash
-for l in en es nl de fr; do ddev console debug:translation $l --domain=messages --only-missing; done
-for l in es en nl de fr; do ddev console debug:translation $l --domain=platform --only-missing; done
+for l in en es nl de fr ru; do ddev console debug:translation $l --domain=messages --only-missing; done
+for l in es en nl de fr ru; do ddev console debug:translation $l --domain=platform --only-missing; done
 ```
 
 ## Production (Hetzner)

@@ -37,6 +37,7 @@ language:
     nl: Néerlandais
     de: Allemand
     fr: Français
+    ru: Russe
 
 home:
     title: '%brand% | Trouvez un artisan, plombier ou maçon de confiance en Espagne'
@@ -172,7 +173,7 @@ pros:
     faq4_q: Puis-je utiliser mon propre nom de domaine ?
     faq4_a: Oui. Apportez le domaine que vous avez déjà, ou nous vous aidons à en enregistrer un. Le HTTPS est inclus et fonctionne dès la première visite.
     faq5_q: Quelles langues sont disponibles ?
-    faq5_a: Anglais, espagnol, néerlandais, allemand et français. Choisissez les langues de vos clients ; chacune a ses propres pages, pour que Google et les assistants IA montrent la bonne version à la bonne personne.
+    faq5_a: Anglais, espagnol, néerlandais, allemand, français et russe. Choisissez les langues de vos clients ; chacune a ses propres pages, pour que Google et les assistants IA montrent la bonne version à la bonne personne.
     faq6_q: Est-ce légal pour une entreprise en Espagne ?
     faq6_a: Chaque site comprend des mentions légales et une page de confidentialité (LSSI et RGPD) générées à partir des informations de votre entreprise, et aucun bandeau cookies n’est nécessaire. Nous vous conseillons tout de même de faire vérifier les textes par votre gestor.
     final_title: Prêts quand vous l’êtes.

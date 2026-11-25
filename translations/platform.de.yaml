@@ -37,6 +37,7 @@ language:
     nl: Niederländisch
     de: Deutsch
     fr: Französisch
+    ru: Russisch
 
 home:
     title: '%brand% | Zuverlässige Handwerker, Klempner und Bauunternehmer in Spanien finden'
@@ -172,7 +173,7 @@ pros:
     faq4_q: Kann ich meine eigene Domain verwenden?
     faq4_a: Ja. Bringen Sie Ihre bestehende Domain mit, oder wir helfen Ihnen, eine zu registrieren. HTTPS ist inklusive und funktioniert ab dem ersten Besuch.
     faq5_q: Welche Sprachen werden unterstützt?
-    faq5_a: Englisch, Spanisch, Niederländisch, Deutsch und Französisch. Wählen Sie die Sprachen Ihrer Kunden; jede bekommt eigene Seiten, damit Google und KI-Assistenten der richtigen Person die richtige Version zeigen.
+    faq5_a: Englisch, Spanisch, Niederländisch, Deutsch, Französisch und Russisch. Wählen Sie die Sprachen Ihrer Kunden; jede bekommt eigene Seiten, damit Google und KI-Assistenten der richtigen Person die richtige Version zeigen.
     faq6_q: Ist das für einen Betrieb in Spanien rechtlich in Ordnung?
     faq6_a: Jede Website hat ein Impressum und eine Datenschutzseite (LSSI und DSGVO), erstellt aus Ihren Firmendaten, und es ist kein Cookie-Banner nötig. Wir empfehlen trotzdem, die Texte von Ihrem Gestor prüfen zu lassen.
     final_title: Bereit, wenn Sie es sind.

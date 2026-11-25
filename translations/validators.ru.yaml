@@ -1,0 +1,8 @@
+# Russian texts for the app's own validation messages on the sign-up form.
+# Symfony's standard messages ("This value should not be blank.") are translated by Symfony itself.
+'Enter a valid phone number.': Введите правильный номер телефона.
+'Choose at least one language.': Выберите хотя бы один язык.
+'Use at least {{ limit }} characters.': 'Используйте не менее {{ limit }} символов.'
+'Please agree to the terms and privacy policy, otherwise we cannot set up your website.': Примите условия и политику конфиденциальности, иначе мы не сможем создать ваш сайт.
+'The passwords do not match.': Пароли не совпадают.
+'This domain is already used by another website. Check the spelling, or leave it empty and tell us in the message.': Этот домен уже используется другим сайтом. Проверьте написание или оставьте поле пустым и напишите нам об этом в сообщении.
