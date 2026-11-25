@@ -1,0 +1,33 @@
+{# Mobile header controls: a language dropdown and the menu button (shown below the mobile breakpoint).
+   Expects: lang_links (locale => URL; fewer than 2 = no dropdown), locale, and the labels
+   language_label, menu_label and close_label. Works with _menu_script.html.twig. #}
+{% set language_names = {en: 'English', es: 'Español', nl: 'Nederlands', de: 'Deutsch', fr: 'Français'} %}
+<div class="mobile-controls">
+    {% if lang_links|length > 1 %}
+        <div class="ls">
+            <button class="ls-btn" type="button" aria-expanded="false" aria-controls="lang-menu"
+                    aria-label="{{ language_label }}: {{ language_names[locale]|default(locale|upper) }}">
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg>
+                <span>{{ locale|upper }}</span>
+                <svg class="ls-chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <nav class="ls-menu" id="lang-menu" aria-label="{{ language_label }}" hidden>
+                {% for alt_locale, href in lang_links %}
+                    <a class="ls-opt" href="{{ href }}" hreflang="{{ alt_locale }}" lang="{{ alt_locale }}"
+                       {% if alt_locale == locale %}aria-current="true"{% endif %}>
+                        <span class="ls-code">{{ alt_locale|upper }}</span>
+                        <span class="ls-name">{{ language_names[alt_locale]|default(alt_locale|upper) }}</span>
+                        {% if alt_locale == locale %}
+                            <svg class="ls-check" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+                        {% endif %}
+                    </a>
+                {% endfor %}
+            </nav>
+        </div>
+    {% endif %}
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu"
+            aria-label="{{ menu_label }}" data-open="{{ menu_label }}" data-close="{{ close_label }}">
+        <svg class="menu-icon-open" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        <svg class="menu-icon-close" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+</div>

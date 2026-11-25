@@ -33,22 +33,28 @@
     <header class="p-header">
         <div class="p-container p-header-inner">
             <a class="p-brand" href="{{ path('site_home', {_locale: link_locale}) }}"><img src="{{ asset('images/casitafix-logo.svg') }}" alt="{{ brand }}" width="148" height="40"></a>
-            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-                <span class="menu-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">{{ 'nav.menu'|trans }}</span>
-            </button>
+            {# Keeps the search (trade, town, page) when switching language #}
+            {% set lang_links = {} %}
+            {% for alt_locale in locales %}
+                {% set lang_links = lang_links|merge({(alt_locale): path(route, app.request.query.all|merge(route_params)|merge({_locale: alt_locale}))}) %}
+            {% endfor %}
+            {{ include('_mobile_header.html.twig', {
+                lang_links: lang_links,
+                locale: locale,
+                language_label: 'nav.language'|trans,
+                menu_label: 'nav.menu'|trans,
+                close_label: 'nav.close_menu'|trans,
+            }) }}
             <div class="menu" id="site-menu">
             <nav class="p-nav" aria-label="{{ 'nav.main'|trans }}">
                 <a href="{{ path('platform_search', {_locale: link_locale}) }}">{{ 'nav.find'|trans }}</a>
                 <a href="{{ path('platform_pros', {_locale: link_locale}) }}">{{ 'nav.pros'|trans }}</a>
                 <a href="{{ path('app_login') }}">{{ 'nav.login'|trans }}</a>
             </nav>
-            {% if locales|length > 1 %}
+            {% if lang_links|length > 1 %}
                 <nav class="p-lang" aria-label="{{ 'nav.language'|trans }}">
-                    {% for alt_locale in locales %}
-                        {# Keeps the search (trade, town, page) when switching language #}
-                        <a href="{{ path(route, app.request.query.all|merge(route_params)|merge({_locale: alt_locale})) }}"
-                           hreflang="{{ alt_locale }}" lang="{{ alt_locale }}"
+                    {% for alt_locale, href in lang_links %}
+                        <a href="{{ href }}" hreflang="{{ alt_locale }}" lang="{{ alt_locale }}"
                            {% if alt_locale == locale %}aria-current="true"{% endif %}>{{ alt_locale|upper }}</a>
                     {% endfor %}
                 </nav>

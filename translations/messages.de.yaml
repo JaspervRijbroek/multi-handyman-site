@@ -6,6 +6,7 @@ nav:
     main: Hauptmenü
     language: Sprache
     menu: Menü
+    close_menu: Menü schließen
 
 hero:
     call: Anrufen
