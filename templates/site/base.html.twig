@@ -55,7 +55,7 @@
             {% for alt_locale in tenant.locales %}
                 {% set lang_links = lang_links|merge({(alt_locale): path(route, route_params|merge({_locale: alt_locale}))}) %}
             {% endfor %}
-            {{ include('_mobile_header.html.twig', {
+            {{ include('_header_controls.html.twig', {
                 lang_links: lang_links,
                 locale: locale,
                 language_label: 'nav.language'|trans,
@@ -68,15 +68,6 @@
                 <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
                 <a href="{{ home }}#reviews">{{ 'nav.reviews'|trans }}</a>
             </nav>
-            {% if lang_links|length > 1 %}
-                <nav class="lang" aria-label="{{ 'nav.language'|trans }}">
-                    {% for alt_locale, href in lang_links %}
-                        <a href="{{ href }}"
-                           {% if alt_locale == locale %}aria-current="true"{% endif %}
-                           hreflang="{{ alt_locale }}">{{ alt_locale|upper }}</a>
-                    {% endfor %}
-                </nav>
-            {% endif %}
             <a class="btn btn-primary btn-small" href="{{ home }}#contact">{{ 'nav.contact'|trans }}</a>
             </div>
         </div>

@@ -1,8 +1,8 @@
-{# Mobile header controls: a language dropdown and the menu button (shown below the mobile breakpoint).
+{# Header controls: the language dropdown (all screen sizes) and the menu button (mobile only).
    Expects: lang_links (locale => URL; fewer than 2 = no dropdown), locale, and the labels
    language_label, menu_label and close_label. Works with _menu_script.html.twig. #}
 {% set language_names = {en: 'English', es: 'Español', nl: 'Nederlands', de: 'Deutsch', fr: 'Français'} %}
-<div class="mobile-controls">
+<div class="header-controls">
     {% if lang_links|length > 1 %}
         <div class="ls">
             <button class="ls-btn" type="button" aria-expanded="false" aria-controls="lang-menu"
