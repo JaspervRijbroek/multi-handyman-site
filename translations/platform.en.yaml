@@ -11,6 +11,7 @@ nav:
     terms: Terms
     privacy: Privacy
     menu: Menu
+    close_menu: Close menu
 
 footer:
     tagline: Local professionals across Spain
@@ -36,6 +37,7 @@ language:
     nl: Dutch
     de: German
     fr: French
+    ru: Russian
 
 home:
     title: '%brand% | Find a trusted local handyman, plumber or builder in Spain'
@@ -171,7 +173,7 @@ pros:
     faq4_q: Can I use my own domain name?
     faq4_a: Yes. Bring the domain you already have or we help you register one. HTTPS is included and works from the first visit.
     faq5_q: Which languages are supported?
-    faq5_a: English, Spanish, Dutch, German and French. Pick the languages your customers speak; each one gets its own pages so Google and AI assistants show the right version to the right person.
+    faq5_a: English, Spanish, Dutch, German, French and Russian. Pick the languages your customers speak; each one gets its own pages so Google and AI assistants show the right version to the right person.
     faq6_q: Is it legal for a business in Spain?
     faq6_a: Every site comes with a legal notice and privacy page (LSSI and GDPR) generated from your business details, and no tracking cookie banner is needed. We still recommend having your gestor check the texts.
     final_title: Ready when you are.

@@ -6,6 +6,7 @@ nav:
     main: Hoofdmenu
     language: Taal
     menu: Menu
+    close_menu: Menu sluiten
 
 hero:
     call: Bel

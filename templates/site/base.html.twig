@@ -51,25 +51,23 @@
                 {%- endif -%}
                 <span>{{ tenant.name }}</span>
             </a>
-            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
-                <span class="menu-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">{{ 'nav.menu'|trans }}</span>
-            </button>
+            {% set lang_links = {} %}
+            {% for alt_locale in tenant.locales %}
+                {% set lang_links = lang_links|merge({(alt_locale): path(route, route_params|merge({_locale: alt_locale}))}) %}
+            {% endfor %}
+            {{ include('_header_controls.html.twig', {
+                lang_links: lang_links,
+                locale: locale,
+                language_label: 'nav.language'|trans,
+                menu_label: 'nav.menu'|trans,
+                close_label: 'nav.close_menu'|trans,
+            }) }}
             <div class="menu" id="site-menu">
             <nav class="nav" aria-label="{{ 'nav.main'|trans }}">
                 <a href="{{ home }}#services">{{ 'nav.services'|trans }}</a>
                 <a href="{{ home }}#projects">{{ 'nav.projects'|trans }}</a>
                 <a href="{{ home }}#reviews">{{ 'nav.reviews'|trans }}</a>
             </nav>
-            {% if tenant.locales|length > 1 %}
-                <nav class="lang" aria-label="{{ 'nav.language'|trans }}">
-                    {% for alt_locale in tenant.locales %}
-                        <a href="{{ path(route, route_params|merge({_locale: alt_locale})) }}"
-                           {% if alt_locale == locale %}aria-current="true"{% endif %}
-                           hreflang="{{ alt_locale }}">{{ alt_locale|upper }}</a>
-                    {% endfor %}
-                </nav>
-            {% endif %}
             <a class="btn btn-primary btn-small" href="{{ home }}#contact">{{ 'nav.contact'|trans }}</a>
             </div>
         </div>

@@ -11,6 +11,7 @@ nav:
     terms: Condiciones
     privacy: Privacidad
     menu: Menú
+    close_menu: Cerrar menú
 
 footer:
     tagline: Profesionales locales en toda España
@@ -36,6 +37,7 @@ language:
     nl: Neerlandés
     de: Alemán
     fr: Francés
+    ru: Ruso
 
 home:
     title: '%brand% | Encuentra un manitas, fontanero o albañil de confianza cerca de ti'
@@ -171,7 +173,7 @@ pros:
     faq4_q: ¿Puedo usar mi propio dominio?
     faq4_a: Sí. Usa el dominio que ya tienes o te ayudamos a registrar uno. HTTPS incluido y funcionando desde la primera visita.
     faq5_q: ¿Qué idiomas hay?
-    faq5_a: Inglés, español, neerlandés, alemán y francés. Elige los idiomas de tus clientes; cada uno tiene sus propias páginas para que Google y los asistentes de IA muestren la versión correcta a cada persona.
+    faq5_a: Inglés, español, neerlandés, alemán, francés y ruso. Elige los idiomas de tus clientes; cada uno tiene sus propias páginas para que Google y los asistentes de IA muestren la versión correcta a cada persona.
     faq6_q: ¿Es legal para un negocio en España?
     faq6_a: Cada web incluye un aviso legal y una política de privacidad (LSSI y RGPD) generados con los datos de tu negocio, y no necesita banner de cookies. Aun así, te recomendamos que tu gestor revise los textos.
     final_title: Cuando tú quieras.

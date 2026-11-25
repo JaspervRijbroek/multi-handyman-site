@@ -1,15 +1,37 @@
-{# Opens and closes the mobile menu in the header; closes it again after a link is tapped. #}
+{# Mobile header: opens and closes the menu and the language dropdown. Only one is open at a time;
+   Escape, a tap outside the dropdown or a tap on a menu link closes them. #}
 <script>
     (function () {
-        var button = document.querySelector('.menu-toggle');
-        var header = button.closest('header');
-        function toggle(open) {
+        var header = document.querySelector('.menu-toggle').closest('header');
+        var menuButton = header.querySelector('.menu-toggle');
+        var langButton = header.querySelector('.ls-btn');
+        var langMenu = document.getElementById('lang-menu');
+
+        function setMenu(open) {
             header.classList.toggle('is-open', open);
-            button.setAttribute('aria-expanded', open);
+            menuButton.setAttribute('aria-expanded', open);
+            menuButton.setAttribute('aria-label', open ? menuButton.dataset.close : menuButton.dataset.open);
+            if (open) setLang(false);
         }
-        button.addEventListener('click', function () { toggle(!header.classList.contains('is-open')); });
+        function setLang(open) {
+            if (!langButton) return;
+            langMenu.hidden = !open;
+            langButton.setAttribute('aria-expanded', open);
+            if (open) setMenu(false);
+        }
+
+        menuButton.addEventListener('click', function () { setMenu(!header.classList.contains('is-open')); });
         document.getElementById('site-menu').addEventListener('click', function (e) {
-            if (e.target.closest('a')) toggle(false);
+            if (e.target.closest('a')) setMenu(false);
+        });
+        if (langButton) {
+            langButton.addEventListener('click', function () { setLang(langMenu.hidden); });
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.ls')) setLang(false);
+            });
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { setMenu(false); setLang(false); }
         });
     })();
 </script>

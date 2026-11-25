@@ -13,11 +13,11 @@
 {% set currency = 'EUR' %}
 {% set contact_email = 'hello@example.com' %}
 {% set contact_whatsapp = '' %}{# digits only, e.g. 34600000000 #}
-{% set language_count = 5 %}
+{% set language_count = 6 %}
 {#
     Testimonials from real clients, hardcoded here (there are only a few). The section
     is hidden while the list is empty. Only add quotes the client agreed to publish.
-    The quote and trade need at least an English text; add the other languages (es, nl, de, fr) where you can:
+    The quote and trade need at least an English text; add the other languages (es, nl, de, fr, ru) where you can:
 
     {
         quote: {en: 'Since the website went live I get two or three new jobs a month.', es: 'Desde que tengo la web me llegan dos o tres trabajos nuevos al mes.'},
@@ -59,7 +59,7 @@
                 'serviceType': 'pros.eyebrow'|trans,
                 'provider': { '@type': 'Organization', 'name': brand },
                 'areaServed': 'ES',
-                'availableLanguage': ['en', 'es', 'nl', 'de', 'fr'],
+                'availableLanguage': ['en', 'es', 'nl', 'de', 'fr', 'ru'],
                 'offers': [
                     {
                         '@type': 'Offer',

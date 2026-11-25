@@ -11,6 +11,7 @@ nav:
     terms: Voorwaarden
     privacy: Privacy
     menu: Menu
+    close_menu: Menu sluiten
 
 footer:
     tagline: Lokale vakmensen in heel Spanje
@@ -36,6 +37,7 @@ language:
     nl: Nederlands
     de: Duits
     fr: Frans
+    ru: Russisch
 
 home:
     title: '%brand% | Vind een betrouwbare klusjesman, loodgieter of aannemer in Spanje'
@@ -171,7 +173,7 @@ pros:
     faq4_q: Kan ik mijn eigen domeinnaam gebruiken?
     faq4_a: Ja. Neem het domein mee dat je al hebt, of we helpen je er een te registreren. HTTPS is inbegrepen en werkt vanaf het eerste bezoek.
     faq5_q: Welke talen worden ondersteund?
-    faq5_a: Engels, Spaans, Nederlands, Duits en Frans. Kies de talen die je klanten spreken; elke taal krijgt eigen pagina’s, zodat Google en AI-assistenten de juiste versie aan de juiste persoon tonen.
+    faq5_a: Engels, Spaans, Nederlands, Duits, Frans en Russisch. Kies de talen die je klanten spreken; elke taal krijgt eigen pagina’s, zodat Google en AI-assistenten de juiste versie aan de juiste persoon tonen.
     faq6_q: Is het legaal voor een bedrijf in Spanje?
     faq6_a: Elke site heeft een juridische vermelding en privacypagina (LSSI en AVG), gemaakt op basis van je bedrijfsgegevens, en er is geen cookiebanner nodig. We raden wel aan om de teksten door je gestor te laten controleren.
     final_title: Klaar wanneer jij dat bent.

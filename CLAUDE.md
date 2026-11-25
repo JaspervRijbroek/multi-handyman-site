@@ -26,7 +26,7 @@ One Symfony app that serves many small business websites (handymen and trade bus
 mainly in Spain). The request's hostname decides which client's (tenant's) site is shown;
 clients edit their own content in a simple admin. See `README.md` for full details.
 
-Features: multilingual client sites (EN, ES, NL, DE, FR) with hreflang/sitemap/canonical
+Features: multilingual client sites (EN, ES, NL, DE, FR, RU) with hreflang/sitemap/canonical
 URLs, contact form, customer reviews, WhatsApp/click-to-call, Spanish legal page, Plausible analytics,
 a "find a pro" search across clients on the platform homepage (brand: CasitaFix),
 client onboarding (public `/register` + approval, accepting the platform terms and privacy policy),
@@ -63,7 +63,7 @@ src/
   Mcp/                     MCP server for AI assistants (tools, per-client token)
   Command/                 app:* console commands
 templates/                 site/, platform/, admin/, billing/, email/, security/
-translations/              messages.*.yaml (client sites), platform.*.yaml (platform pages), both in en/es/nl/de/fr
+translations/              messages.*.yaml (client sites), platform.*.yaml (platform pages), both in en/es/nl/de/fr/ru
 ```
 
 ## Multi-tenancy rules (important)

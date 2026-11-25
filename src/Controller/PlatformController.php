@@ -23,10 +23,10 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PlatformController extends AbstractController
 {
     /** Languages of the platform pages; the first is the default */
-    public const array LOCALES = ['es', 'en', 'nl', 'de', 'fr'];
+    public const array LOCALES = ['es', 'en', 'nl', 'de', 'fr', 'ru'];
 
     /** Route requirement for {_locale} on the platform pages */
-    public const string LOCALE_REQUIREMENT = 'es|en|nl|de|fr';
+    public const string LOCALE_REQUIREMENT = 'es|en|nl|de|fr|ru';
 
     /** Picks the visitor's language for the bare platform URLs (/ and /register) */
     public static function preferredLocale(Request $request): string

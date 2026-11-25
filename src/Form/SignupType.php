@@ -31,6 +31,7 @@ final class SignupType extends AbstractType
         'Nederlands' => 'nl',
         'Deutsch' => 'de',
         'Français' => 'fr',
+        'Русский' => 'ru',
     ];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

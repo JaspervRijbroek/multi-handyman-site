@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('slug')]
 class Tenant
 {
-    public const array SUPPORTED_LOCALES = ['en', 'es', 'nl', 'de', 'fr'];
+    public const array SUPPORTED_LOCALES = ['en', 'es', 'nl', 'de', 'fr', 'ru'];
 
     /** Billing plans: pay every month, or pay a year up front (12 months for the price of 10) */
     public const string PLAN_MONTHLY = 'monthly';

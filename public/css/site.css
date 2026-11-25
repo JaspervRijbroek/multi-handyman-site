@@ -1,6 +1,8 @@
 /* Shared theme for all client sites. Per-site brand colour comes in as --primary. */
 
 @font-face { font-family: "Young Serif"; src: url("../fonts/young-serif.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+/* Young Serif has no Cyrillic: Russian letters in headings use Lora Bold (Cyrillic subset only, loaded only when such letters appear). */
+@font-face { font-family: "Young Serif"; src: url("../fonts/lora-cyrillic.woff2") format("woff2"); font-weight: 400; font-display: swap; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 @font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
 
 :root {
@@ -62,9 +64,6 @@ h3 { font-size: 1.375rem; line-height: 1.2; }
 .nav { display: flex; gap: 22px; }
 .nav a { color: var(--text); text-decoration: none; font-weight: 500; font-size: .9375rem; }
 .nav a:hover { color: var(--primary); }
-.lang { display: flex; border: 1.5px solid var(--field); border-radius: 999px; padding: 2px; }
-.lang a { border-radius: 999px; padding: 3px 10px; font-size: .8125rem; font-weight: 700; color: var(--ink); text-decoration: none; }
-.lang a[aria-current] { background: var(--ink); color: #fff; }
 
 /* Buttons */
 .btn {
@@ -235,23 +234,49 @@ h3 { font-size: 1.375rem; line-height: 1.2; }
     .brand-mark { width: 38px; height: 44px; font-size: .95rem; }
 }
 
-/* Mobile menu (hamburger). On wide screens .menu is invisible to layout and the toggle is hidden. */
+/* Header controls: language dropdown (always) + menu button (mobile only).
+   On wide screens .menu is invisible to layout; order puts the dropdown between the links and the button. */
 .menu { display: contents; }
+.header-controls { display: flex; align-items: center; gap: 8px; order: 1; }
+.menu > .btn { order: 2; }
 .menu-toggle { display: none; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-@media (max-width: 640px) {
-    .menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--ink); cursor: pointer; }
-    .menu-icon, .menu-icon::before, .menu-icon::after { display: block; width: 22px; height: 2px; border-radius: 2px; background: currentColor; transition: transform .2s, background .2s; }
-    .menu-icon { position: relative; }
-    .menu-icon::before, .menu-icon::after { content: ""; position: absolute; left: 0; }
-    .menu-icon::before { top: -7px; }
-    .menu-icon::after { top: 7px; }
-    .is-open .menu-icon { background: transparent; }
-    .is-open .menu-icon::before { transform: translateY(7px) rotate(45deg); }
-    .is-open .menu-icon::after { transform: translateY(-7px) rotate(-45deg); }
+.ls { position: relative; }
+.ls-btn, .menu-toggle {
+    height: 40px; border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer;
+    border: 1.5px solid color-mix(in srgb, var(--primary) 30%, #e8dcc6);
+}
+.ls-btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 10px 0 12px; font-size: .875rem; font-weight: 700; letter-spacing: .04em; }
+.ls-btn[aria-expanded="true"] .ls-chevron { transform: rotate(180deg); }
+.menu-toggle { width: 40px; padding: 0; place-items: center; }
+.ls-btn:hover, .menu-toggle:hover { background: rgba(29, 26, 23, .05); }
+.ls-btn:focus-visible, .menu-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.menu-icon-close, .is-open .menu-icon-open { display: none; }
+.is-open .menu-icon-close { display: block; }
+.ls-menu {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 40; min-width: 208px;
+    display: grid; gap: 2px; padding: 6px; background: #fff;
+    border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 18px 40px rgba(60, 40, 20, .16);
+}
+.ls-menu[hidden] { display: none; }
+.ls-opt { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; border-radius: 10px; color: var(--ink); font-size: .9375rem; text-decoration: none; }
+.ls-opt:hover { background: var(--bg-alt); color: var(--ink); }
+.ls-opt[aria-current] { background: var(--primary-soft); }
+.ls-code { min-width: 26px; font-size: .8125rem; font-weight: 700; letter-spacing: .04em; }
+.ls-name { flex: 1; }
+.ls-check { color: var(--primary); }
 
-    .menu { display: none; flex-basis: 100%; flex-direction: column; align-items: flex-start; gap: 16px; padding: 8px 0 16px; }
+@media (max-width: 900px) { /* below this the header no longer fits on one row for most business names */
+    .header-controls { order: 0; }
+    .menu-toggle { display: grid; }
+    .brand { flex: 1 1 0; min-width: 0; line-height: 1.15; }
+
+    .menu {
+        display: none; flex-basis: 100%; flex-direction: column; gap: 0;
+        padding: 4px 0 14px; border-top: 1px solid var(--border);
+    }
     .is-open .menu { display: flex; }
-    .menu > nav:first-child { display: flex; flex-direction: column; gap: 0; width: 100%; }
-    .menu > nav:first-child a { padding: 12px 0; font-size: 1.0625rem; border-bottom: 1px solid var(--border); }
+    .menu > .nav { flex-direction: column; gap: 0; }
+    .menu > .nav a { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 1.125rem; font-weight: 600; color: var(--ink); }
+    .menu > .btn { margin-top: 16px; padding: 14px 18px; font-size: 1rem; }
 }
