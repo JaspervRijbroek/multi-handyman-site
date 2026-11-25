@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Invitation;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Form\SignupType;
 use App\Invitation\Invitations;
 use App\Repository\InvitationRepository;
 use App\Tenant\TenantContext;
@@ -49,6 +50,7 @@ final class InvitationAdminController extends AbstractController
             'invitations' => $this->repository->findFor($tenant),
             'left' => $this->invitations->left($tenant),
             'total' => Invitation::PER_CLIENT,
+            'languages' => SignupType::LANGUAGES,
         ]);
     }
 
@@ -58,6 +60,10 @@ final class InvitationAdminController extends AbstractController
         $tenant = $this->clientTenant($request);
         $name = trim($request->request->getString('name'));
         $email = trim($request->request->getString('email'));
+        $locale = $request->request->getString('locale');
+        if (!\in_array($locale, Tenant::SUPPORTED_LOCALES, true)) {
+            $locale = $tenant->getEmailLocale();
+        }
 
         // Same rules as the entity, checked before anything is saved or sent
         $problems = $this->validator->validate(new Invitation($tenant, $name, $email));
@@ -70,7 +76,7 @@ final class InvitationAdminController extends AbstractController
         }
 
         try {
-            $this->invitations->send($tenant, $name, $email);
+            $this->invitations->send($tenant, $name, $email, $locale);
             $this->addFlash('success', \sprintf('Your invitation is on its way to %s.', $email));
         } catch (\LogicException $e) {
             $this->addFlash('warning', $e->getMessage());

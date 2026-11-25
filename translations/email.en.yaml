@@ -1,0 +1,209 @@
+# Emails (templates/email). Every email goes out in the recipient's language:
+# clients get theirs in the language they chose under Settings ("Language of our emails to you").
+layout:
+    website_by: 'Website by'
+
+date: '%day% %month% %year%'
+month_year: '%month% %year%'
+# month: inside a full date, month_name: on its own (differs in Russian)
+month: &months
+    1: January
+    2: February
+    3: March
+    4: April
+    5: May
+    6: June
+    7: July
+    8: August
+    9: September
+    10: October
+    11: November
+    12: December
+month_name: *months
+
+language:
+    en: English
+    es: Spanish
+    nl: Dutch
+    de: German
+    fr: French
+    ru: Russian
+
+field:
+    website: 'Your website'
+    admin: 'Your admin'
+    login: 'Login'
+    password: 'Password'
+    name: 'Name'
+    email: 'Email'
+    phone: 'Phone'
+    language: 'Language'
+
+common:
+    reason_account: "You're receiving this because you have a %brand% account. It's about your account, so there's no unsubscribe link."
+    questions: 'Questions? Just reply to this email.'
+    fallback: "Button not working? Copy this link into your browser:"
+
+welcome:
+    subject: 'Your website for %name% is ready'
+    preheader: 'Your website is online. Here are your links and what to do next.'
+    eyebrow: 'Your website is ready'
+    heading: 'Good news, %name%!'
+    intro: "Your website for %name% has been set up. In your admin you can update your services, add photos of finished jobs and read enquiries. Keep this email somewhere handy."
+    password_chosen: 'The one you chose when you signed up'
+    setup_password: 'First choose your password. The link works for 7 days.'
+    setup_cta: 'Choose your password'
+    cta: 'Open your admin'
+    next_title: 'Three things that help you get found'
+    step1_title: 'Add photos of your work'
+    step1_text: 'Before-and-after shots work best. A handful of good ones beats lots of blurry ones.'
+    step2_title: 'Check your services and work area'
+    step2_text: 'These decide which searches you show up in.'
+    step3_title: 'Share your link'
+    step3_text: 'Put your website on your Facebook page, WhatsApp profile and van.'
+    domain_title: 'Using your own domain %domain%'
+    domain_intro: 'Log in where you bought your domain (your domain registrar) and set these DNS records. Remove any other A and AAAA records for "@" and "www".'
+    domain_same_as: 'Point "@" and "www" to the same address as %host%.'
+    domain_after: "As soon as that works (usually within a few hours), your website moves to https://%domain% by itself, with HTTPS. Your current address keeps working and forwards visitors there. You can follow the progress in your admin under \"Your domain\"."
+    google: 'We are also connecting your website to Google Search Console. That happens automatically as soon as your website is online.'
+
+# To the platform admins only, so English only
+signup_admin:
+    eyebrow: 'New sign-up'
+    heading: 'A new client is waiting for approval'
+    intro: 'Someone filled in the sign-up form. Check the details and approve the sign-up in the admin.'
+    cta: 'Open Sign-ups'
+    console: 'Or approve it from the console:'
+    reason: 'You receive this because you are a platform admin.'
+
+invitation:
+    subject: '%inviter% invites you to %brand%'
+    preheader: 'A professional website for your business, and your second month is free.'
+    eyebrow: 'An invitation'
+    heading: 'Hello %name%,'
+    intro: '%inviter% uses %brand% for their website and invites you to try it too.'
+    what: '%brand% gives your business a professional website in several languages, with a contact form, reviews and WhatsApp, which you can easily edit yourself.'
+    offer_title: 'Your second month is free'
+    offer_text: 'Sign up with your personal link below. The link works once.'
+    cta: 'Sign up'
+    questions: 'Questions? Just reply to this email to ask %inviter%.'
+    reason: "You're receiving this because %inviter% invited you. We won't email you again unless you sign up."
+
+enquiry:
+    subject: 'New enquiry from %name% via %host%'
+    eyebrow: 'New enquiry · %host%'
+    heading: '%name% would like a hand'
+    intro: "Someone just used the contact form on your website. Here's what they wrote:"
+    details_title: 'Contact details'
+    reply: 'Reply to %name%'
+    call: 'Call %name%'
+    tip: 'Tip: customers usually go with whoever answers first. A quick reply today, even just "I''ll come and have a look", makes a big difference.'
+    admin: 'You can also find this enquiry in your admin.'
+    admin_link: 'Open your admin'
+    reason: "You're receiving this because someone used the contact form on %host%."
+
+review:
+    subject: 'New review from %name%'
+    anonymous: 'A customer'
+    stars: '%rating% out of 5 stars'
+    eyebrow: 'New review · %host%'
+    heading: '%name% gave you %rating% out of 5 stars'
+    intro: 'A customer left a review on your website:'
+    intro_project: 'A customer left a review for "%project%":'
+    publish_title: 'Not on your website yet'
+    publish_text: 'You decide which reviews are shown. Publish it on your website under Reviews in your admin.'
+    cta: 'Open your admin'
+    reason: "You're receiving this because someone left a review on %host%."
+
+review_request:
+    preheader: 'Tell others how the job went. It takes a minute.'
+    eyebrow: 'Your opinion'
+    heading: 'How did %name% do?'
+    intro: 'Thank you for choosing %name%! Would you tell others how the job went?'
+    how: 'Leave your review with your name or anonymously. It takes a minute.'
+    cta: 'Leave a review'
+    valid: 'The link works for %days% days. Button not working? Copy this link into your browser:'
+    reason: "You're receiving this because %name% did a job for you. We won't add you to any mailing list."
+
+billing:
+    eyebrow: 'Billing'
+    incl_vat: '%amount% (incl. %vat%% VAT)'
+    incl_vat_short: '%amount% (incl. VAT)'
+    total: 'Total'
+    outstanding: 'Outstanding'
+
+    setup:
+        subject: 'Set up payment for your website'
+        preheader: 'Your website is free until %date%. Set up a payment method once, it takes a minute.'
+        heading: 'Welcome to %brand%!'
+        intro: 'Hello %name%, your website is free until %date%.'
+        founding_title: 'Founding member'
+        founding_text: 'As a founding member, your first year is free and your second year is 50% off.'
+        yearly: 'From then on it is charged automatically once a year (12 months for the price of 10). We email you 2 weeks before every yearly payment.'
+        monthly: 'From then on it is charged automatically on the 1st of every month.'
+        once: 'To make that work, please set up a payment method once. It takes a minute.'
+        cta: 'Set up payment'
+        how: 'You can choose a card (we only verify it, nothing is charged) or your bank account (a one-cent payment links it for direct debit).'
+
+    reminder:
+        cta: 'Pay now'
+        automatic: 'Paying with a card or your bank also sets this up for automatic payment from now on.'
+        ignore: 'Already sorted this out? Then you can ignore this email.'
+        first:
+            subject: 'Your payment for %brand% did not come through'
+            preheader: 'We could not collect your payment automatically. You can pay online in a minute.'
+            heading: "Your payment didn't go through"
+            intro: 'Hello %name%, we could not collect the payment for your website automatically. This usually happens when a card has expired or been replaced.'
+        second:
+            subject: 'Reminder: your payment for %brand% is still open'
+            preheader: 'The payment for your website is still open. You can pay online in a minute.'
+            heading: 'Your payment is still open'
+            intro: 'Hello %name%, this is a reminder: the payment for your website is still open.'
+        final:
+            subject: 'Final reminder: pay within a week to keep your website online'
+            preheader: 'Please pay before %date% to keep your website online.'
+            heading: 'Final reminder'
+            intro: 'Hello %name%, this is your final reminder: the payment for your website is still open.'
+            warning_title: 'Your website goes offline on %date%'
+            warning_text: "Please pay before %date%. If we haven't received it by then, your website will be taken offline automatically."
+
+    renewal:
+        subject: 'Your yearly payment for %brand% is coming up'
+        preheader: 'On %date% we collect the payment for the next year.'
+        heading: 'Your yearly payment is coming up'
+        intro: 'Hello %name%, you are on the yearly plan of %brand%: 12 months for the price of 10.'
+        date: 'Payment date'
+        period: 'Paid period'
+        months: '%count% month|%count% months'
+        free_months: 'Of which free (invitations)'
+        nothing_to_do: 'Nothing to do'
+        automatic: 'This is paid automatically with %method%.'
+        change: 'Want to use a different card or bank account? You can change it here:'
+        change_cta: 'Change payment method'
+        no_method: 'There is no payment method set up yet. Please set one up before that date, so your website stays online. It takes a minute.'
+
+    suspended:
+        subject: 'Your website has been taken offline'
+        preheader: 'We did not receive your payment. Pay now and your website is back online at once.'
+        heading: 'Your website is offline'
+        intro: 'Hello %name%, because we did not receive payment for your website, it has been taken offline.'
+        safe_title: 'Your content is safe'
+        safe_text: 'Visitors now see a "temporarily unavailable" page. Nothing has been deleted.'
+        back: 'As soon as you pay, your website is back online automatically.'
+
+    restored:
+        subject: 'Thank you, your website is back online'
+        preheader: 'We have received your payment.'
+        heading: 'Your website is back online'
+        intro: 'Hello %name%, thank you, we have received your payment. Your website is back online.'
+        cta: 'View your website'
+
+    invite_reward:
+        subject: 'You earned a free month'
+        preheader: '%invitee% signed up with your invitation.'
+        eyebrow: 'Invitations'
+        heading: 'You earned a free month'
+        intro: 'Hello %name%, good news: %invitee% signed up with your invitation and has set up their payment. Thank you for recommending %brand%!'
+        free_title: 'One month free'
+        free_text: 'Your next payment covers one extra month at no extra cost.'
+        waiting: 'You now have %count% free months waiting.'

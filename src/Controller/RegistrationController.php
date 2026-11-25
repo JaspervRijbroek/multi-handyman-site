@@ -94,6 +94,8 @@ final class RegistrationController extends AbstractController
                     $signup->acceptTerms();
                     $signup->setInvitation($invitation);
                     $signup->setFoundingMember($founding);
+                    // They filled in the form in this language, so that is the one for our emails
+                    $signup->setEmailLocale($request->getLocale());
 
                     $entityManager->persist($signup);
                     $entityManager->flush();

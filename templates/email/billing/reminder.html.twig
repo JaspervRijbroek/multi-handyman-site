@@ -1,0 +1,35 @@
+{#
+  Platform -> client: a payment is still open (BillingMailer::sendReminder).
+  Context: tenant, stage (1, 2 or 3 = final), charges, pay_url, offline_date
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% set key = 'billing.reminder.' ~ (stage == 1 ? 'first' : (stage == 2 ? 'second' : 'final')) %}
+
+{% block title %}{{ (key ~ '.subject')|trans({'%brand%': billing_brand}) }}{% endblock %}
+{% block preheader %}{{ (key ~ '.preheader')|trans({'%date%': offline_date|long_date}) }}{% endblock %}
+{% block eyebrow %}{{ 'billing.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ (key ~ '.heading')|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p((key ~ '.intro')|trans({'%name%': tenant.name})) }}
+
+  {% if stage >= 3 %}
+    {{ ui.callout('billing.reminder.final.warning_text'|trans({'%date%': offline_date|long_date}), 'warning', 'billing.reminder.final.warning_title'|trans({'%date%': offline_date|long_date})) }}
+  {% endif %}
+
+  {% include 'email/billing/_charges.html.twig' with {show_reason: true} %}
+
+  {{ ui.button('billing.reminder.cta'|trans, pay_url) }}
+  {{ ui.p('billing.reminder.automatic'|trans, {muted: true, size: 14, margin: '20px 0 0'}) }}
+  {% if stage == 1 %}
+    {{ ui.p('billing.reminder.ignore'|trans, {muted: true, size: 14, margin: '8px 0 0'}) }}
+  {% endif %}
+  {{ ui.fallback_link('common.fallback'|trans, pay_url) }}
+
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

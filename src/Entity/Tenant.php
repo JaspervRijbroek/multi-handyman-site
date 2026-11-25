@@ -58,6 +58,11 @@ class Tenant
     #[Assert\Choice(choices: self::SUPPORTED_LOCALES)]
     private string $defaultLocale = 'en';
 
+    /** The language the client reads our emails in (can differ from the website's main language) */
+    #[ORM\Column(length: 5, options: ['default' => 'en'])]
+    #[Assert\Choice(choices: self::SUPPORTED_LOCALES)]
+    private string $emailLocale = 'en';
+
     #[ORM\Column(length: 7)]
     #[Assert\Regex('/^#[0-9a-fA-F]{6}$/')]
     private string $primaryColor = '#d9480f';
@@ -366,6 +371,18 @@ class Tenant
     public function setDefaultLocale(?string $defaultLocale): static
     {
         $this->defaultLocale = $defaultLocale ?? 'en';
+
+        return $this;
+    }
+
+    public function getEmailLocale(): string
+    {
+        return $this->emailLocale;
+    }
+
+    public function setEmailLocale(?string $emailLocale): static
+    {
+        $this->emailLocale = $emailLocale ?? 'en';
 
         return $this;
     }

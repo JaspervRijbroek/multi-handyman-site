@@ -15,6 +15,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Clients invite other businesses (Invitation::PER_CLIENT each, used or not).
@@ -35,6 +36,7 @@ final readonly class Invitations
         private MailerInterface $mailer,
         private BillingMailer $billingMailer,
         private UrlGeneratorInterface $urlGenerator,
+        private TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')]
         private string $from,
         #[Autowire(env: 'BILLING_BRAND')]
@@ -48,10 +50,12 @@ final readonly class Invitations
     }
 
     /**
+     * $locale: the language of the email and the sign-up form it links to.
+     *
      * @throws \LogicException              when the client has no invitations left
      * @throws TransportExceptionInterface when the email could not be sent; the invitation is not kept then
      */
-    public function send(Tenant $inviter, string $name, string $email): Invitation
+    public function send(Tenant $inviter, string $name, string $email, string $locale): Invitation
     {
         if (0 === $this->left($inviter)) {
             throw new \LogicException(\sprintf('You have already sent your %d invitations.', Invitation::PER_CLIENT));
@@ -64,13 +68,14 @@ final readonly class Invitations
         $message = (new TemplatedEmail())
             ->from(new Address($this->from, $this->brand))
             ->to(new Address($invitation->getEmail(), $invitation->getName()))
-            ->subject(\sprintf('%s invites you to %s', $inviter->getName(), $this->brand))
-            ->textTemplate('email/invitation.txt.twig')
+            ->locale($locale)
+            ->subject($this->translator->trans('invitation.subject', ['%inviter%' => $inviter->getName(), '%brand%' => $this->brand], 'email', $locale))
+            ->htmlTemplate('email/invitation.html.twig')
             ->context([
                 'invitation' => $invitation,
                 'inviter' => $inviter,
-                'brand' => $this->brand,
-                'register_url' => $this->urlGenerator->generate('app_register_redirect', ['invite' => $invitation->getToken()], UrlGeneratorInterface::ABSOLUTE_URL),
+                // The sign-up form in the same language as the email
+                'register_url' => $this->urlGenerator->generate('app_register', ['_locale' => $locale, 'invite' => $invitation->getToken()], UrlGeneratorInterface::ABSOLUTE_URL),
             ]);
         if ($inviter->getEmail()) {
             $message->replyTo($inviter->getEmail());

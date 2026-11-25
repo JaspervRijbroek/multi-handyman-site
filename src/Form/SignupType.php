@@ -25,7 +25,7 @@ final class SignupType extends AbstractType
 {
     public const string HONEYPOT = 'website';
 
-    private const array LANGUAGES = [
+    public const array LANGUAGES = [
         'English' => 'en',
         'Español' => 'es',
         'Nederlands' => 'nl',

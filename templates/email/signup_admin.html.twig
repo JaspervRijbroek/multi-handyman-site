@@ -1,0 +1,35 @@
+{#
+  To the super admins: a new sign-up waits for approval (OnboardingMailer::notifyAdmins).
+  Internal, so English only. Context: signup, admin_url
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'signup_admin.heading'|trans }}{% endblock %}
+{% block preheader %}{{ signup.businessName }} · {{ signup.city }}{% endblock %}
+{% block eyebrow %}{{ 'signup_admin.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'signup_admin.heading'|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('signup_admin.intro'|trans) }}
+
+  {{ ui.details([
+      {label: 'Business', value: signup.businessName},
+      {label: 'Contact', value: signup.contactName},
+      {label: 'Email', value: signup.email, href: 'mailto:' ~ signup.email},
+      {label: 'Phone', value: signup.phone ~ (signup.whatsapp ? ' (WhatsApp ' ~ signup.whatsapp ~ ')' : '')},
+      {label: 'Address', value: signup.addressLine ~ ', ' ~ signup.country},
+      {label: 'Work area', value: signup.serviceArea ?: '–'},
+      {label: 'Domain', value: signup.domain ?: '– (none yet)'},
+      {label: 'Languages', value: signup.locales|map(l => l|upper)|join(', ') ~ ' (main: ' ~ signup.defaultLocale|upper ~ ')'},
+      {label: 'Emails in', value: signup.emailLocale|upper},
+  ]) }}
+
+  {% if signup.message %}{{ ui.message(signup.message, signup.contactName) }}{% endif %}
+
+  {{ ui.button('signup_admin.cta'|trans, admin_url) }}
+  {{ ui.p('signup_admin.console'|trans ~ '<br><code>php bin/console app:client:approve ' ~ signup.id ~ '</code>', {muted: true, size: 14, html: true}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'signup_admin.reason'|trans }}{% endblock %}

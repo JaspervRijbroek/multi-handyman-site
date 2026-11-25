@@ -1,0 +1,24 @@
+{# Platform -> client: the website was taken offline for non-payment (BillingMailer::sendSuspended). Context: tenant, charges, pay_url #}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'billing.suspended.subject'|trans }}{% endblock %}
+{% block preheader %}{{ 'billing.suspended.preheader'|trans }}{% endblock %}
+{% block eyebrow %}{{ 'billing.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'billing.suspended.heading'|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('billing.suspended.intro'|trans({'%name%': tenant.name})) }}
+  {{ ui.callout('billing.suspended.safe_text'|trans, 'info', 'billing.suspended.safe_title'|trans) }}
+
+  {% include 'email/billing/_charges.html.twig' %}
+
+  {{ ui.p('billing.suspended.back'|trans) }}
+  {{ ui.button('billing.reminder.cta'|trans, pay_url) }}
+  {{ ui.fallback_link('common.fallback'|trans, pay_url) }}
+
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

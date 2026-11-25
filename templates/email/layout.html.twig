@@ -1,0 +1,180 @@
+{#
+  Layout of every email. Extend it and fill the blocks:
+
+    preheader     inbox preview text (keep it < 100 chars)
+    eyebrow       small mono label above the heading (optional)
+    heading       the H1
+    body          everything else; use the macros in _components.html.twig
+    footer_reason one sentence: why the recipient got this email
+
+  Texts come from translations/email.*.yaml. Send with TemplatedEmail::locale($locale):
+  the email is then rendered (and |trans translates) in the recipient's language.
+
+  Context it reads (all optional, defaults = the platform brand):
+    brand.name, brand.url, brand.domain, brand.initials, brand.accent (#rrggbb),
+    brand.logo_url + brand.logo_width + brand.logo_height, brand.logo_dark_url,
+    brand.is_client   true = sent as a client's website -> no platform logo, adds "Website by CasitaFix"
+#}
+{%- set asset_base = 'https://' ~ platform_host -%}
+{%- set is_client = brand.is_client|default(false) -%}
+{%- set brand = {
+    name: billing_brand,
+    url: 'https://' ~ platform_host,
+    domain: platform_host,
+    initials: null,
+    accent: '#b9471f',
+    logo_url: is_client ? null : asset_base ~ '/images/casitafix-logo.png',
+    logo_dark_url: is_client ? null : asset_base ~ '/images/casitafix-logo-white.png',
+    logo_width: 150,
+    logo_height: 41,
+    is_client: false,
+}|merge(brand|default({})) -%}
+{#- Never trust a client-picked colour blindly: fall back to terracotta if it isn't a plain hex. -#}
+{%- set accent = brand.accent matches '/^#[0-9a-fA-F]{6}$/' ? brand.accent : '#b9471f' -%}
+{%- set locale = app.locale -%}
+{%- set serif = "'Young Serif',Georgia,'Times New Roman',serif" -%}
+{%- set sans = "'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" -%}
+{%- set mono = "ui-monospace,Menlo,Consolas,monospace" -%}
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="ltr" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no,url=no">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
+<title>{% block title %}{{ brand.name }}{% endblock %}</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<style>.cf-serif{font-family:Georgia,serif !important}td,a,p,span,div{font-family:Arial,sans-serif}</style>
+<![endif]-->
+<style>
+  /* The website's own fonts (only Apple Mail / iOS load them). Everyone else gets Georgia + system sans. */
+  @font-face{font-family:'Young Serif';font-style:normal;font-weight:400;src:url('{{ asset_base }}/fonts/young-serif.woff2') format('woff2')}
+  @font-face{font-family:'Young Serif';font-style:normal;font-weight:400;src:url('{{ asset_base }}/fonts/lora-cyrillic.woff2') format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+  @font-face{font-family:'Instrument Sans';font-style:normal;font-weight:400 700;src:url('{{ asset_base }}/fonts/instrument-sans.woff2') format('woff2')}
+
+  html,body{margin:0 !important;padding:0 !important;width:100% !important}
+  *{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
+  img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
+  a[x-apple-data-detectors]{color:inherit !important;text-decoration:none !important}
+  u + #body a{color:inherit;text-decoration:none}
+
+  @media (max-width:620px){
+    .cf-outer{padding:16px 10px 24px !important}
+    .cf-pad{padding:30px 22px 32px !important}
+    .cf-h1{font-size:27px !important;line-height:33px !important}
+    .cf-stack{display:block !important;width:100% !important}
+    .cf-stack-v{padding-top:0 !important;border-top:0 !important}
+    .cf-btn-full{width:100% !important}
+    .cf-hide-sm{display:none !important}
+  }
+
+  /* Dark mode: Apple Mail, iOS Mail, Outlook.com ([data-ogsc]). Gmail apps do their own inversion. */
+  @media (prefers-color-scheme:dark){
+    .cf-bg{background:#151311 !important}
+    .cf-card{background:#1f1c19 !important;border-color:#3a332c !important}
+    .cf-panel{background:#2a2521 !important}
+    .cf-line{border-color:#3a332c !important}
+    .cf-ink{color:#f3ece0 !important}
+    .cf-muted{color:#b5a896 !important}
+    .cf-btn{background:#fbf6ec !important;border-color:#fbf6ec !important}
+    .cf-btn a{color:#1d1a17 !important}
+    .cf-btn-o{border-color:#f3ece0 !important}
+    .cf-btn-o a{color:#f3ece0 !important}
+    .cf-logo-light{display:none !important}
+    .cf-logo-dark{display:block !important;max-height:none !important;overflow:visible !important}
+  }
+  [data-ogsc] .cf-ink{color:#f3ece0 !important}
+  [data-ogsc] .cf-muted{color:#b5a896 !important}
+  [data-ogsc] .cf-btn a{color:#1d1a17 !important}
+  [data-ogsb] .cf-btn{background:#fbf6ec !important}
+</style>
+</head>
+<body id="body" class="cf-bg" style="margin:0;padding:0;background:#efe5d3;word-spacing:normal;">
+{#- Inbox preview text. Also the first line of the plain-text part, so no invisible filler after it. -#}
+<div style="display:none;max-height:0;max-width:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#efe5d3;opacity:0;">
+  {%- block preheader %}{% endblock -%}
+</div>
+
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="cf-bg" bgcolor="#efe5d3" style="background:#efe5d3;">
+<tr>
+<td align="center" class="cf-outer" style="padding:32px 16px 40px;">
+<!--[if mso]><table role="presentation" width="600" align="center" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;">
+
+  {# ---------- Header: logo or initials + name ---------- #}
+  <tr>
+    <td style="padding:0 6px 20px;">
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="middle" align="left">
+            <a href="{{ brand.url }}" target="_blank" style="text-decoration:none;">
+            {%- if brand.logo_url -%}
+              <img class="cf-logo-light" src="{{ brand.logo_url }}" width="{{ brand.logo_width }}" {% if brand.logo_height %}height="{{ brand.logo_height }}"{% endif %} alt="{{ brand.name }}" style="display:block;width:{{ brand.logo_width }}px;height:auto;max-width:100%;color:#1d1a17;font-family:{{ serif }};font-size:22px;">
+              {%- if brand.logo_dark_url -%}
+              <!--[if !mso]><!--><div class="cf-logo-dark" style="display:none;max-height:0;overflow:hidden;mso-hide:all;"><img src="{{ brand.logo_dark_url }}" width="{{ brand.logo_width }}" {% if brand.logo_height %}height="{{ brand.logo_height }}"{% endif %} alt="{{ brand.name }}" style="display:block;width:{{ brand.logo_width }}px;height:auto;max-width:100%;"></div><!--<![endif]-->
+              {%- endif -%}
+            {%- else -%}
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr>
+                <td width="40" height="40" align="center" valign="middle" bgcolor="{{ accent }}" style="width:40px;height:40px;border-radius:999px;background:{{ accent }};color:#fbf6ec;font-family:{{ sans }};font-size:15px;font-weight:700;letter-spacing:.02em;">{{ brand.initials ?: brand.name|split(' ')|slice(0, 2)|map(w => w|first)|join|upper }}</td>
+                <td class="cf-ink cf-serif" style="padding-left:12px;font-family:{{ serif }};font-size:21px;line-height:26px;color:#1d1a17;">{{ brand.name }}</td>
+              </tr></table>
+            {%- endif -%}
+            </a>
+          </td>
+          <td valign="middle" align="right" class="cf-hide-sm">
+            <a href="{{ brand.url }}" target="_blank" class="cf-muted" style="font-family:{{ mono }};font-size:12px;line-height:16px;color:#6b5f52;text-decoration:none;">{{ brand.domain }}</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  {# ---------- Card ---------- #}
+  <tr>
+    <td class="cf-card" bgcolor="#fbf6ec" style="background:#fbf6ec;border:1px solid #e3d6bf;border-radius:24px;">
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td height="6" bgcolor="{{ accent }}" style="height:6px;line-height:6px;font-size:0;background:{{ accent }};border-radius:23px 23px 0 0;">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="cf-pad" style="padding:40px 44px 44px;">
+            {%- set eyebrow = block('eyebrow') is defined ? block('eyebrow')|trim : '' -%}
+            {%- if eyebrow is not empty %}
+            <p style="margin:0 0 14px;font-family:{{ mono }};font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:{{ accent }};">{{ eyebrow }}</p>
+            {%- endif %}
+            <h1 class="cf-h1 cf-ink cf-serif" style="margin:0 0 20px;font-family:{{ serif }};font-size:32px;line-height:38px;font-weight:400;color:#1d1a17;mso-line-height-rule:exactly;">{% block heading %}{% endblock %}</h1>
+            {% block body %}{% endblock %}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  {# ---------- Footer ---------- #}
+  <tr>
+    <td align="center" style="padding:26px 24px 0;">
+      <p class="cf-muted" style="margin:0 0 10px;font-family:{{ sans }};font-size:13px;line-height:20px;color:#6b5f52;">{% block footer_reason %}{% endblock %}</p>
+      <p class="cf-muted" style="margin:0;font-family:{{ sans }};font-size:13px;line-height:20px;color:#6b5f52;">
+        <a href="{{ brand.url }}" target="_blank" class="cf-muted" style="color:#6b5f52;text-decoration:underline;">{{ brand.name }}</a>
+        {%- block footer_extra %}{% endblock -%}
+      </p>
+      {%- if brand.is_client %}
+      <p class="cf-muted" style="margin:14px 0 0;font-family:{{ mono }};font-size:11px;line-height:16px;letter-spacing:.04em;color:#8a7d6f;">
+        {{ 'layout.website_by'|trans({}, 'email') }} <a href="{{ asset_base }}/?utm_source=email&amp;utm_medium=footer" target="_blank" style="color:#8a7d6f;text-decoration:underline;">{{ billing_brand }}</a>
+      </p>
+      {%- endif %}
+    </td>
+  </tr>
+
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td>
+</tr>
+</table>
+</body>
+</html>

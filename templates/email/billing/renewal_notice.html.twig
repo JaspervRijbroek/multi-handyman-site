@@ -1,0 +1,37 @@
+{#
+  Platform -> client on the yearly plan: the yearly payment is collected in 2 weeks (BillingMailer::sendRenewalNotice).
+  Context: tenant, charge_date, amount, currency, pay_url
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'billing.renewal.subject'|trans({'%brand%': billing_brand}) }}{% endblock %}
+{% block preheader %}{{ 'billing.renewal.preheader'|trans({'%date%': charge_date|long_date}) }}{% endblock %}
+{% block eyebrow %}{{ 'billing.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'billing.renewal.heading'|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('billing.renewal.intro'|trans({'%name%': tenant.name, '%brand%': billing_brand})) }}
+
+  {{ ui.details([
+      {label: 'billing.renewal.date'|trans, value: charge_date|long_date},
+      {label: 'billing.renewal.period'|trans, value: 'billing.renewal.months'|trans({'%count%': 12 + tenant.freeMonths})},
+      {label: 'billing.renewal.free_months'|trans, value: tenant.freeMonths ? 'billing.renewal.months'|trans({'%count%': tenant.freeMonths}) : ''},
+      {label: 'billing.total'|trans, value: 'billing.incl_vat_short'|trans({'%amount%': amount|money(currency)})},
+  ]) }}
+
+  {% if tenant.hasMandate %}
+    {{ ui.callout('billing.renewal.automatic'|trans({'%method%': tenant.mandateDescription}), 'success', 'billing.renewal.nothing_to_do'|trans) }}
+    {{ ui.p('billing.renewal.change'|trans) }}
+    {{ ui.button('billing.renewal.change_cta'|trans, pay_url, {variant: 'outline'}) }}
+  {% else %}
+    {{ ui.callout('billing.renewal.no_method'|trans, 'warning') }}
+    {{ ui.button('billing.setup.cta'|trans, pay_url) }}
+  {% endif %}
+  {{ ui.fallback_link('common.fallback'|trans, pay_url) }}
+
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

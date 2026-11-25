@@ -13,20 +13,15 @@ use App\Form\ReviewType;
 use App\Repository\ProjectRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\ServiceRepository;
+use App\Site\SiteMailer;
 use App\Tenant\TenantContext;
 use App\Turnstile\Turnstile;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -64,11 +59,9 @@ final class SiteController extends AbstractController
         ProjectRepository $projects,
         ReviewRepository $reviews,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer,
-        LoggerInterface $logger,
+        SiteMailer $siteMailer,
         Turnstile $turnstile,
         TranslatorInterface $translator,
-        #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
     ): Response {
         // The same URL on the platform host is the "find a pro" homepage
         if (!$this->tenantContext->has()) {
@@ -99,7 +92,7 @@ final class SiteController extends AbstractController
                 if (!$isBot) {
                     $entityManager->persist($enquiry);
                     $entityManager->flush();
-                    $this->notifyTenant($tenant, $enquiry, $mailer, $logger, $mailerFrom, $request->getHost());
+                    $siteMailer->notifyEnquiry($tenant, $enquiry, $request->getHost());
                 }
 
                 $this->addFlash('contact_success', 'contact.success');
@@ -149,11 +142,9 @@ final class SiteController extends AbstractController
     public function review(
         Request $request,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer,
-        LoggerInterface $logger,
+        SiteMailer $siteMailer,
         Turnstile $turnstile,
         TranslatorInterface $translator,
-        #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
     ): Response {
         $tenant = $this->siteTenant($request);
 
@@ -171,12 +162,7 @@ final class SiteController extends AbstractController
                 if (!$isBot) {
                     $entityManager->persist($review);
                     $entityManager->flush();
-                    $this->sendMail($tenant, $mailer, $logger, $mailerFrom, \sprintf('New review from %s via %s', $review->getAuthorName(), $request->getHost()), \sprintf(
-                        "%s gave you %d out of 5 stars:\n\n%s\n\nPublish it on your website under Reviews in your admin.\n",
-                        $review->getAuthorName(),
-                        $review->getRating(),
-                        $review->getText(),
-                    ));
+                    $siteMailer->notifyReview($tenant, $review, $request->getHost());
                 }
 
                 $this->addFlash('review_success', 'reviews.success');
@@ -198,9 +184,7 @@ final class SiteController extends AbstractController
         Request $request,
         ProjectRepository $projects,
         EntityManagerInterface $entityManager,
-        MailerInterface $mailer,
-        LoggerInterface $logger,
-        #[Autowire(env: 'MAILER_FROM')] string $mailerFrom,
+        SiteMailer $siteMailer,
     ): Response {
         $tenant = $this->siteTenant($request);
         $project = $projects->findOneBy(['tenant' => $tenant, 'reviewToken' => $token]);
@@ -219,13 +203,7 @@ final class SiteController extends AbstractController
             $project->completeReviewRequest();
             $entityManager->persist($review);
             $entityManager->flush();
-            $this->sendMail($tenant, $mailer, $logger, $mailerFrom, \sprintf('New review from %s for "%s"', $review, $project), \sprintf(
-                "%s gave you %d out of 5 stars for \"%s\":\n\n%s\n\nPublish it on your website under Reviews in your admin.\n",
-                $review,
-                $review->getRating(),
-                $project,
-                $review->getText(),
-            ));
+            $siteMailer->notifyReview($tenant, $review, $request->getHost());
 
             $this->addFlash('review_success', 'reviews.success');
 
@@ -282,40 +260,5 @@ final class SiteController extends AbstractController
         }
 
         return $tenant;
-    }
-
-    private function notifyTenant(Tenant $tenant, Enquiry $enquiry, MailerInterface $mailer, LoggerInterface $logger, string $from, string $host): void
-    {
-        $this->sendMail($tenant, $mailer, $logger, $from, \sprintf('New enquiry from %s via %s', $enquiry->getName(), $host), \sprintf(
-            "Name: %s\nEmail / phone: %s\nLanguage: %s\n\n%s\n",
-            $enquiry->getName(),
-            $enquiry->getContact(),
-            strtoupper($enquiry->getLocale()),
-            $enquiry->getMessage(),
-        ), $enquiry->getContactEmail());
-    }
-
-    private function sendMail(Tenant $tenant, MailerInterface $mailer, LoggerInterface $logger, string $from, string $subject, string $text, ?string $replyTo = null): void
-    {
-        if (!$tenant->getEmail()) {
-            return;
-        }
-
-        $email = (new Email())
-            ->from(new Address($from, $tenant->getName().' website'))
-            ->to($tenant->getEmail())
-            ->subject($subject)
-            ->text($text);
-
-        if ($replyTo) {
-            $email->replyTo($replyTo);
-        }
-
-        try {
-            $mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
-            // The enquiry or review is saved in the admin either way
-            $logger->error('Could not send notification email: {message}', ['message' => $e->getMessage()]);
-        }
     }
 }

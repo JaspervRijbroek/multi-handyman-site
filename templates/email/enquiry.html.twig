@@ -1,0 +1,45 @@
+{#
+  To the client: someone used the contact form on their website (SiteMailer::notifyEnquiry).
+  Reply-To is the visitor's email address when they gave one. Context: tenant, enquiry, host
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% set contact_email = enquiry.contactEmail %}
+{% set phone_digits = contact_email ? '' : enquiry.contact|replace({' ': '', '-': '', '(': '', ')': '', '.': '', '+': ''}) %}
+{% set first_name = enquiry.name|split(' ')|first %}
+
+{% block title %}{{ 'enquiry.subject'|trans({'%name%': enquiry.name, '%host%': host}) }}{% endblock %}
+{% block preheader %}{{ enquiry.message|length > 90 ? enquiry.message|slice(0, 89) ~ '…' : enquiry.message }}{% endblock %}
+{% block eyebrow %}{{ 'enquiry.eyebrow'|trans({'%host%': host}) }}{% endblock %}
+{% block heading %}{{ 'enquiry.heading'|trans({'%name%': enquiry.name}) }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('enquiry.intro'|trans) }}
+
+  {{ ui.message(enquiry.message, enquiry.name ~ ' · ' ~ enquiry.createdAt|long_date ~ ', ' ~ enquiry.createdAt|date('H:i')) }}
+
+  {{ ui.details([
+      {label: 'field.name'|trans, value: enquiry.name},
+      contact_email
+        ? {label: 'field.email'|trans, value: contact_email, href: 'mailto:' ~ contact_email}
+        : {label: 'field.phone'|trans, value: enquiry.contact, href: phone_digits ? 'tel:' ~ enquiry.contact|replace({' ': ''}) : null},
+      {label: 'field.language'|trans, value: ('language.' ~ enquiry.locale)|trans},
+  ], 'enquiry.details_title'|trans) }}
+
+  {% if contact_email %}
+    {{ ui.button('enquiry.reply'|trans({'%name%': first_name}), 'mailto:' ~ contact_email ~ '?subject=' ~ ('Re: ' ~ tenant.name)|url_encode) }}
+  {% elseif phone_digits %}
+    {{ ui.buttons(
+        {label: 'enquiry.call'|trans({'%name%': first_name}), url: 'tel:' ~ enquiry.contact|replace({' ': ''})},
+        {label: 'WhatsApp', url: 'https://wa.me/' ~ phone_digits}
+    ) }}
+  {% endif %}
+
+  {{ ui.callout('enquiry.tip'|trans, 'info') }}
+
+  {{ ui.p('enquiry.admin'|trans ~ ' <a href="' ~ ('https://' ~ platform_host ~ path('admin'))|e('html_attr') ~ '" style="color:#1d1a17;text-decoration:underline;">' ~ 'enquiry.admin_link'|trans|e ~ '</a>', {muted: true, html: true, size: 14, margin: '20px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'enquiry.reason'|trans({'%host%': host}) }}{% endblock %}

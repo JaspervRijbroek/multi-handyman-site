@@ -1,0 +1,19 @@
+{# Platform -> client: payment received, website back online (BillingMailer::sendRestored). Context: tenant #}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% set site_url = tenant.primaryDomain ? 'https://' ~ tenant.primaryDomain.hostname : null %}
+
+{% block title %}{{ 'billing.restored.subject'|trans }}{% endblock %}
+{% block preheader %}{{ 'billing.restored.preheader'|trans }}{% endblock %}
+{% block eyebrow %}{{ 'billing.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'billing.restored.heading'|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('billing.restored.intro'|trans({'%name%': tenant.name})) }}
+  {% if site_url %}{{ ui.button('billing.restored.cta'|trans, site_url, {variant: 'outline'}) }}{% endif %}
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

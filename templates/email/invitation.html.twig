@@ -1,0 +1,25 @@
+{#
+  A client invites another business (Invitations::send). Context: invitation, inviter, register_url
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'invitation.subject'|trans({'%inviter%': inviter.name, '%brand%': billing_brand}) }}{% endblock %}
+{% block preheader %}{{ 'invitation.preheader'|trans }}{% endblock %}
+{% block eyebrow %}{{ 'invitation.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'invitation.heading'|trans({'%name%': invitation.name}) }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('invitation.intro'|trans({'%inviter%': inviter.name, '%brand%': billing_brand})) }}
+  {{ ui.p('invitation.what'|trans({'%brand%': billing_brand})) }}
+
+  {{ ui.callout('invitation.offer_text'|trans, 'success', 'invitation.offer_title'|trans) }}
+
+  {{ ui.button('invitation.cta'|trans, register_url) }}
+  {{ ui.fallback_link('common.fallback'|trans, register_url) }}
+
+  {{ ui.p('invitation.questions'|trans({'%inviter%': inviter.name}), {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'invitation.reason'|trans({'%inviter%': inviter.name}) }}{% endblock %}

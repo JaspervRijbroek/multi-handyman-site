@@ -21,6 +21,7 @@ which client's site is shown; clients edit their own content in a simple admin.
   DNS records to set, and the site moves there by itself once the DNS works, see [Domains](#domains)
 - Monthly or yearly billing through Mollie with automatic reminders, invoices made in FacturaDirecta, see [Billing](#billing)
 - **MCP server** so clients can let an AI assistant manage their own site, see [AI assistants (MCP)](#ai-assistants-mcp)
+- Designed HTML **emails** in the recipient's own language, see [Emails](#emails)
 
 ## Getting started
 
@@ -426,6 +427,26 @@ anything that happens to Redis: see it with `messenger:failed:show`, retry with 
 In production the [scheduler](#scheduled-tasks) starts the worker every minute, so a deploy
 needs no restart. Locally DDEV runs the worker (`web_extra_daemons` in `.ddev/config.yaml`,
 after `ddev restart`); its output is in `ddev logs`.
+
+## Emails
+
+Every email is an HTML template in `templates/email/` that extends `layout.html.twig` (cream
+card, pill buttons, terracotta accent) and uses the building blocks in `_components.html.twig`.
+Symfony adds a plain-text version made from the HTML (`App\Email\HtmlToText`). The logo
+(`public/images/casitafix-logo*.png`) and fonts load from `PLATFORM_HOST`.
+
+Texts are in `translations/email.*.yaml`, and each email goes out in its reader's language:
+
+- **Clients**: the language they filled in the sign-up form in. They can change it in Settings
+  (*Language of our emails to you*); it is separate from their website's languages.
+- **Invited businesses**: the language the client picks when sending the invitation.
+- **A client's customers** (review link): the website's main language, sent as the client's site.
+- **Sign-up notices to you**: English.
+
+To add an email: make a template that extends the layout, add its texts to all six
+`email.*.yaml` files, and send a `TemplatedEmail` with `->locale(...)` and `->htmlTemplate(...)`.
+Write dates with `|long_date`, so months are in the right language. To check the look, send one
+locally and open it in Mailpit (`ddev mailpit`).
 
 ## AI assistants (MCP)
 

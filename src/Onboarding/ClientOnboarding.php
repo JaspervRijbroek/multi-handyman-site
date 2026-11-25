@@ -238,6 +238,7 @@ final readonly class ClientOnboarding
             ->setSlug($this->uniqueSlug($signup->getBusinessName()))
             ->setLocales($signup->getLocales())
             ->setDefaultLocale($signup->getDefaultLocale())
+            ->setEmailLocale($signup->getEmailLocale())
             ->setPhone($signup->getPhone())
             ->setWhatsapp($signup->getWhatsapp() ?? $signup->getPhone())
             ->setEmail($signup->getEmail())

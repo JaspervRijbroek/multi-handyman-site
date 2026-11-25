@@ -7,6 +7,7 @@ namespace App\Twig;
 use App\Tenant\TenantContext;
 use App\Turnstile\Turnstile;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -17,6 +18,7 @@ final class SiteExtension extends AbstractExtension
         private readonly RequestStack $requestStack,
         private readonly TenantContext $tenantContext,
         private readonly Turnstile $turnstile,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -25,6 +27,7 @@ final class SiteExtension extends AbstractExtension
         return [
             new TwigFilter('localized', $this->localized(...)),
             new TwigFilter('money', self::money(...)),
+            new TwigFilter('long_date', $this->longDate(...)),
         ];
     }
 
@@ -75,5 +78,20 @@ final class SiteExtension extends AbstractExtension
         $amount = number_format($cents / 100, 2, '.', ',');
 
         return 'EUR' === $currency ? '€'.$amount : $currency.' '.$amount;
+    }
+
+    /**
+     * A date with the month written out, in the current language (emails are rendered
+     * in the recipient's language). Usage: {{ charge_date|long_date }} → 1 December 2026,
+     * {{ charge.period|long_date(false) }} → December 2026
+     */
+    public function longDate(\DateTimeInterface $date, bool $withDay = true): string
+    {
+        return $this->translator->trans($withDay ? 'date' : 'month_year', [
+            '%day%' => $date->format('j'),
+            // Some languages write a month differently inside a date (Russian: "1 декабря" but "декабрь 2026")
+            '%month%' => $this->translator->trans(($withDay ? 'month.' : 'month_name.').$date->format('n'), [], 'email'),
+            '%year%' => $date->format('Y'),
+        ], 'email');
     }
 }
