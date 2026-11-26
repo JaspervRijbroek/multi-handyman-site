@@ -1,0 +1,55 @@
+{#
+  Platform -> new client: their website has been set up (OnboardingMailer::sendWelcome).
+  Context: tenant, site_url, login_url, login_email, setup_url (or null), own_domain (or null), dns_records
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'welcome.subject'|trans({'%name%': tenant.name}) }}{% endblock %}
+{% block preheader %}{{ 'welcome.preheader'|trans }}{% endblock %}
+{% block eyebrow %}{{ 'welcome.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'welcome.heading'|trans({'%name%': tenant.legalName ?: tenant.name}) }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('welcome.intro'|trans({'%name%': tenant.name})) }}
+
+  {{ ui.details([
+      {label: 'field.website'|trans, value: site_url ? site_url|replace({'https://': ''}) : '', href: site_url},
+      {label: 'field.admin'|trans, value: login_url|replace({'https://': ''}), href: login_url},
+      {label: 'field.login'|trans, value: login_email},
+      {label: 'field.password'|trans, value: setup_url ? '' : 'welcome.password_chosen'|trans},
+  ]) }}
+
+  {% if setup_url %}
+    {{ ui.p('welcome.setup_password'|trans) }}
+    {{ ui.button('welcome.setup_cta'|trans, setup_url) }}
+    {{ ui.fallback_link('common.fallback'|trans, setup_url) }}
+  {% else %}
+    {{ ui.button('welcome.cta'|trans, login_url) }}
+  {% endif %}
+
+  {{ ui.h2('welcome.next_title'|trans) }}
+  {{ ui.steps([
+      {title: 'welcome.step1_title'|trans, text: 'welcome.step1_text'|trans},
+      {title: 'welcome.step2_title'|trans, text: 'welcome.step2_text'|trans},
+      {title: 'welcome.step3_title'|trans, text: 'welcome.step3_text'|trans},
+  ]) }}
+
+  {% if own_domain %}
+    {{ ui.h2('welcome.domain_title'|trans({'%domain%': own_domain})) }}
+    {{ ui.p('welcome.domain_intro'|trans) }}
+    {% if dns_records %}
+      {{ ui.details(dns_records|map(r => {label: r.type ~ '  ' ~ r.name, value: r.value})) }}
+    {% else %}
+      {{ ui.p('welcome.domain_same_as'|trans({'%host%': platform_host})) }}
+    {% endif %}
+    {{ ui.p('welcome.domain_after'|trans({'%domain%': own_domain})) }}
+  {% endif %}
+
+  {{ ui.callout('welcome.google'|trans, 'info') }}
+
+  {{ ui.p('common.questions'|trans, {margin: '8px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

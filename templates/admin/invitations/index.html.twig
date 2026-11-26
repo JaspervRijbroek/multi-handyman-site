@@ -26,13 +26,21 @@
                 <h2 class="h5">Send an invitation</h2>
                 <form method="post" action="{{ path('admin_invitations_send') }}" class="row g-2 align-items-end">
                     <input type="hidden" name="_token" value="{{ csrf_token('invitations-' ~ tenant.id) }}">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label" for="invite-name">Their name</label>
                         <input class="form-control" id="invite-name" name="name" required maxlength="120">
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <label class="form-label" for="invite-email">Their email</label>
                         <input class="form-control" id="invite-email" name="email" type="email" required maxlength="180">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="invite-locale">Their language</label>
+                        <select class="form-select" id="invite-locale" name="locale">
+                            {% for name, code in languages %}
+                                <option value="{{ code }}"{{ code == tenant.emailLocale ? ' selected' }}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="col-md-3">
                         <button class="btn btn-primary w-100" type="submit">Send invitation</button>

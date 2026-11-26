@@ -1,0 +1,145 @@
+{#
+  Email building blocks. Use in a template that extends email/layout.html.twig:
+    {% import 'email/_components.html.twig' as ui %}
+    {{ ui.p('Some text') }}
+
+  Everything is inline-styled tables so it survives Gmail, Outlook (Word engine) and Apple Mail.
+  Text arguments are escaped; pass trusted HTML only with p(text, {html: true}).
+#}
+
+{# ---------- Paragraph ---------- #}
+{% macro p(text, opts) %}
+{%- set o = {muted: false, size: 16, margin: '0 0 16px', html: false}|merge(opts|default({})) -%}
+<p class="{{ o.muted ? 'cf-muted' : 'cf-ink' }}" style="margin:{{ o.margin }};font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:{{ o.size }}px;line-height:{{ (o.size * 1.6)|round }}px;color:{{ o.muted ? '#6b5f52' : '#2b2622' }};">{{ o.html ? text|raw : text|nl2br }}</p>
+{% endmacro %}
+
+{# ---------- Small heading inside the body ---------- #}
+{% macro h2(text) %}
+<h2 class="cf-ink cf-serif" style="margin:32px 0 12px;font-family:'Young Serif',Georgia,'Times New Roman',serif;font-size:21px;line-height:27px;font-weight:400;color:#1d1a17;">{{ text }}</h2>
+{% endmacro %}
+
+{# ---------- Pill button. variant: 'primary' (ink) | 'outline' ---------- #}
+{% macro button(label, url, opts) %}
+{%- set o = {variant: 'primary', full: false, margin: '24px 0 8px'}|merge(opts|default({})) -%}
+{%- set primary = o.variant == 'primary' -%}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="{{ o.full ? 'cf-btn-full' : '' }}" style="margin:{{ o.margin }};{{ o.full ? 'width:100%;' : '' }}">
+  <tr>
+    <td align="center" class="{{ primary ? 'cf-btn' : 'cf-btn-o' }}" {% if primary %}bgcolor="#1d1a17"{% endif %} style="border-radius:999px;{{ primary ? 'background:#1d1a17;border:1.5px solid #1d1a17;' : 'border:1.5px solid #1d1a17;' }}mso-padding-alt:14px 28px;">
+      <a href="{{ url }}" target="_blank" style="display:inline-block;{{ o.full ? 'display:block;' : '' }}padding:14px 28px;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:20px;font-weight:600;color:{{ primary ? '#fbf6ec' : '#1d1a17' }};text-decoration:none;border-radius:999px;mso-line-height-rule:exactly;">{{ label }}</a>
+    </td>
+  </tr>
+</table>
+{% endmacro %}
+
+{# ---------- Two buttons side by side (stack on mobile) ---------- #}
+{% macro buttons(primary, secondary) %}
+{% import _self as ui %}
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:24px 0 8px;">
+  <tr>
+    <td class="cf-stack" valign="top" style="padding:0 10px 10px 0;">{{ ui.button(primary.label, primary.url, {margin: '0'}) }}</td>
+    {% if secondary %}<td class="cf-stack" valign="top" style="padding:0 0 10px 0;">{{ ui.button(secondary.label, secondary.url, {variant: 'outline', margin: '0'}) }}</td>{% endif %}
+  </tr>
+</table>
+{% endmacro %}
+
+{# ---------- Key/value panel. rows: [{label, value, href?}] — empty values are skipped ---------- #}
+{% macro details(rows, title) %}
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="cf-panel" bgcolor="#f7f0e2" style="width:100%;background:#f7f0e2;border-radius:16px;margin:24px 0;">
+  <tr>
+    <td style="padding:6px 22px;">
+      {%- if title %}
+      <p class="cf-muted" style="margin:14px 0 2px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;color:#6b5f52;">{{ title }}</p>
+      {%- endif %}
+      {%- for row in rows|filter(r => r.value is not empty) %}
+      <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="cf-stack cf-muted cf-line" width="34%" valign="top" style="width:34%;padding:12px 12px 12px 0;{{ loop.first ? '' : 'border-top:1px solid #e3d6bf;' }}font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:21px;color:#6b5f52;">{{ row.label }}</td>
+          <td class="cf-stack cf-stack-v cf-ink cf-line" valign="top" style="padding:12px 0;{{ loop.first ? '' : 'border-top:1px solid #e3d6bf;' }}font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:22px;font-weight:600;color:#1d1a17;word-break:break-word;">
+            {%- if row.href is defined and row.href -%}
+              <a href="{{ row.href }}" target="_blank" class="cf-ink" style="color:#1d1a17;text-decoration:underline;">{{ row.value }}</a>
+            {%- else -%}
+              {{ row.value }}
+            {%- endif -%}
+          </td>
+        </tr>
+      </table>
+      {%- endfor %}
+    </td>
+  </tr>
+</table>
+{% endmacro %}
+
+{# ---------- Quoted message (e.g. what a customer wrote). Escaped, newlines kept. ---------- #}
+{% macro message(text, meta, accent) %}
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin:24px 0;">
+  <tr>
+    <td width="4" bgcolor="{{ accent|default('#b9471f') }}" style="width:4px;background:{{ accent|default('#b9471f') }};border-radius:4px;font-size:0;line-height:0;">&nbsp;</td>
+    <td style="padding:2px 0 2px 18px;">
+      <p class="cf-ink" style="margin:0;font-family:'Young Serif',Georgia,'Times New Roman',serif;font-size:18px;line-height:28px;color:#1d1a17;">{{ text|nl2br }}</p>
+      {%- if meta %}
+      <p class="cf-muted" style="margin:10px 0 0;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:20px;color:#6b5f52;">{{ meta }}</p>
+      {%- endif %}
+    </td>
+  </tr>
+</table>
+{% endmacro %}
+
+{# ---------- Callout. tone: 'info' | 'success' | 'warning' ---------- #}
+{% macro callout(text, tone, title) %}
+{%- set t = {
+    info:    {bg: '#eee4d3', fg: '#2b2622', bar: '#1e4d8c', icon: 'i'},
+    success: {bg: '#e6ebd8', fg: '#2f4419', bar: '#4d6b2a', icon: '✓'},
+    warning: {bg: '#fbe3d6', fg: '#6e2810', bar: '#b9471f', icon: '!'},
+}[tone|default('info')] -%}
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="{{ t.bg }}" style="width:100%;background:{{ t.bg }};border-radius:16px;margin:24px 0;">
+  <tr>
+    <td width="28" valign="top" style="width:28px;padding:18px 0 18px 20px;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr>
+        <td width="24" height="24" align="center" valign="middle" aria-hidden="true" bgcolor="{{ t.bar }}" style="width:24px;height:24px;border-radius:999px;background:{{ t.bar }};color:#ffffff;font-family:Arial,sans-serif;font-size:13px;line-height:24px;font-weight:700;">{{ t.icon }}</td>
+      </tr></table>
+    </td>
+    <td valign="top" style="padding:18px 22px 18px 14px;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;color:{{ t.fg }};">
+      {%- if title %}<strong style="display:block;font-weight:700;margin-bottom:2px;">{{ title }}</strong>{% endif -%}
+      {{ text }}
+    </td>
+  </tr>
+</table>
+{% endmacro %}
+
+{# ---------- Numbered steps, like the "how it works" row on the site. items: [{title, text}] ---------- #}
+{% macro steps(items) %}
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin:20px 0 8px;">
+  {%- for item in items %}
+  <tr>
+    <td width="36" valign="top" style="width:36px;padding:0 14px 18px 0;">
+      <table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr>
+        <td width="34" height="34" align="center" valign="middle" class="cf-panel cf-ink" bgcolor="#f7f0e2" style="width:34px;height:34px;border-radius:999px;background:#f7f0e2;border:1px solid #e3d6bf;font-family:'Young Serif',Georgia,serif;font-size:16px;line-height:34px;color:#1d1a17;">{{ loop.index }}</td>
+      </tr></table>
+    </td>
+    <td valign="top" style="padding:4px 0 18px;">
+      <p class="cf-ink" style="margin:0 0 2px;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:16px;line-height:22px;font-weight:700;color:#1d1a17;">{{ item.title }}</p>
+      {%- if item.text is defined and item.text %}
+      <p class="cf-muted" style="margin:0;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:23px;color:#6b5f52;">{{ item.text }}</p>
+      {%- endif %}
+    </td>
+  </tr>
+  {%- endfor %}
+</table>
+{% endmacro %}
+
+{# ---------- Pill badge (e.g. ✓ Verified) ---------- #}
+{% macro badge(text, color) %}
+<span style="display:inline-block;padding:3px 10px;border-radius:999px;background:{{ color|default('#4d6b2a') }};color:#ffffff;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:18px;font-weight:600;letter-spacing:.02em;">{{ text }}</span>
+{% endmacro %}
+
+{# ---------- Hairline divider ---------- #}
+{% macro divider(margin) %}
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;margin:{{ margin|default('28px 0') }};">
+  <tr><td class="cf-line" height="1" style="height:1px;line-height:1px;font-size:0;border-top:1px solid #e3d6bf;">&nbsp;</td></tr>
+</table>
+{% endmacro %}
+
+{# ---------- Small print / "can't click the button?" fallback ---------- #}
+{% macro fallback_link(label, url) %}
+<p class="cf-muted" style="margin:20px 0 0;font-family:'Instrument Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#6b5f52;word-break:break-all;">{{ label }}<br><a href="{{ url }}" target="_blank" class="cf-muted" style="color:#6b5f52;text-decoration:underline;">{{ url }}</a></p>
+{% endmacro %}

@@ -1,0 +1,197 @@
+layout:
+    website_by: 'Web creada por'
+
+date: '%day% de %month% de %year%'
+month_year: '%month% de %year%'
+month: &months
+    1: enero
+    2: febrero
+    3: marzo
+    4: abril
+    5: mayo
+    6: junio
+    7: julio
+    8: agosto
+    9: septiembre
+    10: octubre
+    11: noviembre
+    12: diciembre
+month_name: *months
+
+language:
+    en: inglés
+    es: español
+    nl: neerlandés
+    de: alemán
+    fr: francés
+    ru: ruso
+
+field:
+    website: 'Tu web'
+    admin: 'Tu panel'
+    login: 'Usuario'
+    password: 'Contraseña'
+    name: 'Nombre'
+    email: 'Email'
+    phone: 'Teléfono'
+    language: 'Idioma'
+
+common:
+    reason_account: 'Recibes este correo porque tienes una cuenta en %brand%. Trata sobre tu cuenta, por eso no incluye enlace para darse de baja.'
+    questions: '¿Dudas? Responde a este correo.'
+    fallback: '¿No funciona el botón? Copia este enlace en tu navegador:'
+
+welcome:
+    subject: 'Tu web para %name% está lista'
+    preheader: 'Tu web ya está online. Aquí tienes tus enlaces y los siguientes pasos.'
+    eyebrow: 'Tu web está lista'
+    heading: '¡Buenas noticias, %name%!'
+    intro: 'Hemos creado tu web para %name%. En tu panel puedes actualizar tus servicios, añadir fotos de trabajos terminados y leer las consultas. Guarda este correo a mano.'
+    password_chosen: 'La que elegiste al registrarte'
+    setup_password: 'Primero elige tu contraseña. El enlace funciona durante 7 días.'
+    setup_cta: 'Elegir contraseña'
+    cta: 'Abrir tu panel'
+    next_title: 'Tres cosas que te ayudan a que te encuentren'
+    step1_title: 'Añade fotos de tu trabajo'
+    step1_text: 'Las fotos de antes y después funcionan mejor. Unas pocas buenas valen más que muchas borrosas.'
+    step2_title: 'Revisa tus servicios y tu zona de trabajo'
+    step2_text: 'De ellos depende en qué búsquedas apareces.'
+    step3_title: 'Comparte tu enlace'
+    step3_text: 'Pon tu web en tu página de Facebook, tu perfil de WhatsApp y tu furgoneta.'
+    domain_title: 'Usar tu propio dominio %domain%'
+    domain_intro: 'Entra donde compraste tu dominio (tu registrador) y configura estos registros DNS. Borra cualquier otro registro A y AAAA para "@" y "www".'
+    domain_same_as: 'Apunta "@" y "www" a la misma dirección que %host%.'
+    domain_after: 'En cuanto funcione (normalmente en unas horas), tu web pasa sola a https://%domain%, con HTTPS. Tu dirección actual sigue funcionando y redirige a los visitantes. Puedes seguir el progreso en tu panel, en "Tu dominio".'
+    google: 'También conectamos tu web con Google Search Console. Ocurre automáticamente en cuanto tu web está online.'
+
+invitation:
+    subject: '%inviter% te invita a %brand%'
+    preheader: 'Una web profesional para tu negocio, y tu segundo mes es gratis.'
+    eyebrow: 'Una invitación'
+    heading: 'Hola, %name%:'
+    intro: '%inviter% usa %brand% para su web y te invita a probarlo también.'
+    what: '%brand% le da a tu negocio una web profesional en varios idiomas, con formulario de contacto, opiniones y WhatsApp, que puedes editar tú mismo fácilmente.'
+    offer_title: 'Tu segundo mes es gratis'
+    offer_text: 'Regístrate con tu enlace personal de abajo. El enlace funciona una sola vez.'
+    cta: 'Registrarme'
+    questions: '¿Dudas? Responde a este correo para preguntar a %inviter%.'
+    reason: 'Recibes este correo porque %inviter% te ha invitado. No te volveremos a escribir salvo que te registres.'
+
+enquiry:
+    subject: 'Nueva consulta de %name% en %host%'
+    eyebrow: 'Nueva consulta · %host%'
+    heading: '%name% necesita una mano'
+    intro: 'Alguien acaba de usar el formulario de contacto de tu web. Esto es lo que ha escrito:'
+    details_title: 'Datos de contacto'
+    reply: 'Responder a %name%'
+    call: 'Llamar a %name%'
+    tip: 'Consejo: los clientes suelen quedarse con quien responde primero. Una respuesta rápida hoy, aunque sea "paso a echar un vistazo", marca la diferencia.'
+    admin: 'También encontrarás esta consulta en tu panel.'
+    admin_link: 'Abrir tu panel'
+    reason: 'Recibes este correo porque alguien ha usado el formulario de contacto de %host%.'
+
+review:
+    subject: 'Nueva opinión de %name%'
+    anonymous: 'Un cliente'
+    stars: '%rating% de 5 estrellas'
+    eyebrow: 'Nueva opinión · %host%'
+    heading: '%name% te ha dado %rating% de 5 estrellas'
+    intro: 'Un cliente ha dejado una opinión en tu web:'
+    intro_project: 'Un cliente ha dejado una opinión sobre "%project%":'
+    publish_title: 'Aún no está en tu web'
+    publish_text: 'Tú decides qué opiniones se muestran. Publícala en tu web desde Opiniones en tu panel.'
+    cta: 'Abrir tu panel'
+    reason: 'Recibes este correo porque alguien ha dejado una opinión en %host%.'
+
+review_request:
+    preheader: 'Cuente a otros qué tal fue el trabajo. Es un minuto.'
+    eyebrow: 'Su opinión'
+    heading: '¿Qué tal %name%?'
+    intro: '¡Gracias por confiar en %name%! ¿Nos cuenta qué tal fue el trabajo?'
+    how: 'Deje su opinión con su nombre o de forma anónima. Es un minuto.'
+    cta: 'Dejar mi opinión'
+    valid: 'El enlace funciona durante %days% días. ¿No funciona el botón? Copie este enlace en su navegador:'
+    reason: 'Recibe este correo porque %name% ha hecho un trabajo para usted. No le añadiremos a ninguna lista de correo.'
+
+billing:
+    eyebrow: 'Facturación'
+    incl_vat: '%amount% (IVA del %vat%% incl.)'
+    incl_vat_short: '%amount% (IVA incl.)'
+    total: 'Total'
+    outstanding: 'Pendiente'
+
+    setup:
+        subject: 'Configura el pago de tu web'
+        preheader: 'Tu web es gratis hasta el %date%. Configura un método de pago una vez, es un minuto.'
+        heading: '¡Bienvenido a %brand%!'
+        intro: 'Hola, %name%: tu web es gratis hasta el %date%.'
+        founding_title: 'Miembro fundador'
+        founding_text: 'Como miembro fundador, tu primer año es gratis y el segundo año tiene un 50% de descuento.'
+        yearly: 'A partir de entonces se cobra automáticamente una vez al año (12 meses al precio de 10). Te escribimos 2 semanas antes de cada pago anual.'
+        monthly: 'A partir de entonces se cobra automáticamente el día 1 de cada mes.'
+        once: 'Para ello, configura un método de pago una sola vez. Es un minuto.'
+        cta: 'Configurar el pago'
+        how: 'Puedes elegir una tarjeta (solo la verificamos, no se cobra nada) o tu cuenta bancaria (un pago de un céntimo la vincula para la domiciliación).'
+
+    reminder:
+        cta: 'Pagar ahora'
+        automatic: 'Al pagar con tarjeta o con tu banco, también queda configurado el pago automático a partir de ahora.'
+        ignore: '¿Ya lo has solucionado? Entonces puedes ignorar este correo.'
+        first:
+            subject: 'Tu pago a %brand% no se ha completado'
+            preheader: 'No hemos podido cobrar tu pago automáticamente. Puedes pagar online en un minuto.'
+            heading: 'Tu pago no se ha completado'
+            intro: 'Hola, %name%: no hemos podido cobrar automáticamente el pago de tu web. Suele pasar cuando una tarjeta ha caducado o se ha sustituido.'
+        second:
+            subject: 'Recordatorio: tu pago a %brand% sigue pendiente'
+            preheader: 'El pago de tu web sigue pendiente. Puedes pagar online en un minuto.'
+            heading: 'Tu pago sigue pendiente'
+            intro: 'Hola, %name%: te recordamos que el pago de tu web sigue pendiente.'
+        final:
+            subject: 'Último aviso: paga esta semana para mantener tu web online'
+            preheader: 'Paga antes del %date% para mantener tu web online.'
+            heading: 'Último aviso'
+            intro: 'Hola, %name%: este es tu último aviso, el pago de tu web sigue pendiente.'
+            warning_title: 'Tu web se desconecta el %date%'
+            warning_text: 'Paga antes del %date%. Si para entonces no lo hemos recibido, tu web se desconectará automáticamente.'
+
+    renewal:
+        subject: 'Se acerca tu pago anual a %brand%'
+        preheader: 'El %date% cobramos el pago del próximo año.'
+        heading: 'Se acerca tu pago anual'
+        intro: 'Hola, %name%: tienes el plan anual de %brand%, 12 meses al precio de 10.'
+        date: 'Fecha de pago'
+        period: 'Periodo pagado'
+        months: '%count% mes|%count% meses'
+        free_months: 'De ellos gratis (invitaciones)'
+        nothing_to_do: 'No tienes que hacer nada'
+        automatic: 'Se paga automáticamente con %method%.'
+        change: '¿Quieres usar otra tarjeta u otra cuenta bancaria? Puedes cambiarla aquí:'
+        change_cta: 'Cambiar método de pago'
+        no_method: 'Todavía no has configurado un método de pago. Configúralo antes de esa fecha para que tu web siga online. Es un minuto.'
+
+    suspended:
+        subject: 'Tu web se ha desconectado'
+        preheader: 'No hemos recibido tu pago. Paga ahora y tu web vuelve a estar online al momento.'
+        heading: 'Tu web está desconectada'
+        intro: 'Hola, %name%: como no hemos recibido el pago de tu web, se ha desconectado.'
+        safe_title: 'Tu contenido está a salvo'
+        safe_text: 'Los visitantes ven ahora una página de "no disponible temporalmente". No se ha borrado nada.'
+        back: 'En cuanto pagues, tu web vuelve a estar online automáticamente.'
+
+    restored:
+        subject: 'Gracias, tu web vuelve a estar online'
+        preheader: 'Hemos recibido tu pago.'
+        heading: 'Tu web vuelve a estar online'
+        intro: 'Hola, %name%: gracias, hemos recibido tu pago. Tu web vuelve a estar online.'
+        cta: 'Ver tu web'
+
+    invite_reward:
+        subject: 'Has ganado un mes gratis'
+        preheader: '%invitee% se ha registrado con tu invitación.'
+        eyebrow: 'Invitaciones'
+        heading: 'Has ganado un mes gratis'
+        intro: 'Hola, %name%: buenas noticias, %invitee% se ha registrado con tu invitación y ha configurado su pago. ¡Gracias por recomendar %brand%!'
+        free_title: 'Un mes gratis'
+        free_text: 'Tu próximo pago cubre un mes más sin coste adicional.'
+        waiting: 'Ahora tienes %count% meses gratis pendientes.'

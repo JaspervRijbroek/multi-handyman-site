@@ -16,6 +16,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final readonly class OnboardingMailer
 {
@@ -25,6 +26,7 @@ final readonly class OnboardingMailer
         private UserRepository $users,
         private LoggerInterface $logger,
         private CustomDomains $customDomains,
+        private TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')]
         private string $from,
     ) {
@@ -43,11 +45,14 @@ final readonly class OnboardingMailer
             static fn ($d) => $d !== $domain && !str_starts_with($d->getHostname(), 'www.'),
         ))[0] ?? null;
 
+        // In the language of their sign-up form (they can change it in Settings)
+        $locale = $tenant->getEmailLocale();
         $email = (new TemplatedEmail())
             ->from($this->from)
             ->to(new Address($user->getEmail(), $tenant->getLegalName() ?? ''))
-            ->subject(\sprintf('Your website for %s is ready', $tenant->getName()))
-            ->textTemplate('email/welcome.txt.twig')
+            ->locale($locale)
+            ->subject($this->translator->trans('welcome.subject', ['%name%' => $tenant->getName()], 'email', $locale))
+            ->htmlTemplate('email/welcome.html.twig')
             ->context([
                 'tenant' => $tenant,
                 'login_email' => $user->getEmail(),
@@ -80,8 +85,10 @@ final readonly class OnboardingMailer
             ->from($this->from)
             ->to(...$recipients)
             ->replyTo($signup->getEmail())
+            // For us, so in English
+            ->locale('en')
             ->subject(\sprintf('New sign-up: %s (%s)', $signup->getBusinessName(), $signup->getCity()))
-            ->textTemplate('email/signup_admin.txt.twig')
+            ->htmlTemplate('email/signup_admin.html.twig')
             ->context([
                 'signup' => $signup,
                 'admin_url' => $this->urlGenerator->generate('admin', [], UrlGeneratorInterface::ABSOLUTE_URL),

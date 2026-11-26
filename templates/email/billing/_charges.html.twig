@@ -1,0 +1,16 @@
+{# The open charges as a panel, with a total when there is more than one. Context: charges, show_reason (optional) #}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+{% set rows = [] %}
+{% for charge in charges %}
+  {% set period = charge.period|long_date(false) ~ (charge.months > 1 ? ' – ' ~ charge.paidUntil.modify('-1 month')|long_date(false) : '') %}
+  {% set reason = show_reason|default(false) and charge.failureReason ? ' · ' ~ charge.failureReason : '' %}
+  {% set rows = rows|merge([{
+      label: charge.invoiceNumber ? charge.invoiceNumber ~ ' · ' ~ period : period,
+      value: 'billing.incl_vat'|trans({'%amount%': charge.totalAmount|money(charge.currency), '%vat%': charge.vatRate|number_format(0)}) ~ reason,
+  }]) %}
+{% endfor %}
+{% if charges|length > 1 %}
+  {% set rows = rows|merge([{label: 'billing.total'|trans, value: charges|reduce((sum, c) => sum + c.totalAmount, 0)|money(charges[0].currency)}]) %}
+{% endif %}
+{{ ui.details(rows, 'billing.outstanding'|trans) }}

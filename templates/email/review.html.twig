@@ -1,0 +1,32 @@
+{#
+  To the client: a customer left a review, saved unpublished (SiteMailer::notifyReview).
+  Context: tenant, review, project (or null), host
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% set author = review.anonymous ? 'review.anonymous'|trans : review.authorName %}
+{% set admin_url = 'https://' ~ platform_host ~ path('admin') %}
+
+{% block title %}{{ 'review.subject'|trans({'%name%': author}) }}{% endblock %}
+{% block preheader %}{{ 'review.stars'|trans({'%rating%': review.rating}) }} · {{ review.text|slice(0, 80) }}{% endblock %}
+{% block eyebrow %}{{ 'review.eyebrow'|trans({'%host%': host}) }}{% endblock %}
+{% block heading %}{{ 'review.heading'|trans({'%name%': author, '%rating%': review.rating}) }}{% endblock %}
+
+{% block body %}
+  {% if project %}
+    {{ ui.p('review.intro_project'|trans({'%project%': project.title|localized(app.locale)})) }}
+  {% else %}
+    {{ ui.p('review.intro'|trans) }}
+  {% endif %}
+
+  <p style="margin:24px 0 0;font-size:24px;line-height:28px;letter-spacing:2px;color:#e0a100;">{% for i in 1..5 %}{% if i <= review.rating %}★{% else %}<span style="color:#d8cbb4;">★</span>{% endif %}{% endfor %}</p>
+  {{ ui.message(review.text, author ~ (review.town ? ' · ' ~ review.town : '')) }}
+
+  {{ ui.callout('review.publish_text'|trans, 'info', 'review.publish_title'|trans) }}
+
+  {{ ui.button('review.cta'|trans, admin_url) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'review.reason'|trans({'%host%': host}) }}{% endblock %}

@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Billing emails to clients. Every send returns false (and logs) instead of
@@ -20,14 +21,15 @@ use Symfony\Component\Mime\Address;
 final readonly class BillingMailer
 {
     private const array REMINDER_SUBJECTS = [
-        Charge::REMINDER_FIRST => 'Your payment for %s did not come through',
-        Charge::REMINDER_SECOND => 'Reminder: your payment for %s is still open',
-        Charge::REMINDER_FINAL => 'Final reminder: pay within a week to keep your website online',
+        Charge::REMINDER_FIRST => 'billing.reminder.first.subject',
+        Charge::REMINDER_SECOND => 'billing.reminder.second.subject',
+        Charge::REMINDER_FINAL => 'billing.reminder.final.subject',
     ];
 
     public function __construct(
         private MailerInterface $mailer,
         private LoggerInterface $logger,
+        private TranslatorInterface $translator,
         #[Autowire(env: 'MAILER_FROM')]
         private string $from,
         #[Autowire(env: 'BILLING_BRAND')]
@@ -37,7 +39,7 @@ final readonly class BillingMailer
 
     public function sendSetupRequest(Tenant $tenant, string $payUrl): bool
     {
-        return $this->send($tenant, 'Set up payment for your website', 'setup', [
+        return $this->send($tenant, 'billing.setup.subject', 'setup', [
             'pay_url' => $payUrl,
         ]);
     }
@@ -45,9 +47,7 @@ final readonly class BillingMailer
     /** @param list<Charge> $outstanding */
     public function sendReminder(Tenant $tenant, int $stage, array $outstanding, string $payUrl, \DateTimeImmutable $offlineDate): bool
     {
-        $periods = implode(', ', array_map(static fn (Charge $c) => $c->getPeriodLabel(), $outstanding));
-
-        return $this->send($tenant, \sprintf(self::REMINDER_SUBJECTS[$stage], $periods), 'reminder', [
+        return $this->send($tenant, self::REMINDER_SUBJECTS[$stage], 'reminder', [
             'stage' => $stage,
             'charges' => $outstanding,
             'pay_url' => $payUrl,
@@ -58,7 +58,7 @@ final readonly class BillingMailer
     /** Yearly plan: sent 2 weeks before the yearly payment is collected */
     public function sendRenewalNotice(Tenant $tenant, \DateTimeImmutable $chargeDate, int $amount, string $currency, string $payUrl): bool
     {
-        return $this->send($tenant, \sprintf('Your yearly payment for %s is coming up on %s', $this->brand, $chargeDate->format('j F Y')), 'renewal_notice', [
+        return $this->send($tenant, 'billing.renewal.subject', 'renewal_notice', [
             'charge_date' => $chargeDate,
             'amount' => $amount,
             'currency' => $currency,
@@ -69,7 +69,7 @@ final readonly class BillingMailer
     /** @param list<Charge> $outstanding */
     public function sendSuspended(Tenant $tenant, array $outstanding, string $payUrl): bool
     {
-        return $this->send($tenant, 'Your website has been taken offline', 'suspended', [
+        return $this->send($tenant, 'billing.suspended.subject', 'suspended', [
             'charges' => $outstanding,
             'pay_url' => $payUrl,
         ]);
@@ -77,17 +77,18 @@ final readonly class BillingMailer
 
     public function sendRestored(Tenant $tenant): bool
     {
-        return $this->send($tenant, 'Thank you, your website is back online', 'restored');
+        return $this->send($tenant, 'billing.restored.subject', 'restored');
     }
 
     /** The client someone signed up with an invitation of $inviter has set up payment */
     public function sendInviteReward(Tenant $inviter, Tenant $invitee): bool
     {
-        return $this->send($inviter, 'You earned a free month', 'invite_reward', [
+        return $this->send($inviter, 'billing.invite_reward.subject', 'invite_reward', [
             'invitee' => $invitee,
         ]);
     }
 
+    /** $subject is a translation key in the "email" domain; the email goes out in the client's email language */
     private function send(Tenant $tenant, string $subject, string $template, array $context = []): bool
     {
         $to = $tenant->getBillingRecipient();
@@ -97,12 +98,16 @@ final readonly class BillingMailer
             return false;
         }
 
+        $locale = $tenant->getEmailLocale();
+        $subject = $this->translator->trans($subject, ['%brand%' => $this->brand], 'email', $locale);
+
         $email = (new TemplatedEmail())
             ->from(new Address($this->from, $this->brand))
             ->to($to)
+            ->locale($locale)
             ->subject($subject)
-            ->textTemplate(\sprintf('email/billing/%s.txt.twig', $template))
-            ->context([...$context, 'tenant' => $tenant, 'brand' => $this->brand]);
+            ->htmlTemplate(\sprintf('email/billing/%s.html.twig', $template))
+            ->context([...$context, 'tenant' => $tenant]);
 
         try {
             $this->mailer->send($email);

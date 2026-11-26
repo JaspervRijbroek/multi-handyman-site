@@ -1,0 +1,28 @@
+{# Platform -> client: please set up a payment method (BillingMailer::sendSetupRequest). Context: tenant, pay_url #}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'billing.setup.subject'|trans }}{% endblock %}
+{% block preheader %}{{ 'billing.setup.preheader'|trans({'%date%': tenant.billingStartsOn|long_date}) }}{% endblock %}
+{% block eyebrow %}{{ 'billing.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'billing.setup.heading'|trans({'%brand%': billing_brand}) }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('billing.setup.intro'|trans({'%name%': tenant.name, '%date%': tenant.billingStartsOn|long_date})) }}
+
+  {% if tenant.foundingMember %}
+    {{ ui.callout('billing.setup.founding_text'|trans, 'success', 'billing.setup.founding_title'|trans) }}
+  {% endif %}
+
+  {{ ui.p(tenant.yearly ? 'billing.setup.yearly'|trans : 'billing.setup.monthly'|trans) }}
+  {{ ui.p('billing.setup.once'|trans) }}
+
+  {{ ui.button('billing.setup.cta'|trans, pay_url) }}
+  {{ ui.p('billing.setup.how'|trans, {muted: true, size: 14, margin: '20px 0 0'}) }}
+  {{ ui.fallback_link('common.fallback'|trans, pay_url) }}
+
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

@@ -10,6 +10,7 @@ use App\Entity\SearchConsoleStatus;
 use App\Entity\Tenant;
 use App\Entity\Trade;
 use App\Entity\User;
+use App\Form\SignupType;
 use App\Onboarding\ClientOnboarding;
 use App\Security\TenantAccessVoter;
 use App\Tenant\TenantContext;
@@ -190,6 +191,10 @@ class TenantCrudController extends AbstractCrudController
         yield EmailField::new('email', 'Send enquiries to')->hideOnIndex();
         yield EmailField::new('billingEmail', 'Send invoices and payment reminders to')
             ->setHelp('Leave empty to use the enquiries address.')
+            ->hideOnIndex();
+        yield ChoiceField::new('emailLocale', 'Language of our emails to you')
+            ->setChoices(SignupType::LANGUAGES)
+            ->setHelp('Enquiries, reviews and billing emails are sent in this language. Your website keeps its own languages.')
             ->hideOnIndex();
 
         yield FormField::addFieldset('Address')

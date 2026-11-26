@@ -1,0 +1,197 @@
+layout:
+    website_by: 'Website von'
+
+date: '%day%. %month% %year%'
+month_year: '%month% %year%'
+month: &months
+    1: Januar
+    2: Februar
+    3: März
+    4: April
+    5: Mai
+    6: Juni
+    7: Juli
+    8: August
+    9: September
+    10: Oktober
+    11: November
+    12: Dezember
+month_name: *months
+
+language:
+    en: Englisch
+    es: Spanisch
+    nl: Niederländisch
+    de: Deutsch
+    fr: Französisch
+    ru: Russisch
+
+field:
+    website: 'Ihre Website'
+    admin: 'Ihre Verwaltung'
+    login: 'Login'
+    password: 'Passwort'
+    name: 'Name'
+    email: 'E-Mail'
+    phone: 'Telefon'
+    language: 'Sprache'
+
+common:
+    reason_account: 'Sie erhalten diese E-Mail, weil Sie ein Konto bei %brand% haben. Sie betrifft Ihr Konto, deshalb gibt es keinen Abmeldelink.'
+    questions: 'Fragen? Antworten Sie einfach auf diese E-Mail.'
+    fallback: 'Der Button funktioniert nicht? Kopieren Sie diesen Link in Ihren Browser:'
+
+welcome:
+    subject: 'Ihre Website für %name% ist fertig'
+    preheader: 'Ihre Website ist online. Hier finden Sie Ihre Links und die nächsten Schritte.'
+    eyebrow: 'Ihre Website ist fertig'
+    heading: 'Gute Nachrichten, %name%!'
+    intro: 'Ihre Website für %name% ist eingerichtet. In Ihrer Verwaltung können Sie Ihre Leistungen anpassen, Fotos fertiger Aufträge hinzufügen und Anfragen lesen. Bewahren Sie diese E-Mail gut auf.'
+    password_chosen: 'Das Passwort, das Sie bei der Anmeldung gewählt haben'
+    setup_password: 'Wählen Sie zuerst Ihr Passwort. Der Link ist 7 Tage gültig.'
+    setup_cta: 'Passwort wählen'
+    cta: 'Verwaltung öffnen'
+    next_title: 'Drei Dinge, mit denen Sie besser gefunden werden'
+    step1_title: 'Fotos Ihrer Arbeit hinzufügen'
+    step1_text: 'Vorher-nachher-Fotos wirken am besten. Ein paar gute sind besser als viele unscharfe.'
+    step2_title: 'Leistungen und Einsatzgebiet prüfen'
+    step2_text: 'Davon hängt ab, bei welchen Suchen Sie erscheinen.'
+    step3_title: 'Ihren Link teilen'
+    step3_text: 'Setzen Sie Ihre Website auf Ihre Facebook-Seite, Ihr WhatsApp-Profil und Ihren Transporter.'
+    domain_title: 'Ihre eigene Domain %domain% verwenden'
+    domain_intro: 'Melden Sie sich dort an, wo Sie Ihre Domain gekauft haben (Ihr Domain-Anbieter), und tragen Sie diese DNS-Einträge ein. Löschen Sie andere A- und AAAA-Einträge für "@" und "www".'
+    domain_same_as: 'Lassen Sie "@" und "www" auf dieselbe Adresse zeigen wie %host%.'
+    domain_after: 'Sobald das funktioniert (meist innerhalb weniger Stunden), zieht Ihre Website von selbst auf https://%domain% um, mit HTTPS. Ihre jetzige Adresse funktioniert weiter und leitet Besucher dorthin. Den Fortschritt sehen Sie in Ihrer Verwaltung unter "Ihre Domain".'
+    google: 'Wir verbinden Ihre Website außerdem mit der Google Search Console. Das passiert automatisch, sobald Ihre Website online ist.'
+
+invitation:
+    subject: '%inviter% lädt Sie zu %brand% ein'
+    preheader: 'Eine professionelle Website für Ihr Unternehmen, und der zweite Monat ist gratis.'
+    eyebrow: 'Eine Einladung'
+    heading: 'Hallo %name%,'
+    intro: '%inviter% nutzt %brand% für die eigene Website und lädt Sie ein, es auch auszuprobieren.'
+    what: '%brand% gibt Ihrem Unternehmen eine professionelle Website in mehreren Sprachen, mit Kontaktformular, Bewertungen und WhatsApp, die Sie ganz einfach selbst bearbeiten.'
+    offer_title: 'Ihr zweiter Monat ist gratis'
+    offer_text: 'Melden Sie sich mit Ihrem persönlichen Link unten an. Der Link funktioniert einmal.'
+    cta: 'Jetzt anmelden'
+    questions: 'Fragen? Antworten Sie auf diese E-Mail, um %inviter% zu fragen.'
+    reason: 'Sie erhalten diese E-Mail, weil %inviter% Sie eingeladen hat. Wir schreiben Ihnen nicht wieder, außer Sie melden sich an.'
+
+enquiry:
+    subject: 'Neue Anfrage von %name% über %host%'
+    eyebrow: 'Neue Anfrage · %host%'
+    heading: '%name% braucht Hilfe'
+    intro: 'Jemand hat gerade das Kontaktformular auf Ihrer Website ausgefüllt. Das wurde geschrieben:'
+    details_title: 'Kontaktdaten'
+    reply: '%name% antworten'
+    call: '%name% anrufen'
+    tip: 'Tipp: Kunden entscheiden sich meist für den, der zuerst antwortet. Eine schnelle Antwort heute, auch nur "Ich schaue es mir an", macht einen großen Unterschied.'
+    admin: 'Sie finden diese Anfrage auch in Ihrer Verwaltung.'
+    admin_link: 'Verwaltung öffnen'
+    reason: 'Sie erhalten diese E-Mail, weil jemand das Kontaktformular auf %host% ausgefüllt hat.'
+
+review:
+    subject: 'Neue Bewertung von %name%'
+    anonymous: 'Ein Kunde'
+    stars: '%rating% von 5 Sternen'
+    eyebrow: 'Neue Bewertung · %host%'
+    heading: '%name% hat Ihnen %rating% von 5 Sternen gegeben'
+    intro: 'Ein Kunde hat auf Ihrer Website eine Bewertung hinterlassen:'
+    intro_project: 'Ein Kunde hat eine Bewertung für "%project%" hinterlassen:'
+    publish_title: 'Noch nicht auf Ihrer Website'
+    publish_text: 'Sie entscheiden, welche Bewertungen gezeigt werden. Veröffentlichen Sie sie in Ihrer Verwaltung unter Bewertungen.'
+    cta: 'Verwaltung öffnen'
+    reason: 'Sie erhalten diese E-Mail, weil jemand auf %host% eine Bewertung hinterlassen hat.'
+
+review_request:
+    preheader: 'Erzählen Sie anderen, wie der Auftrag lief. Es dauert eine Minute.'
+    eyebrow: 'Ihre Meinung'
+    heading: 'Wie war %name%?'
+    intro: 'Danke, dass Sie sich für %name% entschieden haben! Möchten Sie anderen erzählen, wie der Auftrag lief?'
+    how: 'Schreiben Sie Ihre Bewertung mit Namen oder anonym. Es dauert eine Minute.'
+    cta: 'Bewertung schreiben'
+    valid: 'Der Link ist %days% Tage gültig. Der Button funktioniert nicht? Kopieren Sie diesen Link in Ihren Browser:'
+    reason: 'Sie erhalten diese E-Mail, weil %name% einen Auftrag für Sie erledigt hat. Wir setzen Sie auf keine Mailingliste.'
+
+billing:
+    eyebrow: 'Zahlung'
+    incl_vat: '%amount% (inkl. %vat% % MwSt.)'
+    incl_vat_short: '%amount% (inkl. MwSt.)'
+    total: 'Gesamt'
+    outstanding: 'Offen'
+
+    setup:
+        subject: 'Richten Sie die Zahlung für Ihre Website ein'
+        preheader: 'Ihre Website ist bis zum %date% gratis. Richten Sie einmal eine Zahlungsmethode ein, es dauert eine Minute.'
+        heading: 'Willkommen bei %brand%!'
+        intro: 'Hallo %name%, Ihre Website ist bis zum %date% gratis.'
+        founding_title: 'Gründungsmitglied'
+        founding_text: 'Als Gründungsmitglied ist Ihr erstes Jahr gratis und das zweite Jahr 50 % günstiger.'
+        yearly: 'Danach wird einmal im Jahr automatisch abgebucht (12 Monate zum Preis von 10). Wir schreiben Ihnen 2 Wochen vor jeder Jahreszahlung.'
+        monthly: 'Danach wird jeweils am 1. des Monats automatisch abgebucht.'
+        once: 'Richten Sie dafür einmal eine Zahlungsmethode ein. Es dauert eine Minute.'
+        cta: 'Zahlung einrichten'
+        how: 'Sie wählen eine Karte (wir prüfen sie nur, es wird nichts abgebucht) oder Ihr Bankkonto (eine Zahlung von einem Cent verknüpft es für das Lastschriftverfahren).'
+
+    reminder:
+        cta: 'Jetzt bezahlen'
+        automatic: 'Wenn Sie mit Karte oder über Ihre Bank zahlen, ist die automatische Zahlung ab jetzt auch gleich eingerichtet.'
+        ignore: 'Schon erledigt? Dann können Sie diese E-Mail ignorieren.'
+        first:
+            subject: 'Ihre Zahlung an %brand% ist nicht durchgegangen'
+            preheader: 'Wir konnten Ihre Zahlung nicht automatisch einziehen. Sie können in einer Minute online bezahlen.'
+            heading: 'Ihre Zahlung ist nicht durchgegangen'
+            intro: 'Hallo %name%, wir konnten die Zahlung für Ihre Website nicht automatisch einziehen. Das passiert meist, wenn eine Karte abgelaufen ist oder ersetzt wurde.'
+        second:
+            subject: 'Erinnerung: Ihre Zahlung an %brand% ist noch offen'
+            preheader: 'Die Zahlung für Ihre Website ist noch offen. Sie können in einer Minute online bezahlen.'
+            heading: 'Ihre Zahlung ist noch offen'
+            intro: 'Hallo %name%, dies ist eine Erinnerung: Die Zahlung für Ihre Website ist noch offen.'
+        final:
+            subject: 'Letzte Erinnerung: Bitte zahlen Sie innerhalb einer Woche, damit Ihre Website online bleibt'
+            preheader: 'Bitte zahlen Sie vor dem %date%, damit Ihre Website online bleibt.'
+            heading: 'Letzte Erinnerung'
+            intro: 'Hallo %name%, dies ist Ihre letzte Erinnerung: Die Zahlung für Ihre Website ist noch offen.'
+            warning_title: 'Ihre Website geht am %date% offline'
+            warning_text: 'Bitte zahlen Sie vor dem %date%. Haben wir die Zahlung bis dahin nicht erhalten, geht Ihre Website automatisch offline.'
+
+    renewal:
+        subject: 'Ihre Jahreszahlung an %brand% steht an'
+        preheader: 'Am %date% buchen wir die Zahlung für das kommende Jahr ab.'
+        heading: 'Ihre Jahreszahlung steht an'
+        intro: 'Hallo %name%, Sie haben den Jahresplan von %brand%: 12 Monate zum Preis von 10.'
+        date: 'Zahlungsdatum'
+        period: 'Bezahlter Zeitraum'
+        months: '%count% Monat|%count% Monate'
+        free_months: 'Davon gratis (Einladungen)'
+        nothing_to_do: 'Sie müssen nichts tun'
+        automatic: 'Die Zahlung erfolgt automatisch mit %method%.'
+        change: 'Möchten Sie eine andere Karte oder ein anderes Bankkonto nutzen? Hier können Sie es ändern:'
+        change_cta: 'Zahlungsmethode ändern'
+        no_method: 'Es ist noch keine Zahlungsmethode eingerichtet. Bitte richten Sie vor diesem Datum eine ein, damit Ihre Website online bleibt. Es dauert eine Minute.'
+
+    suspended:
+        subject: 'Ihre Website wurde offline genommen'
+        preheader: 'Wir haben Ihre Zahlung nicht erhalten. Zahlen Sie jetzt, dann ist Ihre Website sofort wieder online.'
+        heading: 'Ihre Website ist offline'
+        intro: 'Hallo %name%, da wir die Zahlung für Ihre Website nicht erhalten haben, wurde sie offline genommen.'
+        safe_title: 'Ihre Inhalte sind sicher'
+        safe_text: 'Besucher sehen jetzt eine Seite "vorübergehend nicht verfügbar". Es wurde nichts gelöscht.'
+        back: 'Sobald Sie bezahlen, ist Ihre Website automatisch wieder online.'
+
+    restored:
+        subject: 'Danke, Ihre Website ist wieder online'
+        preheader: 'Wir haben Ihre Zahlung erhalten.'
+        heading: 'Ihre Website ist wieder online'
+        intro: 'Hallo %name%, danke, wir haben Ihre Zahlung erhalten. Ihre Website ist wieder online.'
+        cta: 'Website ansehen'
+
+    invite_reward:
+        subject: 'Sie haben einen Gratismonat verdient'
+        preheader: '%invitee% hat sich mit Ihrer Einladung angemeldet.'
+        eyebrow: 'Einladungen'
+        heading: 'Sie haben einen Gratismonat verdient'
+        intro: 'Hallo %name%, gute Nachrichten: %invitee% hat sich mit Ihrer Einladung angemeldet und die Zahlung eingerichtet. Danke, dass Sie %brand% empfehlen!'
+        free_title: 'Ein Monat gratis'
+        free_text: 'Ihre nächste Zahlung deckt einen zusätzlichen Monat ohne Mehrkosten ab.'
+        waiting: 'Sie haben jetzt %count% Gratismonate gut.'

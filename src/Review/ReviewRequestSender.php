@@ -7,11 +7,11 @@ namespace App\Review;
 use App\Entity\Project;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -52,21 +52,38 @@ final readonly class ReviewRequestSender
         // The admin runs on the platform host: build the link on the client's own domain
         $locale = $tenant->getDefaultLocale();
         $link = 'https://'.$domain->getHostname().$this->urlGenerator->generate('site_review_invite', ['_locale' => $locale, 'token' => $token]);
-        $message = $this->translator->trans('review_request.message', [
-            '%name%' => $tenant->getName(),
-            '%days%' => Project::REVIEW_LINK_DAYS,
-            '%url%' => $link,
-        ], 'messages', $locale);
-
         if ($phone = $project->getCustomerPhoneDigits()) {
+            $message = $this->translator->trans('review_request.message', [
+                '%name%' => $tenant->getName(),
+                '%days%' => Project::REVIEW_LINK_DAYS,
+                '%url%' => $link,
+            ], 'messages', $locale);
+
             return new ReviewRequestResult(ReviewRequestResult::WHATSAPP, $link, 'https://wa.me/'.$phone.'?text='.rawurlencode($message));
         }
 
-        $email = (new Email())
+        // Sent as the client's website, in its main language
+        $email = (new TemplatedEmail())
             ->from(new Address($this->from, $tenant->getName()))
             ->to((string) $project->getCustomerEmail())
+            ->locale($locale)
             ->subject($this->translator->trans('review_request.subject', ['%name%' => $tenant->getName()], 'messages', $locale))
-            ->text($message);
+            ->htmlTemplate('email/review_request.html.twig')
+            ->context([
+                'tenant' => $tenant,
+                'link' => $link,
+                'days' => Project::REVIEW_LINK_DAYS,
+                'brand' => [
+                    'name' => $tenant->getName(),
+                    'url' => 'https://'.$domain->getHostname(),
+                    'domain' => $domain->getHostname(),
+                    'accent' => $tenant->getPrimaryColor(),
+                    // Email apps don't show WebP
+                    'logo_url' => preg_match('/\.(png|jpe?g)$/i', (string) $tenant->getLogoName()) ? 'https://'.$domain->getHostname().'/uploads/logos/'.rawurlencode((string) $tenant->getLogoName()) : null,
+                    'logo_height' => null,
+                    'is_client' => true,
+                ],
+            ]);
         if ($tenant->getEmail()) {
             $email->replyTo($tenant->getEmail());
         }

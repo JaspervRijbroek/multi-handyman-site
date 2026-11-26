@@ -103,6 +103,11 @@ class Signup
     #[Assert\Choice(choices: Tenant::SUPPORTED_LOCALES)]
     private string $defaultLocale = 'en';
 
+    /** The language of the sign-up form: our emails to them go out in it */
+    #[ORM\Column(length: 5, options: ['default' => 'en'])]
+    #[Assert\Choice(choices: Tenant::SUPPORTED_LOCALES)]
+    private string $emailLocale = 'en';
+
     #[ORM\Column(length: 10, options: ['default' => Tenant::PLAN_MONTHLY])]
     #[Assert\Choice(choices: Tenant::PLANS)]
     private string $billingPlan = Tenant::PLAN_MONTHLY;
@@ -393,6 +398,18 @@ class Signup
     public function setDefaultLocale(?string $defaultLocale): static
     {
         $this->defaultLocale = $defaultLocale ?? 'en';
+
+        return $this;
+    }
+
+    public function getEmailLocale(): string
+    {
+        return $this->emailLocale;
+    }
+
+    public function setEmailLocale(string $emailLocale): static
+    {
+        $this->emailLocale = $emailLocale;
 
         return $this;
     }

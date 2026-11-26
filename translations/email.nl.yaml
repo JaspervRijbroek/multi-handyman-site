@@ -1,0 +1,197 @@
+layout:
+    website_by: 'Website door'
+
+date: '%day% %month% %year%'
+month_year: '%month% %year%'
+month: &months
+    1: januari
+    2: februari
+    3: maart
+    4: april
+    5: mei
+    6: juni
+    7: juli
+    8: augustus
+    9: september
+    10: oktober
+    11: november
+    12: december
+month_name: *months
+
+language:
+    en: Engels
+    es: Spaans
+    nl: Nederlands
+    de: Duits
+    fr: Frans
+    ru: Russisch
+
+field:
+    website: 'Je website'
+    admin: 'Je beheer'
+    login: 'Inloggen'
+    password: 'Wachtwoord'
+    name: 'Naam'
+    email: 'E-mail'
+    phone: 'Telefoon'
+    language: 'Taal'
+
+common:
+    reason_account: 'Je ontvangt deze e-mail omdat je een account bij %brand% hebt. Hij gaat over je account, daarom staat er geen afmeldlink in.'
+    questions: 'Vragen? Beantwoord gewoon deze e-mail.'
+    fallback: 'Werkt de knop niet? Kopieer deze link in je browser:'
+
+welcome:
+    subject: 'Je website voor %name% staat klaar'
+    preheader: 'Je website staat online. Hier vind je je links en wat je nu kunt doen.'
+    eyebrow: 'Je website staat klaar'
+    heading: 'Goed nieuws, %name%!'
+    intro: 'Je website voor %name% is aangemaakt. In je beheer pas je je diensten aan, voeg je foto''s van afgeronde klussen toe en lees je aanvragen. Bewaar deze e-mail goed.'
+    password_chosen: 'Het wachtwoord dat je bij je aanmelding koos'
+    setup_password: 'Kies eerst je wachtwoord. De link werkt 7 dagen.'
+    setup_cta: 'Kies je wachtwoord'
+    cta: 'Open je beheer'
+    next_title: 'Drie dingen waardoor je beter gevonden wordt'
+    step1_title: 'Voeg foto''s van je werk toe'
+    step1_text: 'Voor-en-na-foto''s werken het best. Een paar goede zijn beter dan veel wazige.'
+    step2_title: 'Controleer je diensten en werkgebied'
+    step2_text: 'Die bepalen bij welke zoekopdrachten je verschijnt.'
+    step3_title: 'Deel je link'
+    step3_text: 'Zet je website op je Facebookpagina, je WhatsApp-profiel en je bus.'
+    domain_title: 'Je eigen domein %domain% gebruiken'
+    domain_intro: 'Log in waar je je domein hebt gekocht (je domeinregistrar) en stel deze DNS-records in. Verwijder andere A- en AAAA-records voor "@" en "www".'
+    domain_same_as: 'Laat "@" en "www" naar hetzelfde adres wijzen als %host%.'
+    domain_after: 'Zodra dat werkt (meestal binnen een paar uur), verhuist je website vanzelf naar https://%domain%, met HTTPS. Je huidige adres blijft werken en stuurt bezoekers door. Je volgt de voortgang in je beheer onder "Je domein".'
+    google: 'We koppelen je website ook aan Google Search Console. Dat gebeurt automatisch zodra je website online is.'
+
+invitation:
+    subject: '%inviter% nodigt je uit voor %brand%'
+    preheader: 'Een professionele website voor je bedrijf, en je tweede maand is gratis.'
+    eyebrow: 'Een uitnodiging'
+    heading: 'Hallo %name%,'
+    intro: '%inviter% gebruikt %brand% voor hun website en nodigt je uit om het ook te proberen.'
+    what: '%brand% geeft je bedrijf een professionele website in meerdere talen, met contactformulier, reviews en WhatsApp, die je makkelijk zelf aanpast.'
+    offer_title: 'Je tweede maand is gratis'
+    offer_text: 'Meld je aan met je persoonlijke link hieronder. De link werkt één keer.'
+    cta: 'Aanmelden'
+    questions: 'Vragen? Beantwoord deze e-mail om het %inviter% te vragen.'
+    reason: 'Je ontvangt deze e-mail omdat %inviter% je heeft uitgenodigd. We mailen je niet opnieuw, tenzij je je aanmeldt.'
+
+enquiry:
+    subject: 'Nieuwe aanvraag van %name% via %host%'
+    eyebrow: 'Nieuwe aanvraag · %host%'
+    heading: '%name% zoekt een vakman'
+    intro: 'Iemand heeft net het contactformulier op je website ingevuld. Dit schreven ze:'
+    details_title: 'Contactgegevens'
+    reply: 'Antwoord %name%'
+    call: 'Bel %name%'
+    tip: 'Tip: klanten kiezen meestal wie het eerst reageert. Een snel antwoord vandaag, al is het maar "ik kom even kijken", maakt veel verschil.'
+    admin: 'Je vindt deze aanvraag ook in je beheer.'
+    admin_link: 'Open je beheer'
+    reason: 'Je ontvangt deze e-mail omdat iemand het contactformulier op %host% heeft ingevuld.'
+
+review:
+    subject: 'Nieuwe review van %name%'
+    anonymous: 'Een klant'
+    stars: '%rating% van de 5 sterren'
+    eyebrow: 'Nieuwe review · %host%'
+    heading: '%name% gaf je %rating% van de 5 sterren'
+    intro: 'Een klant heeft een review achtergelaten op je website:'
+    intro_project: 'Een klant heeft een review achtergelaten voor "%project%":'
+    publish_title: 'Nog niet op je website'
+    publish_text: 'Jij bepaalt welke reviews je toont. Publiceer hem op je website onder Reviews in je beheer.'
+    cta: 'Open je beheer'
+    reason: 'Je ontvangt deze e-mail omdat iemand een review heeft achtergelaten op %host%.'
+
+review_request:
+    preheader: 'Vertel anderen hoe de klus ging. Het kost een minuutje.'
+    eyebrow: 'Jouw mening'
+    heading: 'Hoe deed %name% het?'
+    intro: 'Bedankt dat je voor %name% hebt gekozen! Wil je anderen vertellen hoe de klus ging?'
+    how: 'Laat je review achter met je naam of anoniem. Het kost een minuutje.'
+    cta: 'Review schrijven'
+    valid: 'De link werkt %days% dagen. Werkt de knop niet? Kopieer deze link in je browser:'
+    reason: 'Je ontvangt deze e-mail omdat %name% een klus voor je heeft gedaan. We zetten je niet op een mailinglijst.'
+
+billing:
+    eyebrow: 'Betaling'
+    incl_vat: '%amount% (incl. %vat%% btw)'
+    incl_vat_short: '%amount% (incl. btw)'
+    total: 'Totaal'
+    outstanding: 'Openstaand'
+
+    setup:
+        subject: 'Stel de betaling voor je website in'
+        preheader: 'Je website is gratis tot %date%. Stel één keer een betaalmethode in, het kost een minuutje.'
+        heading: 'Welkom bij %brand%!'
+        intro: 'Hallo %name%, je website is gratis tot %date%.'
+        founding_title: 'Founding member'
+        founding_text: 'Als founding member is je eerste jaar gratis en krijg je het tweede jaar 50% korting.'
+        yearly: 'Daarna wordt er één keer per jaar automatisch afgeschreven (12 maanden voor de prijs van 10). We mailen je 2 weken voor elke jaarbetaling.'
+        monthly: 'Daarna wordt er elke 1e van de maand automatisch afgeschreven.'
+        once: 'Stel daarvoor één keer een betaalmethode in. Het kost een minuutje.'
+        cta: 'Betaling instellen'
+        how: 'Je kiest een creditcard (we controleren hem alleen, er wordt niets afgeschreven) of je bankrekening (een betaling van één cent koppelt hem voor automatische incasso).'
+
+    reminder:
+        cta: 'Nu betalen'
+        automatic: 'Betaal je met een kaart of je bank, dan staat automatische betaling vanaf nu ook meteen ingesteld.'
+        ignore: 'Al geregeld? Dan kun je deze e-mail negeren.'
+        first:
+            subject: 'Je betaling aan %brand% is niet gelukt'
+            preheader: 'We konden je betaling niet automatisch innen. Je betaalt online in een minuutje.'
+            heading: 'Je betaling is niet gelukt'
+            intro: 'Hallo %name%, we konden de betaling voor je website niet automatisch innen. Dat gebeurt meestal als een kaart verlopen of vervangen is.'
+        second:
+            subject: 'Herinnering: je betaling aan %brand% staat nog open'
+            preheader: 'De betaling voor je website staat nog open. Je betaalt online in een minuutje.'
+            heading: 'Je betaling staat nog open'
+            intro: 'Hallo %name%, dit is een herinnering: de betaling voor je website staat nog open.'
+        final:
+            subject: 'Laatste herinnering: betaal binnen een week, dan blijft je website online'
+            preheader: 'Betaal vóór %date%, dan blijft je website online.'
+            heading: 'Laatste herinnering'
+            intro: 'Hallo %name%, dit is je laatste herinnering: de betaling voor je website staat nog open.'
+            warning_title: 'Je website gaat op %date% offline'
+            warning_text: 'Betaal vóór %date%. Hebben we de betaling dan nog niet ontvangen, dan gaat je website automatisch offline.'
+
+    renewal:
+        subject: 'Je jaarbetaling aan %brand% komt eraan'
+        preheader: 'Op %date% schrijven we de betaling voor het komende jaar af.'
+        heading: 'Je jaarbetaling komt eraan'
+        intro: 'Hallo %name%, je hebt het jaarabonnement van %brand%: 12 maanden voor de prijs van 10.'
+        date: 'Betaaldatum'
+        period: 'Betaalde periode'
+        months: '%count% maand|%count% maanden'
+        free_months: 'Waarvan gratis (uitnodigingen)'
+        nothing_to_do: 'Je hoeft niets te doen'
+        automatic: 'Dit wordt automatisch betaald met %method%.'
+        change: 'Wil je een andere kaart of bankrekening gebruiken? Die wijzig je hier:'
+        change_cta: 'Betaalmethode wijzigen'
+        no_method: 'Er is nog geen betaalmethode ingesteld. Stel er vóór die datum een in, zodat je website online blijft. Het kost een minuutje.'
+
+    suspended:
+        subject: 'Je website is offline gehaald'
+        preheader: 'We hebben je betaling niet ontvangen. Betaal nu en je website staat meteen weer online.'
+        heading: 'Je website is offline'
+        intro: 'Hallo %name%, omdat we de betaling voor je website niet hebben ontvangen, is hij offline gehaald.'
+        safe_title: 'Je inhoud is veilig'
+        safe_text: 'Bezoekers zien nu een pagina "tijdelijk niet beschikbaar". Er is niets verwijderd.'
+        back: 'Zodra je betaalt, staat je website automatisch weer online.'
+
+    restored:
+        subject: 'Bedankt, je website staat weer online'
+        preheader: 'We hebben je betaling ontvangen.'
+        heading: 'Je website staat weer online'
+        intro: 'Hallo %name%, bedankt, we hebben je betaling ontvangen. Je website staat weer online.'
+        cta: 'Bekijk je website'
+
+    invite_reward:
+        subject: 'Je hebt een gratis maand verdiend'
+        preheader: '%invitee% heeft zich aangemeld met jouw uitnodiging.'
+        eyebrow: 'Uitnodigingen'
+        heading: 'Je hebt een gratis maand verdiend'
+        intro: 'Hallo %name%, goed nieuws: %invitee% heeft zich aangemeld met jouw uitnodiging en de betaling ingesteld. Bedankt dat je %brand% aanbeveelt!'
+        free_title: 'Eén maand gratis'
+        free_text: 'Je volgende betaling dekt een extra maand, zonder extra kosten.'
+        waiting: 'Je hebt nu %count% gratis maanden tegoed.'

@@ -1,0 +1,23 @@
+{#
+  To a client's customer, sent as the client's website: please review the job (ReviewRequestSender).
+  Rendered in the website's main language. Context: brand (client brand), tenant, link, days
+#}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'review_request.subject'|trans({'%name%': tenant.name}, 'messages') }}{% endblock %}
+{% block preheader %}{{ 'review_request.preheader'|trans }}{% endblock %}
+{% block eyebrow %}{{ 'review_request.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'review_request.heading'|trans({'%name%': tenant.name}) }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('review_request.intro'|trans({'%name%': tenant.name})) }}
+  {{ ui.p('review_request.how'|trans) }}
+
+  {{ ui.button('review_request.cta'|trans, link) }}
+  {{ ui.fallback_link('review_request.valid'|trans({'%days%': days}), link) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'review_request.reason'|trans({'%name%': tenant.name}) }}{% endblock %}
+{% block footer_extra %}{% if tenant.city %} · {{ tenant.city }}{% endif %}{% endblock %}

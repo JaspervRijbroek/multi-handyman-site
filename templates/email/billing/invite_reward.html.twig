@@ -1,0 +1,20 @@
+{# Platform -> client: someone they invited signed up and set up payment (BillingMailer::sendInviteReward). Context: tenant, invitee #}
+{% extends 'email/layout.html.twig' %}
+{% import 'email/_components.html.twig' as ui %}
+{% trans_default_domain 'email' %}
+
+{% block title %}{{ 'billing.invite_reward.subject'|trans }}{% endblock %}
+{% block preheader %}{{ 'billing.invite_reward.preheader'|trans({'%invitee%': invitee.name}) }}{% endblock %}
+{% block eyebrow %}{{ 'billing.invite_reward.eyebrow'|trans }}{% endblock %}
+{% block heading %}{{ 'billing.invite_reward.heading'|trans }}{% endblock %}
+
+{% block body %}
+  {{ ui.p('billing.invite_reward.intro'|trans({'%name%': tenant.name, '%invitee%': invitee.name, '%brand%': billing_brand})) }}
+  {{ ui.callout('billing.invite_reward.free_text'|trans, 'success', 'billing.invite_reward.free_title'|trans) }}
+  {% if tenant.freeMonths > 1 %}
+    {{ ui.p('billing.invite_reward.waiting'|trans({'%count%': tenant.freeMonths})) }}
+  {% endif %}
+  {{ ui.p('common.questions'|trans, {margin: '24px 0 0'}) }}
+{% endblock %}
+
+{% block footer_reason %}{{ 'common.reason_account'|trans({'%brand%': billing_brand}) }}{% endblock %}

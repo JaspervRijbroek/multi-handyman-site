@@ -5,8 +5,13 @@ twig:
         # templates/tenants/<slug>/ in front of this, see TenantRequestListener.
         # The defaults always stay reachable as 'site/...' (Twig's main namespace).
         '%kernel.project_dir%/templates/site': site
+    # Plain-text part of the emails, made from their HTML
+    mailer:
+        html_to_text_converter: App\Email\HtmlToText
     globals:
         billing_brand: '%env(BILLING_BRAND)%'
+        # Emails link to it and load their logo and fonts from it
+        platform_host: '%env(PLATFORM_HOST)%'
         # Who runs the platform: terms and privacy policy on PLATFORM_HOST
         platform_legal:
             name: '%env(PLATFORM_LEGAL_NAME)%'
